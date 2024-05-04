@@ -1,20 +1,19 @@
 const express = require('express');
 const app = express();
-const mongoose = require('mongoose');
-require('dotenv').config();
-const PORT = 3000;
 
-main().catch(err => console.log(err));
 
-const mongoPassword = process.env.MONGODB_PASSWORD;
+const mongoose = require('mongoose')
+
+main().catch(err => console.error('MongoDB connection error:', err)); // Log MongoDB connection errors
 
 async function main() {
-  await mongoose.connect(`mongodb+srv://Daniel:${mongoPassword}@cluster0.n7n7slw.mongodb.net/criminals`);
-  console.log('Connected to MongoDB');
-  
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+  try {
+    await mongoose.connect('mongodb+srv://Daniel:2foADJtqgvjQ8CMA@cluster0.n7n7slw.mongodb.net/?retryWrites=true&w=majority');
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error; // Rethrow the error to stop the application startup
+  }
 }
 
 const criminalSchema = new mongoose.Schema({
