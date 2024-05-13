@@ -9,6 +9,7 @@ const mongo_user = process.env.MONGODB_USER;
 const mongo_password = process.env.MONGODB_PASSWORD;
 const mongo_host = process.env.MONGODB_HOST;
 const mongo_db = process.env.MONGODB_DATABASE;
+const node_session_secret = process.env.NODE_SESSION_SECRET;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -26,8 +27,8 @@ async function main() {
     throw error; // Rethrow the error to stop the application startup
   }
 
-  app.listen(3000, () => {
-      console.log("Listening to Port 3000.");
+  app.listen(PORT, () => {
+      console.log("Listening to port "+PORT);
   });
 }
 
@@ -43,6 +44,17 @@ const criminalSchema = new mongoose.Schema({
 const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
 
 app.set("view engine", "ejs");
+
+app.use(
+    session({
+        secret: node_session_secret,
+        resave: false,
+        saveUninitialized: true,
+        // cookie: { secure: true },
+    })
+);
+
+app.use(express.urlencoded({ extended: false }));
 
 app.get('/crime', async (req, res) => {
   try {
