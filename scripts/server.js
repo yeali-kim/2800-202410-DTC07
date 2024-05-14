@@ -93,8 +93,39 @@ app.get('/login', (req, res) => {
 })
 
 app.get("/signup", (req, res) => {
-    res.render("signup");
+  res.render("signup");
 });
+
+app.post("/signup", async (req, res) => {
+  const username = req.body.username;
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const schema = Joi.object({
+      username: Joi.string().alphanum().max(20).required(),
+      password: Joi.string().max(20).required(),
+      email: Joi.string().email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "ca"] },
+      }),
+  });
+
+  const validationResult = schema.validate({ username, password, email });
+  if (validationResult.error != null) {
+      console.log(validationResult.error);
+      res.redirect("/signup");
+      return;
+  }
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  await Users.create({
+    username: username,
+    email: email,
+    password: hashedPassword,
+  })
+
+  res.redirect('/map');
+})
 
 app.get("/map", (req, res) => {
     res.render("map");
