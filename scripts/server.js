@@ -107,9 +107,12 @@ app.post('/login', (req, res) => {
   const validationResult = schema.validate({ password, email });
   if (validationResult.error != null) {
       console.log(validationResult.error);
-      res.redirect("/signup");
+      res.redirect("/login");
       return;
   }
+
+  req.session.email = email;
+  req.session.password = password;
 
   res.redirect('/users');
 })
@@ -145,6 +148,9 @@ app.post("/signup", async (req, res) => {
     email: email,
     password: hashedPassword,
   })
+
+  req.session.email = email;
+  req.session.password = password;
 
   res.redirect('/users');
 })
