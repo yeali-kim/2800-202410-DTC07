@@ -127,7 +127,21 @@ app.post("/signup", async (req, res) => {
   res.redirect('/users');
 })
 
-app.get("/map", (req, res) => {
+async function validateUser(req, res, next) {
+  if (req.session.email && req.session.password) {
+    const user = await Users.find({email: email});
+
+    if (user && bcrypt.compareSync(req.session.password, user.password)) {
+      req.session.user = user;
+      req.session.cookie.maxAge = expireTime;
+      return next();
+    }
+  }
+
+  res.redirect('/login');
+}
+
+app.get("/map", validateUser, (req, res) => {
     res.render("map");
 });
 
