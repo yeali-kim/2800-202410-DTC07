@@ -1,0 +1,59 @@
+<%- include("templates/header") %>
+
+  <div class="container mx-auto">
+    <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
+    <div class="flex justify-between mb-12">
+      <div>
+    <button class="bg-white text-black rounded-full p-1 px-3">
+      <span class="material-symbols-outlined text-base">
+filter_alt
+</span>
+</button>
+<button class="bg-white text-black rounded-full p-1 px-3">
+<span class="material-symbols-outlined text-base">
+sort
+</span>
+</div>
+</button>
+    <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
+
+    </div>
+
+    <% criminals.forEach(function(criminal, index) { %>
+      <div class="bg-blue-800 p-4 rounded-lg shadow-md mb-4" id="card">
+        <div class="flex justify-between">
+        <div>
+        <h2 class="text-xl font-semibold">Name: <%= criminal.name %></h2>
+        <p>Number of offenses: <%= criminal.crimes.length %></p>
+        </div>
+        <button onclick="toggleDetails('<%= index %>')" id="detailButton" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+          Details
+        </button>
+        </div>
+        <div id="details-<%= index %>" class="hidden">
+          <p>DOB: <%= criminal.DOB %></p>
+          <p>Address: <%= criminal.address %></p>
+          <p>Description: <%= criminal.description %></p>
+          <p>Nature of Crime: <%= criminal.nature_of_crime %></p>
+          <p>Date of Crime: <%= criminal.date_of_crime %></p>
+          <p>Sentence: <%= criminal.sentence %></p>
+          <ul>
+            <% criminal.crimes.forEach(function(crime) { %>
+              <li><%= crime %></li>
+            <% }); %>
+          </ul>
+        </div>
+      </div>
+    <% }); %>
+  </div>
+
+<script>
+  function toggleDetails(id) {
+    const details = document.getElementById('details-' + id);
+    const detailButton = document.getElementById('detailButton');
+    details.style.display = details.style.display === 'none' ? 'block' : 'none';
+    detailButton.style.display = 'none'
+  }
+</script>
+</body>
+</html>
