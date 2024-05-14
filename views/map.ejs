@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>My Map</title>
+    <style>
+        /* Set the size of the div element that contains the map */
+        #map {
+            height: 400px;
+            /* The height is 400 pixels */
+            width: 100%;
+            /* The width is the width of the web page */
+        }
+    </style>
+</head>
+
+<body>
+    <h1>My Google Map</h1>
+    <!--The div element for the map -->
+    <div id="map"></div>
+
+    <script>
+        // Initialize and add the map
+        function initMap() {
+            // location of bcit
+            const bcit = { lat: 49.283, lng: -123.115 };
+            // The map, centered at bcit
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 4,
+                center: bcit,
+            });
+            // The marker, positioned at bcit
+            const marker = new google.maps.Marker({
+                position: bcit,
+                map: map,
+            });
+        }
+    </script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6tt10OSdXLxpCz5hTuKB_gO36EyHt4cE&callback=initMap">
+        </script>
+</body>
+
+</html>
