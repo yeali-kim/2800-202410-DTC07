@@ -197,6 +197,11 @@ app.get("/cybersecurity", (req, res) => {
     res.render("login");
 });
 
+app.get("/logout", validateUser, (req, res) => {
+    req.session.destroy();
+    res.redirect("/login");
+});
+
 app.get("/*", (req, res) => {
   res.status(404);
   res.send("404: Page Not Found");
