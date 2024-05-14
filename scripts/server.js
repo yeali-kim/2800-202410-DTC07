@@ -97,7 +97,7 @@ app.get("/signup", (req, res) => {
 });
 
 app.post("/signup", async (req, res) => {
-  const username = req.body.username;
+  const username = req.body.name;
   const email = req.body.email;
   const password = req.body.password;
 
@@ -124,7 +124,7 @@ app.post("/signup", async (req, res) => {
     password: hashedPassword,
   })
 
-  res.redirect('/map');
+  res.redirect('/users');
 })
 
 app.get("/map", (req, res) => {
