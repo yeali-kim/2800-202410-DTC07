@@ -92,6 +92,28 @@ app.get('/login', (req, res) => {
   res.render("login");
 })
 
+app.post('/login', (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const schema = Joi.object({
+      password: Joi.string().max(20).required(),
+      email: Joi.string().email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "ca"] },
+      }),
+  });
+
+  const validationResult = schema.validate({ password, email });
+  if (validationResult.error != null) {
+      console.log(validationResult.error);
+      res.redirect("/signup");
+      return;
+  }
+
+  res.redirect('/users');
+})
+
 app.get("/signup", (req, res) => {
   res.render("signup");
 });
