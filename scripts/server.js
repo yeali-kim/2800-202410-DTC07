@@ -63,7 +63,7 @@ app.use(
 
 app.use(express.urlencoded({ extended: false }));
 
-app.get('/crime', async (req, res) => {
+app.get('/crimes', async (req, res) => {
   try {
     const allCriminals = await CriminalProfile.find();
     console.log(allCriminals)
@@ -73,6 +73,11 @@ app.get('/crime', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.get('/createCrimes', async (req, res) => {
+  await CriminalProfile.create();
+  res.send('Completed')
+})
 
 app.get('/users', async(req, res) => {
   const users = await Users.find();
