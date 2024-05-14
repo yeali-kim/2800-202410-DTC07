@@ -1,6 +1,8 @@
 const express = require('express');
 const app = express();
 
+app.use('/public/', express.static('./public'));
+
 const mongoose = require('mongoose')
 
 main().catch(err => console.error('MongoDB connection error:', err)); // Log MongoDB connection errors
