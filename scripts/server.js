@@ -40,8 +40,15 @@ const criminalSchema = new mongoose.Schema({
   sentence: String
 });
 
+const userSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String,
+})
+
 // Ensure that the model name matches the actual collection name
 const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
+const Users = mongoose.model("users", userSchema);
 
 app.set("view engine", "ejs");
 
@@ -66,6 +73,11 @@ app.get('/crime', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.get('/users', async(req, res) => {
+  const users = await Users.find();
+  res.json(users)
+})
 
 app.get("/", (req, res) => {
     res.render("index");
