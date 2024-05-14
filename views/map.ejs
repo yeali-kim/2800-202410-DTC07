@@ -1,37 +1,42 @@
 <%- include("templates/header") %>
 
-<div class="flex items-center justify-center m-3 mt-10" id="mapContainer">
-    <!--The div element for the map -->
-    <div id="map" class="w-full h-full"></div>
-</div>
+    <div class="flex items-center justify-center m-3 mt-10" id="mapContainer">
+        <!--The div element for the map -->
+        <div id="map" class="w-full h-full"></div>
+    </div>
 
-<script>
-    // Adjust the height of the map container
-    const headerHeight = document.querySelector('header').offsetHeight;
-    const mapContainer = document.getElementById('mapContainer');
-    mapContainer.style.height = `calc(94vh - ${headerHeight}px)`;
+    <script>
+        const criminals = [
+            { name: "John Doe", offenses: "5", details: "Detail Here", DOB: "2010-12-31", address: "626 W Pender St #100, Vancouver, BC V6B 1V9", description: "Description Here", crimes: ["Theft", "Robbery"] },
+            { name: "ABC", offenses: "2", details: "Detail Here", DOB: "1991-01-12", address: "550 W Hastings St, Vancouver, BC V6B 1L6", description: "Description Here", crimes: ["Theft", "Robbery"] },
+            { name: "AAA", offenses: "5", details: "Detail Here", DOB: "1965-10-20", address: "678 Dunsmuir St, Vancouver, BC V6B 1N3", description: "Description Here", crimes: ["Theft", "Robbery"] }
+        ];
+        // Adjust the height of the map container
+        const headerHeight = document.querySelector('header').offsetHeight;
+        const mapContainer = document.getElementById('mapContainer');
+        mapContainer.style.height = `calc(94vh - ${headerHeight}px)`;
 
-    // Initialize and add the map
-    function initMap() {
-        // location of bcit (default location)
-        const bcit = { lat: 49.283, lng: -123.115 };
-        // The map, centered at bcit
-        const map = new google.maps.Map(document.getElementById("map"), {
-            zoom: 17,
-            center: bcit,
-        });
-        // The marker, positioned at bcit
-        const marker = new google.maps.Marker({
-            position: bcit,
-            map: map,
-        });
-    }
-</script>
+        // Initialize and add the map
+        function initMap() {
+            // location of bcit (default location)
+            const bcit = { lat: 49.283, lng: -123.115 };
+            // The map, centered at bcit
+            const map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 17,
+                center: bcit,
+            });
+            // The marker, positioned at bcit
+            const marker = new google.maps.Marker({
+                position: bcit,
+                map: map,
+            });
+        }
+    </script>
 
-<script async defer
-    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6tt10OSdXLxpCz5hTuKB_gO36EyHt4cE&callback=initMap">
-</script>
+    <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6tt10OSdXLxpCz5hTuKB_gO36EyHt4cE&callback=initMap">
+        </script>
 
-</body>
+    </body>
 
-</html>
+    </html>
