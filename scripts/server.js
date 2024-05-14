@@ -114,7 +114,7 @@ app.post('/login', (req, res) => {
   req.session.email = email;
   req.session.password = password;
 
-  res.redirect('/users');
+  res.redirect('/validateUser');
 })
 
 app.get("/signup", (req, res) => {
@@ -152,12 +152,12 @@ app.post("/signup", async (req, res) => {
   req.session.email = email;
   req.session.password = password;
 
-  res.redirect('/users');
+  res.redirect('/validateUser');
 })
 
 async function validateUser(req, res, next) {
   if (req.session.email && req.session.password) {
-    const user = await Users.find({email: email});
+    const user = await Users.findOne({email: req.session.email});
 
     if (user && bcrypt.compareSync(req.session.password, user.password)) {
       req.session.user = user;
@@ -168,6 +168,10 @@ async function validateUser(req, res, next) {
 
   res.redirect('/login');
 }
+
+app.use('/validateUser', validateUser, (req, res) => {
+  res.redirect('/map')
+});
 
 app.get("/map", validateUser, (req, res) => {
     res.render("map");
