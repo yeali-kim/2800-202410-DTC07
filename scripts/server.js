@@ -102,3 +102,8 @@ app.get("/drones", (req, res) => {
 app.get("/cybersecurity", (req, res) => {
     res.render("login");
 });
+
+app.get("/*", (req, res) => {
+  res.status(404);
+  res.send("404: Page Not Found");
+})
