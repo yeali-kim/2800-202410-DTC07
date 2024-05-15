@@ -233,6 +233,10 @@ app.get("/cybersecurity", (req, res) => {
     res.render("login");
 });
 
+app.get('/profile', (req, res) => {
+  res.render("profile", { user: req.session.user });
+})
+
 app.get("/logout", validateUser, (req, res) => {
     req.session.destroy();
     res.redirect("/login");
