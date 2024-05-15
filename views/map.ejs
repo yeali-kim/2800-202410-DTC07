@@ -15,7 +15,18 @@
         const mapContainer = document.getElementById('mapContainer');
         mapContainer.style.height = `calc(94vh - ${headerHeight}px)`;
 
-        // Initialize and add the map
+        // Add an info bubble
+        function addInfoBubble(map, marker, content) {
+            const infoWindow = new google.maps.InfoWindow({
+                content: content
+            });
+
+            marker.addListener('click', () => {
+                infoWindow.open(map, marker);
+            });
+        }
+
+        // Initialize map
         function initMap() {
             // location of bcit (default location)
             const bcit = { lat: 49.283, lng: -123.115 };
@@ -31,20 +42,39 @@
                 icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker(can change)
             });
 
+            // Info bubble tells user that this is their current location
+            // addInfoBubble(map, marker, "Your current location")
+
             const geocoder = new google.maps.Geocoder();
+            // Create a single InfoWindow instance
+            const infoWindow = new google.maps.InfoWindow();
 
             // Add red marker for each criminal location
             criminals.forEach(criminal => {
                 geocoder.geocode({ address: criminal.address }, (results, status) => {
                     if (status === 'OK') {
-                        new google.maps.Marker({
+                        const criminalMarker = new google.maps.Marker({
                             map: map,
                             position: results[0].geometry.location,
                             title: criminal.name,
-                            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker(can change)
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker
                         });
-                    } else {
-                        console.error('Geocode was not successful for the following reason: ' + status);
+
+                        // Define the content for the InfoWindow
+                        const infoWindowContent = `
+                    <div style="font-size: 16px;">
+                        <h2 style="color: red;">${criminal.name}</h2>
+                        <p>${criminal.address}</p>
+                        <a href="/criminal/${criminal.id}">View Details</a>
+                    </div>
+                `;
+
+                        // Add a click listener to the marker
+                        criminalMarker.addListener('click', () => {
+                            // Set the content and open the InfoWindow
+                            infoWindow.setContent(infoWindowContent);
+                            infoWindow.open(map, criminalMarker);
+                        });
                     }
                 });
             });
