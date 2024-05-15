@@ -49,56 +49,81 @@
                                 </button>
                             </div>
                             <!-- Modal body -->
-                            <div class="p-4 md:p-5 space-y-4">
+                            <div class="p-4 md:p-5 space-y-4" id="modal-body">
                                 <span class="material-symbols-outlined text-[70px]">
                                     robot_2
                                 </span>
                                 <div class="bg-slate-200 text-left">
                                     <p class="text-lg">(model description)</p>
                                 </div>
-                                <!-- Modal footer -->
-                                <div
-                                    class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600">
-                                    <button data-modal-hide="robot-modal" type="button"
-                                        class="ml-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-                                        Book Now
-                                    </button>
-                                </div>
+                            </div>
+                            <!-- Modal footer -->
+                            <div class="flex items-center p-4 md:p-5 border-t border-gray-200 rounded-b dark:border-gray-600"
+                                id="modal-footer">
+                                <button id="book-now-button" type="button"
+                                    class="ml-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    Book Now
+                                </button>
+                                <button id="order-button" type="button" style="display: none;"
+                                    class="ml-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                    Order
+                                </button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <%- include('templates/footer') %>
+    </div>
+    <%- include('templates/footer') %>
 
-            <script>
-                // Custom JavaScript to handle modal toggle
-                document.addEventListener('DOMContentLoaded', function () {
-                    const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
-                    const modalHideButtons = document.querySelectorAll('[data-modal-hide]');
-                    const modals = document.querySelectorAll('.hidden');
+        <script>
+            // Custom JavaScript to handle modal toggle
+            document.addEventListener('DOMContentLoaded', function () {
+                const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
+                const modalHideButtons = document.querySelectorAll('[data-modal-hide]');
+                const modals = document.querySelectorAll('.hidden');
+                const modalBody = document.getElementById('modal-body');
+                const modalFooter = document.getElementById('modal-footer');
+                const bookNowButton = document.getElementById('book-now-button');
+                const orderButton = document.getElementById('order-button');
 
-                    modalToggleButtons.forEach(button => {
-                        button.addEventListener('click', function () {
-                            const targetModalId = button.getAttribute('data-modal-target');
-                            const targetModal = document.getElementById(targetModalId);
-                            if (targetModal) {
-                                targetModal.classList.remove('hidden');
-                                targetModal.classList.add('flex');
-                            }
-                        });
-                    });
-
-                    modalHideButtons.forEach(button => {
-                        button.addEventListener('click', function () {
-                            const targetModalId = button.getAttribute('data-modal-hide');
-                            const targetModal = document.getElementById(targetModalId);
-                            if (targetModal) {
-                                targetModal.classList.add('hidden');
-                                targetModal.classList.remove('flex');
-                            }
-                        });
+                modalToggleButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const targetModalId = button.getAttribute('data-modal-target');
+                        const targetModal = document.getElementById(targetModalId);
+                        if (targetModal) {
+                            targetModal.classList.remove('hidden');
+                            targetModal.classList.add('flex');
+                        }
                     });
                 });
-            </script>
+
+                modalHideButtons.forEach(button => {
+                    button.addEventListener('click', function () {
+                        const targetModalId = button.getAttribute('data-modal-hide');
+                        const targetModal = document.getElementById(targetModalId);
+                        if (targetModal) {
+                            targetModal.classList.add('hidden');
+                            targetModal.classList.remove('flex');
+                        }
+                    });
+                });
+
+                // Update modal content when Book Now button is clicked
+                bookNowButton.addEventListener('click', function () {
+                    modalBody.innerHTML = `
+            <div class="flex justify-center mb-4">
+                <span class="material-symbols-outlined text-[70px]">
+                robot_2
+            </span>
+            </div>
+            <div class="bg-gray-200 text-center py-10 rounded-lg">
+                <p class="text-lg">Order Template</p>
+            </div>
+        `;
+                    bookNowButton.style.display = 'none';
+                    orderButton.style.display = 'block';
+                });
+            });
+        </script>
