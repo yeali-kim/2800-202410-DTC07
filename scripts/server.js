@@ -52,6 +52,8 @@ const Users = mongoose.model("users", userSchema);
 
 app.set("view engine", "ejs");
 
+app.use(express.static(__dir + "/public"))
+
 app.use(
     session({
         secret: node_session_secret,
