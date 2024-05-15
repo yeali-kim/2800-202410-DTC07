@@ -169,6 +169,40 @@ async function validateUser(req, res, next) {
   res.redirect('/login');
 }
 
+app.get('/resetPassword', (req, res) => {
+  res.render('resetPassword');
+})
+
+app.post('resetPassword', async (req, res) => {
+  const email = req.body.email;
+  const password = req.body.password;
+
+  const schema = Joi.object({
+      username: Joi.string().alphanum().max(20).required(),
+      password: Joi.string().max(20).required(),
+      email: Joi.string().email({
+          minDomainSegments: 2,
+          tlds: { allow: ["com", "ca"] },
+      }),
+  });
+
+  const validationResult = schema.validate({ username, password, email });
+  if (validationResult.error != null) {
+      console.log(validationResult.error);
+      res.redirect("/signup");
+      return;
+  }
+  const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+  const user = await Users.findOne({ email: email });
+
+  if (user) {
+    await Users.updateOne({ email: email }, { password: hashedPassword});
+  }
+
+  res.redirect('/login');
+})
+
 app.use('/validateUser', validateUser, (req, res) => {
   res.redirect('/map')
 });
