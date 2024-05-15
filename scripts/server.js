@@ -155,20 +155,6 @@ app.post("/signup", async (req, res) => {
   res.redirect('/validateUser');
 })
 
-async function validateUser(req, res, next) {
-  if (req.session.email && req.session.password) {
-    const user = await Users.findOne({email: req.session.email});
-
-    if (user && bcrypt.compareSync(req.session.password, user.password)) {
-      req.session.user = user;
-      req.session.cookie.maxAge = expireTime;
-      return next();
-    }
-  }
-
-  res.redirect('/login');
-}
-
 app.get('/resetPassword', (req, res) => {
   res.render('resetPassword');
 })
@@ -203,11 +189,25 @@ app.post('resetPassword', async (req, res) => {
   res.redirect('/login');
 })
 
+async function validateUser(req, res, next) {
+    if (req.session.email && req.session.password) {
+        const user = await Users.findOne({ email: req.session.email });
+
+        if (user && bcrypt.compareSync(req.session.password, user.password)) {
+            req.session.user = user;
+            req.session.cookie.maxAge = expireTime;
+            return next();
+        }
+    }
+
+    res.redirect("/login");
+}
+
 app.use('/validateUser', validateUser, (req, res) => {
   res.redirect('/map')
 });
 
-app.get("/map", validateUser, (req, res) => {
+app.get("/map", (req, res) => {
     res.render("map");
 });
 
