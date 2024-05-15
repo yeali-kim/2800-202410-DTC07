@@ -88,6 +88,9 @@
                 const bookNowButton = document.getElementById('book-now-button');
                 const orderButton = document.getElementById('order-button');
 
+                const initialModalBodyContent = modalBody.innerHTML;
+                const initialModalFooterContent = modalFooter.innerHTML;
+
                 modalToggleButtons.forEach(button => {
                     button.addEventListener('click', function () {
                         const targetModalId = button.getAttribute('data-modal-target');
@@ -106,6 +109,9 @@
                         if (targetModal) {
                             targetModal.classList.add('hidden');
                             targetModal.classList.remove('flex');
+                            // Reset modal content to initial state
+                            modalBody.innerHTML = initialModalBodyContent;
+                            modalFooter.innerHTML = initialModalFooterContent;
                         }
                     });
                 });
