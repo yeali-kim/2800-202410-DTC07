@@ -1,18 +1,35 @@
-const express = require('express');
-const app = express();
+require(`dotenv`).config();
+const express = require(`express`);
+const session = require(`express-session`);
+const mongoose = require(`mongoose`);
+const bcrypt = require(`bcrypt`);
+const Joi = require(`joi`);
 
-const mongoose = require('mongoose')
+const mongo_user = process.env.MONGODB_USER;
+const mongo_password = process.env.MONGODB_PASSWORD;
+const mongo_host = process.env.MONGODB_HOST;
+const mongo_db = process.env.MONGODB_DATABASE;
+const node_session_secret = process.env.NODE_SESSION_SECRET;
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+const saltRounds = Number(process.env.SALT_ROUNDS);
+const expireTime = 1000 * 60 * 60;
 
 main().catch(err => console.error('MongoDB connection error:', err)); // Log MongoDB connection errors
 
 async function main() {
-  // try {
-  //   await mongoose.connect('mongodb+srv://Daniel:2foADJtqgvjQ8CMA@cluster0.n7n7slw.mongodb.net/?retryWrites=true&w=majority');
-  //   console.log('Connected to MongoDB');
-  // } catch (error) {
-  //   console.error('MongoDB connection error:', error);
-  //   throw error; // Rethrow the error to stop the application startup
-  // }
+  try {
+    await mongoose.connect(`mongodb+srv://${mongo_user}:${mongo_password}@${mongo_host}/${mongo_db}`);
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error; // Rethrow the error to stop the application startup
+  }
+
+  app.listen(PORT, () => {
+      console.log("Listening to port "+PORT);
+  });
 }
 
 const criminalSchema = new mongoose.Schema({
@@ -23,20 +40,49 @@ const criminalSchema = new mongoose.Schema({
   sentence: String
 });
 
+const userSchema = new mongoose.Schema({
+  username: String,
+  email: String,
+  password: String,
+})
+
 // Ensure that the model name matches the actual collection name
-const CriminalProfile = mongoose.model('criminalProfile', criminalSchema);
+const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
+const Users = mongoose.model("users", userSchema);
 
 app.set("view engine", "ejs");
 
-app.get('/crime', async (req, res) => {
+app.use(
+    session({
+        secret: node_session_secret,
+        resave: false,
+        saveUninitialized: true,
+        // cookie: { secure: true },
+    })
+);
+
+app.use(express.urlencoded({ extended: false }));
+
+app.get('/crimes', async (req, res) => {
   try {
-    const allCriminals = await CriminalProfile.find({});
+    const allCriminals = await CriminalProfile.find();
+    console.log(allCriminals)
     res.json(allCriminals);
   } catch (error) {
     console.error('Error fetching criminal data:', error);
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.get('/createCrimes', async (req, res) => {
+  await CriminalProfile.create();
+  res.send('Completed')
+})
+
+app.get('/users', async(req, res) => {
+  const users = await Users.find();
+  res.json(users)
+})
 
 app.get("/", (req, res) => {
     res.render("index");
@@ -74,6 +120,7 @@ app.get("/cybersecurity", (req, res) => {
     res.render("login");
 });
 
-app.listen(3000, () => {
-  console.log("Listening to Port 3000.")
+app.get("/*", (req, res) => {
+  res.status(404);
+  res.send("404: Page Not Found");
 })

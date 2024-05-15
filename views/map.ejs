@@ -1,7 +1,6 @@
 <%- include("templates/header") %>
 
     <div class="flex items-center justify-center m-3 mt-10" id="mapContainer">
-        <!--The div element for the map -->
         <div id="map" class="w-full h-full"></div>
     </div>
 
@@ -11,7 +10,7 @@
             { name: "ABC", offenses: "2", details: "Detail Here", DOB: "1991-01-12", address: "550 W Hastings St, Vancouver, BC V6B 1L6", description: "Description Here", crimes: ["Theft", "Robbery"] },
             { name: "AAA", offenses: "5", details: "Detail Here", DOB: "1965-10-20", address: "678 Dunsmuir St, Vancouver, BC V6B 1N3", description: "Description Here", crimes: ["Theft", "Robbery"] }
         ];
-        // Adjust the height of the map container
+        // Define map height/size
         const headerHeight = document.querySelector('header').offsetHeight;
         const mapContainer = document.getElementById('mapContainer');
         mapContainer.style.height = `calc(94vh - ${headerHeight}px)`;
@@ -20,15 +19,34 @@
         function initMap() {
             // location of bcit (default location)
             const bcit = { lat: 49.283, lng: -123.115 };
-            // The map, centered at bcit
+            // Map is centered at BCIT with zoom level 17 (higher->closer)
             const map = new google.maps.Map(document.getElementById("map"), {
                 zoom: 17,
                 center: bcit,
             });
-            // The marker, positioned at bcit
+            // bcit(current location) marker
             const marker = new google.maps.Marker({
                 position: bcit,
                 map: map,
+                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker(can change)
+            });
+
+            const geocoder = new google.maps.Geocoder();
+
+            // Add red marker for each criminal location
+            criminals.forEach(criminal => {
+                geocoder.geocode({ address: criminal.address }, (results, status) => {
+                    if (status === 'OK') {
+                        new google.maps.Marker({
+                            map: map,
+                            position: results[0].geometry.location,
+                            title: criminal.name,
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker(can change)
+                        });
+                    } else {
+                        console.error('Geocode was not successful for the following reason: ' + status);
+                    }
+                });
             });
         }
     </script>
