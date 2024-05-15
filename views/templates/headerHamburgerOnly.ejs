@@ -10,9 +10,27 @@
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="././styles/navbar.css">
   <style>
+    #navbar {
+      width: 100%;
+      position: fixed;
+      z-index: 10;
+    }
+  
     #sidebar {
-      top: 64px;
-      transition: transform 0.5s ease-in-out;
+      top: 80px;
+      /* Adjust the top position to match the navbar height */
+      right: -75%;
+      width: 75%;
+      height: calc(100% - 80px);
+      /* Adjust the height to fill the rest of the screen */
+      transition: right 0.5s ease-in-out;
+      position: fixed;
+      z-index: 9;
+      /* Ensure the sidebar is below the navbar */
+    }
+  
+    #sidebar.show {
+      right: 0;
     }
   </style>
 </head>
@@ -24,12 +42,9 @@
     </span>
   </div>
 
-  <div id="sidebar"
-    class="sidebar bg-[#515F84] text-white py-4 px-6 absolute top-0 left-0 w-full h-full overflow-y-auto hidden">
-    <div class="flex justify-end mb-4">
-    </div>
+  <div id="sidebar" class="sidebar bg-[#515F84] text-white py-4 px-6 h-full overflow-y-auto">
     <div class="flex flex-col items-center">
-      <img src="./images/logo.png" alt="Logo" class="w-[200px] h-[150px] mb-4">
+      <img src="logo.png" alt="Logo" class="w-[200px] h-[150px] mb-4">
       <h1 class="text-5xl font-bold mb-4">ProtectUs</h1>
       <br>
       <br>
@@ -47,9 +62,10 @@
       </ul>
     </div>
   </div>
-
+  
   <script>
     document.getElementById('hamburgerMenu').addEventListener('click', () => {
-      document.getElementById('sidebar').classList.toggle('hidden');
+      const sidebar = document.getElementById('sidebar');
+      sidebar.classList.toggle('show');
     });
   </script>
