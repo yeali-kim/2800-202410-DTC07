@@ -53,13 +53,7 @@
                     firstName: "Shawn",
                     middleName: "",
                     lastName: "Rim",
-                    address: {
-                        address: "645 Seymour St",
-                        city: "Vancouver",
-                        province: "BC",
-                        country: "Canada",
-                        postalCode: "V6C 1Z6",
-                    },
+                    address: "645 Seymour St. Vancouver, BC, Canada, V6C 1Z6",
                     dob: new Date("Aug. 4, 2004"),
                     gender: "M",
                     image: "https://picsum.photos/id/237/200/300",
@@ -172,7 +166,7 @@
                 // Add red marker for each criminal location
                 let criminalMarkers = [];
                 criminals.forEach(criminal => {
-                    geocoder.geocode({ address: criminal.address.address }, (results, status) => {
+                    geocoder.geocode({ address: criminal.address }, (results, status) => {
                         if (status === 'OK') {
                             const criminalMarker = new google.maps.Marker({
                                 map: map,
