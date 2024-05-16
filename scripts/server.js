@@ -224,8 +224,15 @@ app.get("/map", validateUser, (req, res) => {
     res.render("map");
 });
 
-app.get("/list", validateUser, (req, res) => {
-    res.render("list");
+app.get("/list", async (req, res) => {
+  try {
+    const criminals = await CriminalProfile.find({});
+    console.log(criminals);
+    res.render("list", { criminals: criminals });
+  } catch (error) {
+    console.error('Error fetching criminal data:', error);
+    res.status(500).send("Error fetching data");
+  }
 });
 
 app.get("/protection", validateUser, (req, res) => {
