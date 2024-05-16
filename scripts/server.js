@@ -10,6 +10,7 @@ const mongo_password = process.env.MONGODB_PASSWORD;
 const mongo_host = process.env.MONGODB_HOST;
 const mongo_db = process.env.MONGODB_DATABASE;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
+const APIKEY = process.env.GOOGLE_MAPS_API_KEY;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -38,13 +39,7 @@ const criminalSchema = new mongoose.Schema({
     firstName: String,
     middleName: String,
     lastName: String,
-    address: {
-        address: String,
-        city: String,
-        province: String,
-        country: String,
-        postalCode: String,
-    },
+    address: String,
     dob: String,
     gender: String,
     image: String,
@@ -58,9 +53,36 @@ const userSchema = new mongoose.Schema({
     password: String,
 });
 
+const robotSchema = new mongoose.Schema({
+    model: String,
+    manufacturer: String,
+    price: Number,
+    description: String,
+});
+
+const droneSchema = new mongoose.Schema({
+    model: String,
+    manufacturer: String,
+    price: Number,
+    colour: String,
+    weight: Number,
+    description: String,
+});
+
+const cyberSchema = new mongoose.Schema({
+    price: Number,
+    description: String,
+    manufacturer: String,
+    model: String,
+    url: String,
+});
+
 // Ensure that the model name matches the actual collection name
 const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
 const Users = mongoose.model("users", userSchema);
+const Robots = mongoose.model("robotprofiles", robotSchema);
+const Drones = mongoose.model("droneprofiles", droneSchema);
+const CyberSecurities = mongoose.model("cybersecurityprofiles", cyberSchema);
 
 app.set("view engine", "ejs");
 
@@ -220,41 +242,48 @@ app.get("/filter", validateUser, (req, res) => {
     res.render("filter");
 });
 
-app.get("/map", validateUser, (req, res) => {
-    res.render("map");
+app.get("/map", validateUser, async (req, res) => {
+    const criminals = await CriminalProfile.find();
+    res.render("map", {
+        criminals: criminals,
+        user: req.session.user,
+        apiKey: APIKEY,
+    });
 });
 
 app.get("/list", async (req, res) => {
-  try {
     const criminals = await CriminalProfile.find({});
-    console.log(criminals);
-    res.render("list", { criminals: criminals });
-  } catch (error) {
-    console.error('Error fetching criminal data:', error);
-    res.status(500).send("Error fetching data");
-  }
+    res.render("list", {
+        criminals: criminals,
+        user: req.session.user,
+        apiKey: APIKEY,
+    });
 });
 
 app.get("/protection", validateUser, (req, res) => {
     res.render("protection");
 });
 
-app.get("/robots", validateUser, (req, res) => {
-    res.render("robots");
+app.get("/robots", validateUser, async (req, res) => {
+    const robots = await Robots.find();
+    res.render("robots", { robots: robots, user: req.session.user });
 });
 
-app.get("/drones", validateUser, (req, res) => {
-    res.render("drones");
+app.get("/drones", validateUser, async (req, res) => {
+    const drones = await Drones.find();
+    res.render("drones", { drones: drones, user: req.session.user });
 });
 
-app.get("/cybersecurity", validateUser, (req, res) => {
-    res.render("cybersecurity");
+app.get("/cybersecurity", validateUser, async (req, res) => {
+    const cybersecurities = await CyberSecurities.find();
+    res.render("cybersecurity", {
+        cybersecurities: cybersecurities,
+        user: req.session.user,
+    });
 });
 
 app.get("/profile", validateUser, async (req, res) => {
-    const user = await Users.findOne({ username: "User1" });
-    console.log(user);
-    res.render("profile", { user: user });
+    res.render("profile", { user: req.session.user });
 });
 
 app.get("/logout", validateUser, (req, res) => {
