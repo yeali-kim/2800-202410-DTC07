@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Document</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+    </head>
+    <body class="bg-[#515F84] text-white">
+        <header class="text-6xl text-center m-10">Profile</header>
+
+        <form
+            action=""
+            class="w-[70%] mx-auto bg-[#EAD797] flex flex-col justify-center p-10 text-[#515F84] rounded-xl gap-5">
+            <div>
+                <label for="username" class="text-xl">Username</label>
+                <input
+                    id="username"
+                    type="text"
+                    name="username"
+                    value="<%= user.username %>"
+                    class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    disabled />
+            </div>
+            <div>
+                <label for="email" class="text-xl">Email</label>
+                <input
+                    id="email"
+                    type="text"
+                    name="email"
+                    value="<%= user.email %>"
+                    class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    disabled />
+            </div>
+            <div>
+                <label for="location" class="text-xl">Default Location</label>
+                <input
+                    id="location"
+                    type="text"
+                    name="location"
+                    value="<%= user.defaultLocation %>"
+                    class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    disabled />
+            </div>
+            <div
+                class="w-full flex flex-row justify-between align-center text-white">
+                <button
+                    type="button"
+                    id="editBtn"
+                    onclick="toggleEdit()"
+                    class="bg-indigo-500 rounded-xl px-4 py-2">
+                    Edit
+                </button>
+                <button
+                    type="submit"
+                    id="saveBtn"
+                    class="bg-[#515F84] rounded-xl px-4 py-2"
+                    disabled>
+                    Save
+                </button>
+            </div>
+        </form>
+
+        <script>
+            function toggleEdit() {
+                editBtn.innerText =
+                    editBtn.innerText == "Edit" ? "Cancel" : "Edit";
+                username.disabled = !username.disabled;
+                email.disabled = !email.disabled;
+                location.disabled = !location.disabled;
+                saveBtn.disabled = !saveBtn.disabled;
+            }
+        </script>
+    </body>
+</html>
