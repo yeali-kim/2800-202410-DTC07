@@ -96,6 +96,10 @@ app.get("/signup", (req, res) => {
     res.render("signup");
 });
 
+app.get("/filter", (req, res) => {
+    res.render("filter");
+});
+
 app.get("/map", (req, res) => {
     res.render("map");
 });
