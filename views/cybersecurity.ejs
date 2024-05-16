@@ -15,23 +15,27 @@
                 </span>
             </button>
         </div>
-        <div class="flex flex-col items-center gap-14 font-bold text-3xl">
-            <div class="flex bg-gray-300 text-center w-[90%] rounded-lg py-5">
-                <span class="material-symbols-outlined text-[70px]">
-                    security
-                </span>
-                <div class="flex justify-between">
-                    <div class="flex flex-col text-left pt-2">
-                        <h2 class="text-lg">Model:</h2>
-                        <p class="text-lg">Suitable for:</p>
+        <% for (let i=0; i<cybersecurities.length; i++) { %>
+            <div class="flex flex-col items-center gap-14 font-bold text-3xl">
+                <div class="flex bg-gray-300 text-center w-[90%] rounded-lg py-5 mb-4">
+                    <span class="material-symbols-outlined text-[70px]">
+                        security
+                    </span>
+                    <div class="flex justify-between w-full px-4">
+                        <div class="flex flex-col text-left pt-2">
+                            <h2 class="text-lg">Model: <%= cybersecurities[i].model %>
+                            </h2>
+                            <p class="text-lg">Price: $<%= cybersecurities[i].price %>
+                            </p>
+                        </div>
+                        <button data-modal-target="security-modal" data-modal-toggle="security-modal"
+                            class="text-lg ml-4" type="button">
+                            Details
+                        </button>
                     </div>
-                    <button data-modal-target="security-modal" data-modal-toggle="security-modal" class="text-lg ml-36"
-                        type="button">
-                        Details
-                    </button>
                 </div>
             </div>
-        </div>
+            <% } %>
     </div>
     <%- include('templates/modal', { modalId: 'security-modal' , icon: 'security' , description: '(model description)'
         }) %>
