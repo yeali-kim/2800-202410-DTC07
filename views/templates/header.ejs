@@ -91,32 +91,36 @@
         </div>
     </div>
 
-    <div id="sidebar" class="sidebar bg-[#515F84] text-white py-4 px-6 h-full overflow-y-auto">
-        <div class="flex flex-col items-center">
-            <img src="logo.png" alt="Logo" class="w-[200px] h-[150px] mb-4">
-            <h1 class="text-5xl font-bold mb-4">ProtectUs</h1>
-            <br>
-            <br>
-            <br>
-            <ul class="text-left">
-                <li>Profile</li>
-                <li class="mb-2">Criminals near you
-                    <ul class="ml-4">
-                        <li><a href="/map">Map</a></li>
-                        <li><a href="/list">List</a></li>
-                    </ul>
-                </li>
-                <li class="mb-2"><a href="/protection">Protection Services</a></li>
-                <li>Contact us</li>
-            </ul>
-        </div>
-    </div>
+<div id="sidebar" class="sidebar bg-[#3e4c6e] text-white py-4 px-6 h-full overflow-y-auto rounded-l-xl">
+  <div class="flex flex-col items-center">
+    <img src="logo.png" alt="Logo" class="w-[200px] h-[200px] mb-4">
+    <h1 class="text-5xl font-bold mb-4">ProtectUs</h1>
+    <br>
+    <br>
+    <ul class="text-left text-3xl">
+      <li class="p-5"><a href="/profile">Profile</a></li>
+      <li class="mb-2 ml-4"> Criminals near you
+        <ul class="ml-4">
+          <li class=""><a href="/map">Map</a></li>
+          <li class=""><a href="/list">List</a></li>
+        </ul>
+      </li>
+      <li class=" p-4"><a href="/protection">Protection Services</a></li>
+      <li class="p-4"><a href="/about.html">Contact Us</a></li>
+      <br><br>
+      <li class="p-4"><a href="/">Log Out</a></li>
+    </ul>
+  </div>
+</div>
 
-    <script>
-        document.getElementById('hamburgerMenu').addEventListener('click', () => {
-            const sidebar = document.getElementById('sidebar');
-            const menuIcon = document.getElementById('hamburgerMenu');
-            sidebar.classList.toggle('show');
-            menuIcon.classList.toggle('open');
-        });
-    </script>
+
+
+  <script>
+    document.getElementById('hamburgerMenu').addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
+      const menuIcon = document.getElementById('hamburgerMenu');
+      sidebar.classList.toggle('show');
+      menuIcon.classList.toggle('open');
+    });
+  </script>
+  
