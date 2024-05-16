@@ -222,15 +222,15 @@ app.get("/protection", (req, res) => {
 });
 
 app.get("/robots", (req, res) => {
-    res.render("login");
+    res.render("robots");
 });
 
 app.get("/drones", (req, res) => {
-    res.render("login");
+    res.render("drones");
 });
 
 app.get("/cybersecurity", (req, res) => {
-    res.render("login");
+    res.render("cybersecurity");
 });
 
 app.get("/logout", validateUser, (req, res) => {

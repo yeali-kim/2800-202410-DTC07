@@ -1,0 +1,122 @@
+<%- include('templates/header') %>
+    <div class="flex justify-center mt-10 mb-28">
+        <h1 class="font-bold text-white text-4xl">Security Robots</h1>
+    </div>
+    <div class="container mx-auto">
+        <div class="flex justify-end mb-6 gap-4 w-[95%]">
+            <button class="bg-white rounded-full pt-2 px-3">
+                <span class="material-symbols-outlined">
+                    filter_alt
+                </span>
+            </button>
+            <button class="bg-white rounded-full pt-2 px-3">
+                <span class="material-symbols-outlined">
+                    sort
+                </span>
+            </button>
+        </div>
+        <div class="flex flex-col items-center gap-14 font-bold text-3xl">
+            <div class="flex bg-gray-300 text-center w-[90%] rounded-lg py-5">
+                <span class="material-symbols-outlined text-[70px]">
+                    robot_2
+                </span>
+                <div class="flex justify-between">
+                    <div class="flex flex-col text-left pt-2">
+                        <h2 class="text-lg">Model:</h2>
+                        <p class="text-lg">Suitable for:</p>
+                    </div>
+                    <button data-modal-target="robot-modal" data-modal-toggle="robot-modal" class="text-lg ml-36"
+                        type="button">
+                        Details
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include('templates/modal', { modalId: 'robot-modal' , icon: 'robot_2' , description: '(model description)' }) %>
+        <%- include('templates/footer') %>
+
+            <script>
+                // Custom JavaScript to handle modal toggle
+                document.addEventListener('DOMContentLoaded', function () {
+                    const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
+                    const modalHideButtons = document.querySelectorAll('[data-modal-hide]');
+                    const modals = document.querySelectorAll('.hidden');
+                    const modalBody = document.getElementById('modal-body');
+                    const modalFooter = document.getElementById('modal-footer');
+                    const bookNowButton = document.getElementById('book-now-button');
+                    const orderButton = document.getElementById('order-button');
+                    const homeButton = document.getElementById('home-button');
+
+                    const initialModalBodyContent = modalBody.innerHTML;
+                    const initialModalFooterContent = modalFooter.innerHTML;
+
+                    function reassignEventListeners() {
+                        bookNowButton.addEventListener('click', function () {
+                            modalBody.innerHTML = `
+                    <div class="flex justify-center mb-4">
+                        <span class="material-symbols-outlined text-[70px]">
+                        robot_2
+                    </span>
+                    </div>
+                    <div class="bg-gray-200 text-center py-10 rounded-lg">
+                        <p class="text-lg">Order Template</p>
+                    </div>
+                `;
+                            bookNowButton.style.display = 'none';
+                            orderButton.style.display = 'block';
+                            homeButton.style.display = 'none';
+                        });
+
+                        orderButton.addEventListener('click', function () {
+                            modalBody.innerHTML = `
+                    <div class="flex justify-center mb-4">
+                        <span class="material-symbols-outlined text-[70px]">
+                        robot_2
+                    </span>
+                    </div>
+                    <div class="bg-gray-200 text-center py-10 rounded-lg">
+                        <p class="text-lg">Order Confirmation</p>
+                    </div>
+                `;
+                            orderButton.style.display = 'none';
+                            homeButton.style.display = 'block';
+                        });
+
+                        // Change the URL to the home page '/map'
+                        homeButton.addEventListener('click', function () {
+                            window.location.href = '/protection';
+                        });
+                    }
+
+                    modalToggleButtons.forEach(button => {
+                        button.addEventListener('click', function () {
+                            const targetModalId = button.getAttribute('data-modal-target');
+                            const targetModal = document.getElementById(targetModalId);
+                            if (targetModal) {
+                                targetModal.classList.remove('hidden');
+                                targetModal.classList.add('flex');
+                            }
+                        });
+                    });
+
+                    modalHideButtons.forEach(button => {
+                        button.addEventListener('click', function () {
+                            const targetModalId = button.getAttribute('data-modal-hide');
+                            const targetModal = document.getElementById(targetModalId);
+                            if (targetModal) {
+                                targetModal.classList.add('hidden');
+                                targetModal.classList.remove('flex');
+                                // Reset modal content to initial state
+                                modalBody.innerHTML = initialModalBodyContent;
+                                modalFooter.innerHTML = initialModalFooterContent;
+                                // Reassign event listeners after resetting content
+                                reassignEventListeners();
+                            }
+                        });
+                    });
+
+                    // Initial assignment of event listeners
+                    reassignEventListeners();
+                });
+            </script>
