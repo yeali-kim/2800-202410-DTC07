@@ -48,34 +48,6 @@
 
 
         <script>
-            const criminals = [
-                {
-                    firstName: "Shawn",
-                    middleName: "",
-                    lastName: "Rim",
-                    address: "645 Seymour St. Vancouver, BC, Canada, V6C 1Z6",
-                    dob: new Date("Aug. 4, 2004"),
-                    gender: "M",
-                    image: "https://picsum.photos/id/237/200/300",
-                    physicalDescriptions: [
-                        "description1",
-                        "description2",
-                        "description3",
-                        "description4",
-                    ],
-                    convictions: [
-                        {
-                            crime: "Aggrevated assault",
-                            date: new Date("May 15, 2024"),
-                            sentence: "2 years imprisonment",
-                        },
-                        {
-                            crime: "Robbery",
-                            date: new Date("Dec. 25, 2022"),
-                            sentence: "$200 fine",
-                        },
-                    ]
-                }];
 
             // Define map height/size
             const mapContainer = document.getElementById('mapContainer');
@@ -165,6 +137,7 @@
 
                 // Add red marker for each criminal location
                 let criminalMarkers = [];
+                const criminals = JSON.parse('<%- JSON.stringify(criminals) %>');
                 criminals.forEach(criminal => {
                     geocoder.geocode({ address: criminal.address }, (results, status) => {
                         if (status === 'OK') {
@@ -215,9 +188,8 @@
 
         </script>
 
-        <script async defer
-            src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&callback=initMap">
-            </script>
+        <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&callback=initMap">
+        </script>
 
         </body>
 
