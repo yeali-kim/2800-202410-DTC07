@@ -76,7 +76,6 @@ app.get("/cybersecurity", (req, res) => {
     res.render("login");
 });
 
-app.use(express.static('public'))
 app.listen(3000, () => {
   console.log("Listening to Port 3000.")
 })
