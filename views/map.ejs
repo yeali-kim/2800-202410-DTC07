@@ -26,25 +26,25 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-    <div class="flex items-center justify-center m-3 mt-24" id="mapContainer">
+    <div class="flex items-center justify-center m-3 mt-18" id="mapContainer">
         <div id="map" class="w-full h-full"></div>
     </div>
 
     <!-- List view button on top right corner of map-->
-    <div class="absolute top-24 right-3 m-3">
+    <div class="absolute top-20 right-3 m-3">
         <button class="list-button bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900">
             List View
         </button>
     </div>
 
-    <!-- Arbitrary filter button -->
-    <div class="absolute top-36 right-3 m-3">
+    <!-- filter button -->
+    <div class="absolute top-20 left-3 m-3">
         <button class="filter-button bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900">
             Filter
         </button>
     </div>
     <div id="overlay" class="overlay hidden"></div>
-    <%- include('filter') %>
+    <%- include("templates/filter") %>
 
 
         <script>
@@ -53,13 +53,7 @@
                     firstName: "Shawn",
                     middleName: "",
                     lastName: "Rim",
-                    address: {
-                        address: "645 Seymour St",
-                        city: "Vancouver",
-                        province: "BC",
-                        country: "Canada",
-                        postalCode: "V6C 1Z6",
-                    },
+                    address: "645 Seymour St. Vancouver, BC, Canada, V6C 1Z6",
                     dob: new Date("Aug. 4, 2004"),
                     gender: "M",
                     image: "https://picsum.photos/id/237/200/300",
@@ -85,7 +79,7 @@
 
             // Define map height/size
             const mapContainer = document.getElementById('mapContainer');
-            mapContainer.style.height = "calc(94vh - 56px)";
+            mapContainer.style.height = "97vh";
 
             // Add an info bubble
             function addInfoBubble(map, marker, content) {
@@ -172,7 +166,7 @@
                 // Add red marker for each criminal location
                 let criminalMarkers = [];
                 criminals.forEach(criminal => {
-                    geocoder.geocode({ address: criminal.address.address }, (results, status) => {
+                    geocoder.geocode({ address: criminal.address }, (results, status) => {
                         if (status === 'OK') {
                             const criminalMarker = new google.maps.Marker({
                                 map: map,
