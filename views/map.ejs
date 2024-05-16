@@ -1,109 +1,199 @@
 <%- include("templates/header") %>
+    <style>
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 10;
+        }
+
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+            border-radius: 10px;
+        }
+    </style>
+
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
     <div class="flex items-center justify-center m-3 mt-10" id="mapContainer">
-        <div id="map" class="w-full h-full">
-        </div>
-
-        <!-- List view button on top right corner of map-->
-        <div class="absolute top-16 right-3 m-3">
-            <button class="list-button bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900">
-                List View
-            </button>
-        </div>
+        <div id="map" class="w-full h-full"></div>
     </div>
 
-    <script>
-        const criminals = [
-            { name: "John Doe", offenses: "5", details: "Detail Here", DOB: "2010-12-31", address: "626 W Pender St #100, Vancouver, BC V6B 1V9", description: "Description Here", crimes: ["Theft", "Robbery"] },
-            { name: "ABC", offenses: "2", details: "Detail Here", DOB: "1991-01-12", address: "550 W Hastings St, Vancouver, BC V6B 1L6", description: "Description Here", crimes: ["Theft", "Robbery"] },
-            { name: "AAA", offenses: "5", details: "Detail Here", DOB: "1965-10-20", address: "678 Dunsmuir St, Vancouver, BC V6B 1N3", description: "Description Here", crimes: ["Theft", "Robbery"] }
-        ];
-        // Define map height/size
-        const headerHeight = document.querySelector('header').offsetHeight;
-        const mapContainer = document.getElementById('mapContainer');
-        mapContainer.style.height = `calc(94vh - ${headerHeight}px)`;
+    <!-- List view button on top right corner of map-->
+    <div class="absolute top-16 right-3 m-3">
+        <button class="list-button bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900">
+            List View
+        </button>
+    </div>
 
-        // Add an info bubble
-        function addInfoBubble(map, marker, content) {
-            const infoWindow = new google.maps.InfoWindow({
-                content: content
-            });
+    <!-- Arbitrary filter button -->
+    <div class="absolute top-36 right-3 m-3">
+        <button class="filter-button bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900">
+            Filter
+        </button>
+    </div>
+    <div id="overlay" class="overlay hidden"></div>
+    <%- include('filter') %>
 
-            marker.addListener('click', () => {
-                infoWindow.open(map, marker);
-            });
-        }
 
-        // Initialize map
-        function initMap() {
-            // location of bcit (default location)
-            const bcit = { lat: 49.283, lng: -123.115 };
-            // Map is centered at BCIT with zoom level 17 (higher->closer)
-            const map = new google.maps.Map(document.getElementById("map"), {
-                zoom: 17,
-                center: bcit,
-                fullscreenControl: false,
-                mapTypeControl: false,
-                keyboardShortcuts: false,
-            });
-            // bcit(current location) marker
-            const marker = new google.maps.Marker({
-                position: bcit,
-                map: map,
-                icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker(can change)
-            });
+        <script>
+            const criminals = [
+                { name: "John Doe", offenses: "5", details: "Detail Here", DOB: "2010-12-31", address: "626 W Pender St #100, Vancouver, BC V6B 1V9", description: "Description Here", crimes: ["Theft", "Robbery"] },
+                { name: "ABC", offenses: "2", details: "Detail Here", DOB: "1991-01-12", address: "550 W Hastings St, Vancouver, BC V6B 1L6", description: "Description Here", crimes: ["Theft", "Robbery"] },
+                { name: "AAA", offenses: "5", details: "Detail Here", DOB: "1965-10-20", address: "678 Dunsmuir St, Vancouver, BC V6B 1N3", description: "Description Here", crimes: ["Theft", "Robbery"] }
+            ];
+            // Define map height/size
+            const headerHeight = document.querySelector('header').offsetHeight;
+            const mapContainer = document.getElementById('mapContainer');
+            mapContainer.style.height = `calc(94vh - ${headerHeight}px)`;
 
-            // Info bubble tells user that this is their current location
-            // addInfoBubble(map, marker, "Your current location")
-
-            const geocoder = new google.maps.Geocoder();
-            // Create a single InfoWindow instance
-            const infoWindow = new google.maps.InfoWindow();
-
-            // Add red marker for each criminal location
-            criminals.forEach(criminal => {
-                geocoder.geocode({ address: criminal.address }, (results, status) => {
-                    if (status === 'OK') {
-                        const criminalMarker = new google.maps.Marker({
-                            map: map,
-                            position: results[0].geometry.location,
-                            title: criminal.name,
-                            icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker
-                        });
-
-                        // Define the content for the InfoWindow
-                        const infoWindowContent = `
-                    <div style="font-size: 16px;">
-                        <h2 style="font-weight: bold;">${criminal.name}</h2>
-                        <p>${criminal.address}</p>
-                        <a style="font-size: 12px; color: grey;" href="/criminal/${criminal.id}">Details</a>
-                    </div>
-                `;
-
-                        // Add a click listener to the marker
-                        criminalMarker.addListener('click', () => {
-                            // Set the content and open the InfoWindow
-                            infoWindow.setContent(infoWindowContent);
-                            infoWindow.open(map, criminalMarker);
-                        });
-                    }
+            // Add an info bubble
+            function addInfoBubble(map, marker, content) {
+                const infoWindow = new google.maps.InfoWindow({
+                    content: content
                 });
+
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+            }
+
+            let criminalMarkers = [];
+            // Filter criminals
+
+
+            // function applyFilters() {
+            //     const filters = {
+            //         name: document.getElementById('name').value,
+            //         crimes: Array.from(document.querySelectorAll('input[name="crime"]:checked')).map(input => input.value),
+            //         sentenceMin: document.getElementById('sentence-min').value,
+            //         sentenceMax: document.getElementById('sentence-max').value,
+            //     };
+            //     const filteredCriminals = criminals.filter(criminal => {
+            //         // Replace these with your actual filter conditions
+            //         const nameMatches = filters.name === '' || criminal.name.includes(filters.name);
+            //         const crimeMatches = filters.crimes.length === 0 || filters.crimes.includes(criminal.crime);
+            //         const sentenceMatches = (filters.sentenceMin === '' || criminal.sentence >= parseInt(filters.sentenceMin)) &&
+            //             (filters.sentenceMax === '' || criminal.sentence <= parseInt(filters.sentenceMax));
+
+            //         return nameMatches && crimeMatches && sentenceMatches;
+            //     });
+
+            //     // Clear existing markers
+            //     for (let i = 0; i < criminalMarkers.length; i++) {
+            //         criminalMarkers[i].setMap(null);
+            //     }
+            //     criminalMarkers = [];
+            //     const geocoder = new google.maps.Geocoder();
+            //     // Add new markers for each filtered criminal
+            //     filteredCriminals.forEach(criminal => {
+            //         geocoder.geocode({ address: criminal.address }, (results, status) => {
+            //             if (status === 'OK') {
+            //                 const marker = new google.maps.Marker({
+            //                     position: results[0].geometry.location,
+            //                     map: map
+            //                 });
+            //                 criminalMarkers.push(marker);
+            //             } else {
+            //                 console.error('Geocode was not successful for the following reason: ' + status);
+            //             }
+            //         });
+            //     });
+            // }
+
+
+            // Initialize map
+            function initMap() {
+                // location of bcit (default location)
+                const bcit = { lat: 49.283, lng: -123.115 };
+                // Map is centered at BCIT with zoom level 17 (higher->closer)
+                const map = new google.maps.Map(document.getElementById("map"), {
+                    zoom: 17,
+                    center: bcit,
+                    fullscreenControl: false,
+                    mapTypeControl: false,
+                    keyboardShortcuts: false,
+                });
+                // bcit(current location) marker
+                const marker = new google.maps.Marker({
+                    position: bcit,
+                    map: map,
+                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker(can change)
+                });
+
+                // Info bubble tells user that this is their current location
+                addInfoBubble(map, marker, "Your current location")
+
+                // Create a single InfoWindow instance
+                const infoWindow = new google.maps.InfoWindow();
+                const geocoder = new google.maps.Geocoder();
+                // Add red marker for each criminal location
+
+                criminals.forEach(criminal => {
+                    geocoder.geocode({ address: criminal.address }, (results, status) => {
+                        if (status === 'OK') {
+                            const criminalMarker = new google.maps.Marker({
+                                map: map,
+                                position: results[0].geometry.location,
+                                title: criminal.name,
+                                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker
+                            });
+                            criminalMarkers.push(criminalMarker);
+
+                            // Define the content for the InfoWindow
+                            const infoWindowContent = `
+                        <div style="font-size: 16px;">
+                            <h2 style="font-weight: bold;">${criminal.name}</h2>
+                            <p>${criminal.address}</p>
+                            <a style="font-size: 12px; color: grey;" href="/criminal/${criminal.id}">Details</a>
+                        </div>
+                    `;
+                            // Add a click listener to the marker
+                            criminalMarker.addListener('click', () => {
+                                // Set the content and open the InfoWindow
+                                infoWindow.setContent(infoWindowContent);
+                                infoWindow.open(map, criminalMarker);
+                            });
+                        }
+                    });
+                });
+            }
+
+            // List button redirects to list view
+            const listButton = document.querySelector('.list-button');
+            listButton.addEventListener('click', () => {
+                window.location.href = '/list';
             });
-        }
 
-        // List button redirects to list view
-        const listButton = document.querySelector('.list-button');
-        listButton.addEventListener('click', () => {
-            window.location.href = '/list';
-        });
-    </script>
+            // Filter button opens filter modal
+            document.querySelector('.filter-button').addEventListener('click', function () {
+                document.getElementById('overlay').classList.remove('hidden');
+                document.getElementById('filter-form').classList.remove('hidden');
+            });
 
-    <script async defer
-        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6tt10OSdXLxpCz5hTuKB_gO36EyHt4cE&callback=initMap">
+            // Close filter modal
+            function closeFilters() {
+                document.getElementById('overlay').classList.add('hidden');
+                document.getElementById('filter-form').classList.add('hidden');
+            }
+
         </script>
 
-    </body>
+        <script async defer
+            src="https://maps.googleapis.com/maps/api/js?key=AIzaSyB6tt10OSdXLxpCz5hTuKB_gO36EyHt4cE&callback=initMap">
+            </script>
 
-    </html>
+        </body>
+
+        </html>
