@@ -5,49 +5,94 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/png" href="/logo.png">
-
   <title>ProtectUs</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
   <link rel="stylesheet" href="././styles/navbar.css">
   <style>
     #navbar {
       width: 100%;
       position: fixed;
       z-index: 10;
+      top: 0;
     }
-  
+
     #sidebar {
-      top: 80px;
+      top: 64px;
       /* Adjust the top position to match the navbar height */
       right: -75%;
       width: 75%;
-      height: calc(100% - 80px);
+      height: calc(100% - 64px);
       /* Adjust the height to fill the rest of the screen */
       transition: right 0.5s ease-in-out;
       position: fixed;
       z-index: 9;
       /* Ensure the sidebar is below the navbar */
     }
-  
+
     #sidebar.show {
       right: 0;
+    }
+
+    .menu-btn {
+      position: relative;
+      width: 24px;
+      height: 24px;
+    }
+
+    .menu-btn span {
+      position: absolute;
+      height: 2px;
+      width: 24px;
+      background: white;
+      transition: transform 0.5s, opacity 0.5s;
+    }
+
+    .menu-btn span:nth-child(1) {
+      top: 0;
+    }
+
+    .menu-btn span:nth-child(2) {
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .menu-btn span:nth-child(3) {
+      bottom: 0;
+    }
+
+    .menu-btn.open span:nth-child(1) {
+      transform: rotate(45deg) translateY(15.5px);
+    }
+
+    .menu-btn.open span:nth-child(2) {
+      opacity: 0;
+    }
+
+    .menu-btn.open span:nth-child(3) {
+      transform: rotate(-45deg) translateY(-15.5px);
     }
   </style>
 </head>
 
 <body>
-  <div class="bg-[#515F84] py-4 px-6 flex justify-between items-center ">
+  <div class="bg-[#515F84] py-4 px-6 flex justify-between items-center" id="navbar">
     <input type="text"
-      class="w-[70%] md:w-2/4 px-4 py-2 rounded-lg bg-[#c1c4cd] text-white focus:outline-none focus:bg-gray-900"
+      class="w-3/4 md:w-2/4 px-4 py-2 rounded-lg bg-[#c1c4cd] text-white focus:outline-none focus:bg-gray-900"
       placeholder="Search...">
+    <!-- Icon added here -->
     <span class="material-symbols-outlined bg-white text-3xl rounded-3xl px-2">
       filter_alt
     </span>
-    <span class="material-symbols-outlined text-white text-5xl" id="hamburgerMenu">
-      menu
-    </span>
+    <!-- End of Icon -->
+    <div class="menu-btn cursor-pointer" id="hamburgerMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
   </div>
 
   <div id="sidebar" class="sidebar bg-[#515F84] text-white py-4 px-6 h-full overflow-y-auto">
@@ -70,10 +115,15 @@
       </ul>
     </div>
   </div>
-  
+
   <script>
     document.getElementById('hamburgerMenu').addEventListener('click', () => {
       const sidebar = document.getElementById('sidebar');
+      const menuIcon = document.getElementById('hamburgerMenu');
       sidebar.classList.toggle('show');
+      menuIcon.classList.toggle('open');
     });
   </script>
+</body>
+
+</html>
