@@ -1,11 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Document</title>
-    </head>
-    <body>
-        <h1>Hello World</h1>
-    </body>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/png" href="/logo.png">
+
+  <title>ProtectUs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="././styles/navbar.css">
+</head>
+
+<body>
+  <div class="flex flex-col justify-center items-center text-center bg-[#515F84] py-5 px-5  box-content ">
+    <img src="logo.png" alt="" class="text-center mt-32 h-[240px] w-[230px] bg-slate-100">
+    <h3 class="text-white text-8xl">ProtectUs</h3>
+    <br><br><br><br><br>
+    <div class="bg-[#EAD797] flex flex-col  justify-center items-center w-screen py-8 pb-28 rounded-t-[50%] h-[400px]">
+      <a href="/login" id="loginBtn"
+        class="bg-[#515F84] px-20 py-3 rounded-full  text-center flex w60 text-white mt-10">Login</a>
+      <br>
+      <a href="/signup" id="signupBtn"
+        class="bg-[#515F84] px-20 py-3 rounded-full  text-center flex w60 text-white">Signup</a>
+    </div>
+  </div>
+</body>
+
 </html>
