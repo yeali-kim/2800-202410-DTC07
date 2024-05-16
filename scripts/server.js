@@ -128,7 +128,7 @@ app.post("/login", (req, res) => {
     req.session.email = email;
     req.session.password = password;
 
-    res.redirect("/validateUser");
+    res.redirect("/map");
 });
 
 app.get("/signup", (req, res) => {
@@ -166,7 +166,7 @@ app.post("/signup", async (req, res) => {
     req.session.email = email;
     req.session.password = password;
 
-    res.redirect("/validateUser");
+    res.redirect("/map");
 });
 
 app.get("/resetPassword", (req, res) => {
@@ -178,7 +178,6 @@ app.post("/resetPassword", async (req, res) => {
     const password = req.body.password;
 
     const schema = Joi.object({
-        username: Joi.string().alphanum().max(20).required(),
         password: Joi.string().max(20).required(),
         email: Joi.string().email({
             minDomainSegments: 2,
@@ -186,10 +185,10 @@ app.post("/resetPassword", async (req, res) => {
         }),
     });
 
-    const validationResult = schema.validate({ username, password, email });
+    const validationResult = schema.validate({ password, email });
     if (validationResult.error != null) {
         console.log(validationResult.error);
-        res.redirect("/signup");
+        res.redirect("/login");
         return;
     }
     const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -217,35 +216,35 @@ async function validateUser(req, res, next) {
     res.redirect("/login");
 }
 
-app.get("/filter", (req, res) => {
+app.get("/filter", validateUser, (req, res) => {
     res.render("filter");
 });
 
-app.get("/map", (req, res) => {
+app.get("/map", validateUser, (req, res) => {
     res.render("map");
 });
 
-app.get("/list", (req, res) => {
+app.get("/list", validateUser, (req, res) => {
     res.render("list");
 });
 
-app.get("/protection", (req, res) => {
+app.get("/protection", validateUser, (req, res) => {
     res.render("protection");
 });
 
-app.get("/robots", (req, res) => {
+app.get("/robots", validateUser, (req, res) => {
     res.render("robots");
 });
 
-app.get("/drones", (req, res) => {
+app.get("/drones", validateUser, (req, res) => {
     res.render("drones");
 });
 
-app.get("/cybersecurity", (req, res) => {
+app.get("/cybersecurity", validateUser, (req, res) => {
     res.render("cybersecurity");
 });
 
-app.get("/profile", async (req, res) => {
+app.get("/profile", validateUser, async (req, res) => {
     const user = await Users.findOne({ username: "User1" });
     console.log(user);
     res.render("profile", { user: user });
