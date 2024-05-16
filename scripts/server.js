@@ -236,7 +236,8 @@ app.get("/cybersecurity", (req, res) => {
 });
 
 app.get("/profile", async (req, res) => {
-    const user = await Users.find({ username: "User1" });
+    const user = await Users.findOne({ username: "User1" });
+    console.log(user);
     res.render("profile", { user: user });
 });
 
