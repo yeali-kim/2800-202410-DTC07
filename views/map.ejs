@@ -151,12 +151,14 @@
 
                             // Define the content for the InfoWindow
                             const infoWindowContent = `
-                        <div style="font-size: 16px;">
-                            <h2 style="font-weight: bold;">${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
-                            <p>Number of convictions: ${criminal.convictions.length}</p>
-                            <a style="font-size: 12px; color: grey;" href="/criminal/${criminal.id}">Details</a>
-                        </div>
-                    `;
+                            <div style="font-size: 16px;">
+                                <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                <p># convictions: ${criminal.convictions.length}</p>
+                                <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
+                                    <a style="font-size: 12px; color: grey;" href="/criminal/${criminal.id}">Details</a>
+                                </div>
+                            </div>
+                            `;
                             // Add a click listener to the marker
                             criminalMarker.addListener('click', () => {
                                 // Set the content and open the InfoWindow
