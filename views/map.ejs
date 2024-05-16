@@ -49,10 +49,40 @@
 
         <script>
             const criminals = [
-                { name: "John Doe", offenses: "5", details: "Detail Here", DOB: "2010-12-31", address: "626 W Pender St #100, Vancouver, BC V6B 1V9", description: "Description Here", crimes: ["Theft", "Robbery"] },
-                { name: "ABC", offenses: "2", details: "Detail Here", DOB: "1991-01-12", address: "550 W Hastings St, Vancouver, BC V6B 1L6", description: "Description Here", crimes: ["Theft", "Robbery"] },
-                { name: "AAA", offenses: "5", details: "Detail Here", DOB: "1965-10-20", address: "678 Dunsmuir St, Vancouver, BC V6B 1N3", description: "Description Here", crimes: ["Theft", "Robbery"] }
-            ];
+                {
+                    firstName: "Shawn",
+                    middleName: "",
+                    lastName: "Rim",
+                    address: {
+                        address: "645 Seymour St",
+                        city: "Vancouver",
+                        province: "BC",
+                        country: "Canada",
+                        postalCode: "V6C 1Z6",
+                    },
+                    dob: new Date("Aug. 4, 2004"),
+                    gender: "M",
+                    image: "https://picsum.photos/id/237/200/300",
+                    physicalDescriptions: [
+                        "description1",
+                        "description2",
+                        "description3",
+                        "description4",
+                    ],
+                    convictions: [
+                        {
+                            crime: "Aggrevated assault",
+                            date: new Date("May 15, 2024"),
+                            sentence: "2 years imprisonment",
+                        },
+                        {
+                            crime: "Robbery",
+                            date: new Date("Dec. 25, 2022"),
+                            sentence: "$200 fine",
+                        },
+                    ]
+                }];
+
             // Define map height/size
             const headerHeight = document.querySelector('header').offsetHeight;
             const mapContainer = document.getElementById('mapContainer');
@@ -141,7 +171,7 @@
                 // Add red marker for each criminal location
 
                 criminals.forEach(criminal => {
-                    geocoder.geocode({ address: criminal.address }, (results, status) => {
+                    geocoder.geocode({ address: criminal.address.address }, (results, status) => {
                         if (status === 'OK') {
                             const criminalMarker = new google.maps.Marker({
                                 map: map,
@@ -154,8 +184,8 @@
                             // Define the content for the InfoWindow
                             const infoWindowContent = `
                         <div style="font-size: 16px;">
-                            <h2 style="font-weight: bold;">${criminal.name}</h2>
-                            <p>${criminal.address}</p>
+                            <h2 style="font-weight: bold;">${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                            <p>Number of convictions: ${criminal.convictions.length}</p>
                             <a style="font-size: 12px; color: grey;" href="/criminal/${criminal.id}">Details</a>
                         </div>
                     `;
