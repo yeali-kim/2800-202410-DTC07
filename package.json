@@ -1,7 +1,7 @@
 {
   "name": "2800-202410-dtc07",
   "version": "1.0.0",
-  "description": "",
+  "description": "Team Name: DTC-07\r Team Members:",
   "main": "scripts/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@googlemaps/js-api-loader": "^1.16.6",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -16,6 +17,7 @@
     "express": "^4.19.2",
     "express-session": "^1.18.0",
     "joi": "^17.13.1",
-    "mongoose": "^8.3.3"
-  }
+    "mongoose": "^8.3.4"
+  },
+  "devDependencies": {}
 }

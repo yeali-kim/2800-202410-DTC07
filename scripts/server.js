@@ -30,6 +30,17 @@ async function main() {
   app.listen(PORT, () => {
       console.log("Listening to port "+PORT);
   });
+  try {
+    await mongoose.connect(`mongodb+srv://${mongo_user}:${mongo_password}@${mongo_host}/${mongo_db}`);
+    console.log('Connected to MongoDB');
+  } catch (error) {
+    console.error('MongoDB connection error:', error);
+    throw error; // Rethrow the error to stop the application startup
+  }
+
+  app.listen(PORT, () => {
+      console.log("Listening to port "+PORT);
+  });
 }
 
 const criminalSchema = new mongoose.Schema({
@@ -75,6 +86,16 @@ app.get('/crimes', async (req, res) => {
     res.status(500).json({ error: 'Internal server error' });
   }
 });
+
+app.get('/createCrimes', async (req, res) => {
+  await CriminalProfile.create();
+  res.send('Completed')
+})
+
+app.get('/users', async(req, res) => {
+  const users = await Users.find();
+  res.json(users)
+})
 
 app.get('/createCrimes', async (req, res) => {
   await CriminalProfile.create();
@@ -207,6 +228,10 @@ async function validateUser(req, res, next) {
 
 app.use('/validateUser', validateUser, (req, res) => {
   res.redirect('/map')
+});
+
+app.get("/filter", (req, res) => {
+  res.render("filter");
 });
 
 app.get("/map", (req, res) => {
