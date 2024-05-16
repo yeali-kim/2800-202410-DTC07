@@ -26,12 +26,12 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-    <div class="flex items-center justify-center m-3 mt-10" id="mapContainer">
+    <div class="flex items-center justify-center m-3 mt-24" id="mapContainer">
         <div id="map" class="w-full h-full"></div>
     </div>
 
     <!-- List view button on top right corner of map-->
-    <div class="absolute top-16 right-3 m-3">
+    <div class="absolute top-24 right-3 m-3">
         <button class="list-button bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900">
             List View
         </button>
@@ -84,9 +84,8 @@
                 }];
 
             // Define map height/size
-            const headerHeight = document.querySelector('header').offsetHeight;
             const mapContainer = document.getElementById('mapContainer');
-            mapContainer.style.height = `calc(94vh - ${headerHeight}px)`;
+            mapContainer.style.height = "calc(94vh - 56px)";
 
             // Add an info bubble
             function addInfoBubble(map, marker, content) {
@@ -99,7 +98,7 @@
                 });
             }
 
-            let criminalMarkers = [];
+
             // Filter criminals
 
 
@@ -168,8 +167,10 @@
                 // Create a single InfoWindow instance
                 const infoWindow = new google.maps.InfoWindow();
                 const geocoder = new google.maps.Geocoder();
-                // Add red marker for each criminal location
 
+
+                // Add red marker for each criminal location
+                let criminalMarkers = [];
                 criminals.forEach(criminal => {
                     geocoder.geocode({ address: criminal.address.address }, (results, status) => {
                         if (status === 'OK') {
