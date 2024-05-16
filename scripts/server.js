@@ -161,12 +161,11 @@ app.get('/resetPassword', (req, res) => {
   res.render('resetPassword');
 })
 
-app.post('resetPassword', async (req, res) => {
+app.post('/resetPassword', async (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
 
   const schema = Joi.object({
-      username: Joi.string().alphanum().max(20).required(),
       password: Joi.string().max(20).required(),
       email: Joi.string().email({
           minDomainSegments: 2,
@@ -174,7 +173,7 @@ app.post('resetPassword', async (req, res) => {
       }),
   });
 
-  const validationResult = schema.validate({ username, password, email });
+  const validationResult = schema.validate({password, email });
   if (validationResult.error != null) {
       console.log(validationResult.error);
       res.redirect("/signup");
