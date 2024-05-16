@@ -128,7 +128,7 @@ app.post("/login", (req, res) => {
     req.session.email = email;
     req.session.password = password;
 
-    res.redirect("/validateUser");
+    res.redirect("/map");
 });
 
 app.get("/signup", (req, res) => {
@@ -225,8 +225,15 @@ app.get("/map", (req, res) => {
     res.render("map");
 });
 
-app.get("/list", (req, res) => {
-    res.render("list");
+app.get("/list", async (req, res) => {
+  try {
+    const criminals = await CriminalProfile.find({});
+    console.log(criminals);
+    res.render("list", { criminals: criminals });
+  } catch (error) {
+    console.error('Error fetching criminal data:', error);
+    res.status(500).send("Error fetching data");
+  }
 });
 
 app.get("/protection", (req, res) => {
