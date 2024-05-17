@@ -144,10 +144,61 @@
                         map: map,
                         icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker
                     });
-                    
+
+                    // Info bubble tells user that this is their current location
+                    addInfoBubble(map, marker, "Your current location")
+
+                    // Create a single InfoWindow instance
+                    const infoWindow = new google.maps.InfoWindow();
+                    const geocoder = new google.maps.Geocoder();
+
+                    // Add red marker for each criminal location
+                    let criminalMarkers = [];
+                    const criminals = JSON.parse('<%- JSON.stringify(criminals) %>');
+
+                    criminals.forEach(criminal => {
+                        geocoder.geocode({ address: criminal.address }, (results, status) => {
+                            if (status === 'OK') {
+                                const criminalMarker = new google.maps.Marker({
+                                    map: map,
+                                    position: results[0].geometry.location,
+                                    title: criminal.name,
+                                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker
+                                });
+                                criminalMarkers.push(criminalMarker);
+
+                                // Info bubble for each criminal
+                                const infoWindowContent = `
+                                <div style="font-size: 16px;">
+                                    <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                    <p># convictions: ${criminal.convictions.length}</p>
+                                    <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
+                                        <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                    </div>
+                                </div>
+                                `;
+
+                                // When marker is clicked, info bubble pops up  
+                                criminalMarker.addListener('click', () => {
+                                    infoWindow.setContent(infoWindowContent);
+                                    infoWindow.open(map, criminalMarker);
+
+                                    // Show criminal details modal when "Details" link is clicked
+                                    document.querySelectorAll('.details-link').forEach(link => {
+                                        link.addEventListener('click', (event) => {
+                                            event.preventDefault();
+                                            const criminalData = JSON.parse(event.target.getAttribute('data-criminal'));
+                                            showCriminalModal(criminalData);
+                                        });
+                                    });
+                                });
+                            }
+                        });
+                    });
+
                 }, function () {
                     // If the user denies the location sharing, use BCIT as the default location
-                    const bcit = { lat: 49.28341676133127 , lng: -123.11536009794918 };
+                    const bcit = { lat: 49.28341676133127, lng: -123.11536009794918 };
                     const map = new google.maps.Map(document.getElementById('map'), {
                         zoom: 17,
                         center: bcit,
@@ -158,34 +209,33 @@
                         map: map,
                         icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker
                     });
-                });
+
+                    // Info bubble tells user that this is their current location
+                    addInfoBubble(map, marker, "Your current location")
+
+                    // Create a single InfoWindow instance
+                    const infoWindow = new google.maps.InfoWindow();
+                    const geocoder = new google.maps.Geocoder();
 
 
-                // Info bubble tells user that this is their current location
-                addInfoBubble(map, marker, "Your current location")
+                    // Add red marker for each criminal location
+                    let criminalMarkers = [];
 
-                // Create a single InfoWindow instance
-                const infoWindow = new google.maps.InfoWindow();
-                const geocoder = new google.maps.Geocoder();
+                    const criminals = JSON.parse('<%- JSON.stringify(criminals) %>');
 
+                    criminals.forEach(criminal => {
+                        geocoder.geocode({ address: criminal.address }, (results, status) => {
+                            if (status === 'OK') {
+                                const criminalMarker = new google.maps.Marker({
+                                    map: map,
+                                    position: results[0].geometry.location,
+                                    title: criminal.name,
+                                    icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker
+                                });
+                                criminalMarkers.push(criminalMarker);
 
-                // Add red marker for each criminal location
-                let criminalMarkers = [];
-                const criminals = JSON.parse('<%- JSON.stringify(criminals) %>');
-
-                criminals.forEach(criminal => {
-                    geocoder.geocode({ address: criminal.address }, (results, status) => {
-                        if (status === 'OK') {
-                            const criminalMarker = new google.maps.Marker({
-                                map: map,
-                                position: results[0].geometry.location,
-                                title: criminal.name,
-                                icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png' // Red marker
-                            });
-                            criminalMarkers.push(criminalMarker);
-
-                            // Info bubble for each criminal
-                            const infoWindowContent = `
+                                // Info bubble for each criminal
+                                const infoWindowContent = `
                                 <div style="font-size: 16px;">
                                     <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
                                     <p># convictions: ${criminal.convictions.length}</p>
@@ -195,21 +245,22 @@
                                 </div>
                                 `;
 
-                            // When marker is clicked, info bubble pops up  
-                            criminalMarker.addListener('click', () => {
-                                infoWindow.setContent(infoWindowContent);
-                                infoWindow.open(map, criminalMarker);
+                                // When marker is clicked, info bubble pops up  
+                                criminalMarker.addListener('click', () => {
+                                    infoWindow.setContent(infoWindowContent);
+                                    infoWindow.open(map, criminalMarker);
 
-                                // Show criminal details modal when "Details" link is clicked
-                                document.querySelectorAll('.details-link').forEach(link => {
-                                    link.addEventListener('click', (event) => {
-                                        event.preventDefault();
-                                        const criminalData = JSON.parse(event.target.getAttribute('data-criminal'));
-                                        showCriminalModal(criminalData);
+                                    // Show criminal details modal when "Details" link is clicked
+                                    document.querySelectorAll('.details-link').forEach(link => {
+                                        link.addEventListener('click', (event) => {
+                                            event.preventDefault();
+                                            const criminalData = JSON.parse(event.target.getAttribute('data-criminal'));
+                                            showCriminalModal(criminalData);
+                                        });
                                     });
                                 });
-                            });
-                        }
+                            }
+                        });
                     });
                 });
 
