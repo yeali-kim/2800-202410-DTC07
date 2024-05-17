@@ -51,7 +51,8 @@
                 </div>
                 <div class="mt-2 text-right">
                     <a href="/protection">
-                        <button type="button" class="bg-cyan-600 font-bold text-white px-4 py-2 rounded-full" onclick="closeCriminalModal()">
+                        <button type="button" class="bg-cyan-600 font-bold text-white px-4 py-2 rounded-full"
+                            onclick="closeCriminalModal()">
                             ProtectUs
                         </button>
                     </a>
@@ -123,22 +124,42 @@
 
             // Initialize map
             function initMap() {
-                // location of bcit (default location)
-                const bcit = { lat: 49.283, lng: -123.115 };
-                // Map is centered at BCIT with zoom level 17 (higher->closer)
-                const map = new google.maps.Map(document.getElementById("map"), {
-                    zoom: 17,
-                    center: bcit,
-                    fullscreenControl: false,
-                    mapTypeControl: false,
-                    keyboardShortcuts: false,
+                navigator.geolocation.getCurrentPosition(function (position) {
+                    const userLocation = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    // Map is centered at userLocation with zoom level 17 (higher->closer)
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 17,
+                        center: userLocation,
+                        fullscreenControl: false,
+                        mapTypeControl: false,
+                        keyboardShortcuts: false,
+                    });
+
+                    // Add blue marker at the user's location
+                    const marker = new google.maps.Marker({
+                        position: userLocation,
+                        map: map,
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker
+                    });
+                    
+                }, function () {
+                    // If the user denies the location sharing, use BCIT as the default location
+                    const bcit = { lat: 49.28341676133127 , lng: -123.11536009794918 };
+                    const map = new google.maps.Map(document.getElementById('map'), {
+                        zoom: 17,
+                        center: bcit,
+                    });
+                    // Add blue marker at BCIT
+                    const marker = new google.maps.Marker({
+                        position: bcit,
+                        map: map,
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker
+                    });
                 });
-                // bcit(current location) marker
-                const marker = new google.maps.Marker({
-                    position: bcit,
-                    map: map,
-                    icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker(can change)
-                });
+
 
                 // Info bubble tells user that this is their current location
                 addInfoBubble(map, marker, "Your current location")
