@@ -168,24 +168,25 @@
                                 criminalMarkers.push(criminalMarker);
 
                                 // Info bubble for each criminal
-                                const infoWindowContent = `
-                                <div style="font-size: 16px;">
-                                    <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
-                                    <p># convictions: ${criminal.convictions.length}</p>
-                                    <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
-                                        <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                const generateInfoWindowContent = (criminal) => `
+                                    <div style="font-size: 16px;">
+                                        <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                        <p># convictions: ${criminal.convictions.length}</p>
+                                        <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
+                                            <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                        </div>
                                     </div>
-                                </div>
                                 `;
 
                                 // When marker is clicked, info bubble pops up  
                                 criminalMarker.addListener('click', () => {
-                                    infoWindow.setContent(infoWindowContent);
+                                    const content = generateInfoWindowContent(criminal);
+                                    infoWindow.setContent(content);
                                     infoWindow.open(map, criminalMarker);
 
-                                    // Show criminal details modal when "Details" link is clicked
-                                    document.querySelectorAll('.details-link').forEach(link => {
-                                        link.addEventListener('click', (event) => {
+                                    // Ensure the event listener is added when the info window DOM is ready
+                                    infoWindow.addListener('domready', () => {
+                                        document.querySelector('.details-link').addEventListener('click', (event) => {
                                             event.preventDefault();
                                             const criminalData = JSON.parse(event.target.getAttribute('data-criminal'));
                                             showCriminalModal(criminalData);
@@ -235,24 +236,26 @@
                                 criminalMarkers.push(criminalMarker);
 
                                 // Info bubble for each criminal
-                                const infoWindowContent = `
-                                <div style="font-size: 16px;">
-                                    <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
-                                    <p># convictions: ${criminal.convictions.length}</p>
-                                    <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
-                                        <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                // Info bubble for each criminal
+                                const generateInfoWindowContent = (criminal) => `
+                                    <div style="font-size: 16px;">
+                                        <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                        <p># convictions: ${criminal.convictions.length}</p>
+                                        <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
+                                            <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                        </div>
                                     </div>
-                                </div>
                                 `;
 
                                 // When marker is clicked, info bubble pops up  
                                 criminalMarker.addListener('click', () => {
-                                    infoWindow.setContent(infoWindowContent);
+                                    const content = generateInfoWindowContent(criminal);
+                                    infoWindow.setContent(content);
                                     infoWindow.open(map, criminalMarker);
 
-                                    // Show criminal details modal when "Details" link is clicked
-                                    document.querySelectorAll('.details-link').forEach(link => {
-                                        link.addEventListener('click', (event) => {
+                                    // Ensure the event listener is added when the info window DOM is ready
+                                    infoWindow.addListener('domready', () => {
+                                        document.querySelector('.details-link').addEventListener('click', (event) => {
                                             event.preventDefault();
                                             const criminalData = JSON.parse(event.target.getAttribute('data-criminal'));
                                             showCriminalModal(criminalData);
