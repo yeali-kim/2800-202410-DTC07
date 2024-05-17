@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="shortcut icon" type="image/png" href="/logo.png">
+  <title>ProtectUs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet" href="././styles/navbar.css">
+<style>
+  #navbar {
+    width: 100%;
+    position: fixed;
+    z-index: 10;
+    top: 0;
+  }
+
+   #sidebar {
+      top: 72px;
+      /* Adjust the top position to match the navbar height */
+      right: -75%;
+      width: 75%;
+      height: calc(100% - 72px);
+      /* Adjust the height to fill the rest of the screen */
+      transition: right 0.5s ease-in-out;
+      position: fixed;
+      z-index: 9;
+      /* Ensure the sidebar is below the navbar */
+      border-top-left-radius: 60px;
+      /* Add rounded corners to the top-left */
+      border-bottom-left-radius: 60px;
+      /* Add rounded corners to the bottom-left */
+    }
+
+  #sidebar.show {
+    right: 0;
+  }
+
+  .menu-btn {
+    position: relative;
+    width: 24px;
+    height: 24px;
+  }
+
+  .menu-btn span {
+    position: absolute;
+    height: 2px;
+    width: 24px;
+    background: white;
+    transition: transform 0.5s, opacity 0.5s;
+  }
+
+  .menu-btn span:nth-child(1) {
+    top: 0;
+  }
+
+  .menu-btn span:nth-child(2) {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .menu-btn span:nth-child(3) {
+    bottom: 0;
+  }
+
+  .menu-btn.open span:nth-child(1) {
+    transform: rotate(45deg) translateY(15.5px);
+  }
+
+  .menu-btn.open span:nth-child(2) {
+    opacity: 0;
+  }
+
+  .menu-btn.open span:nth-child(3) {
+    transform: rotate(-45deg) translateY(-15.5px);
+  }
+</style>
+</head>
+
+<body class="bg-[#515F84]">
+  <div class="bg-[#515F84] py-4 px-6 flex justify-between items-center" id="navbar">
+    <input type="text"
+      class="w-3/4 md:w-2/4 px-4 py-2 rounded-lg bg-[#c1c4cd] text-white focus:outline-none focus:bg-gray-900"
+      placeholder="Search...">
+    <span class="material-symbols-outlined bg-white text-3xl rounded-3xl px-2">
+      filter_alt
+    </span>
+    <div class="menu-btn cursor-pointer" id="hamburgerMenu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+  </div>
+
+<div id="sidebar" class="sidebar bg-[#3e4c6e] text-white py-4 px-6 h-full overflow-y-auto rounded-l-xl">
+  <div class="flex flex-col items-center">
+    <img src="logo.png" alt="Logo" class="w-[200px] h-[200px] mb-4">
+    <h1 class="text-5xl font-bold mb-4">ProtectUs</h1>
+    <br>
+    <br>
+    <ul class="text-left text-3xl">
+      <li class="p-5"><a href="/profile">Profile</a></li>
+      <li class="mb-2 ml-4"> Criminals near you
+        <ul class="ml-4">
+          <li class=""><a href="/map">Map</a></li>
+          <li class=""><a href="/list">List</a></li>
+        </ul>
+      </li>
+      <li class=" p-4"><a href="/protection">Protection Services</a></li>
+      <li class="p-4"><a href="/about.html">Contact Us</a></li>
+      <br><br>
+      <li class="p-4"><a href="/">Log Out</a></li>
+    </ul>
+  </div>
+</div>
+
+  <script>
+    document.getElementById('hamburgerMenu').addEventListener('click', () => {
+      const sidebar = document.getElementById('sidebar');
+      const menuIcon = document.getElementById('hamburgerMenu');
+      sidebar.classList.toggle('show');
+      menuIcon.classList.toggle('open');
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,148 @@
+<%- include("templates/header") %>
+    <main class="bg-[#515F84] text-white p-4 mt-8">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
+            <div class="flex justify-between mb-5">
+                <div>
+                    <button class="bg-white text-black rounded-full p-1 px-3" onclick="filter()">
+                        <span class="material-symbols-outlined text-base">filter_alt</span>
+                    </button>
+                    <button class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
+                        <span class="material-symbols-outlined text-base">sort</span>
+                    </button>
+                </div>
+                <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
+            </div>
+            <div id="filter" style="display: none;" class="mb-5">
+                <input type="checkbox">
+                <label>Crime 1</label>
+                <input type="checkbox">
+                <label>Crime 2</label>
+                <input type="checkbox">
+                <label>Crime 3</label>
+                <input type="checkbox">
+                <label>Crime 4</label>
+            </div>
+            <div id="sort" style="display: none;" class="pb-5">
+                <div class="flex justify-start gap-8">
+                    <button id="sortName" onclick="sortList('name')">Name</button>
+                    <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
+                </div>
+            </div>
+            <% criminals.forEach(function(criminal, index) { %>
+                <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;">
+                    <div class="flex justify-between" id="sCard-<%= index %>">
+                        <div class="flex justify-start">
+                            
+                                <img style="height: 100px;" src="<%= criminal.image %>">
+                                <div class="flex-col mx-3">
+                                <h2 class="criminal-name text-xl font-semibold">Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></h2>
+                                <p class="criminal-crimes">Number of offenses: <%= criminal.convictions.length %></p>
+                            </div>
+                        </div>
+                        <button onclick="toggleDetails(event, '<%= index %>')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" id="detailButton-<%= index %>">Details</button>
+                    </div>
+                    <div id="details-<%= index %>" class="hidden" style="transition: all 2s ease;">
+                        <div>
+                            <div>
+                                <p>Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></p>
+                                <p>DOB: <%= criminal.dob %></p>
+                                <p>Address: <%= criminal.address.address %>, <%= criminal.address.city %> <%= criminal.address.province %></p>
+                                <p>Gender: <%= criminal.gender %></p>
+                                <p class="pb-8">Description: </p>
+                                <div class="overflow-y-scroll bg-white text-black p-5">
+                                    <p><%= criminal.description %></p>
+                                    <p>Nature of Crime: <%= criminal.nature_of_crime %></p>
+                                    <p>Date of Crime: <%= criminal.date_of_crime %></p>
+                                    <p>Sentence: <%= criminal.sentence %></p>
+                                    <ul>
+                                        <% criminal.convictions.forEach(function(crime) { %>
+                                            <li><%= crime.crime %> - <%= crime.date %> - <%= crime.sentence %></li>
+                                        <% }); %>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="text-right pt-5">
+                                <button class="rounded-full bg-cyan-600 p-2 px-3 hover:bg-cyan-700" onclick="location.href='/protection'">Protect Us</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </main>
+
+
+<script>
+   let currentSortOrder = {
+            name: 'asc',
+            crimes: 'asc'
+        };
+
+  function toggleDetails(event, index) {
+    event.stopPropagation(); 
+    const details = document.getElementById('details-' + index);
+    const button = document.getElementById('detailButton-' + index);
+    const sCard = document.getElementById('sCard-' + index);
+    details.style.display = details.style.display === 'block' ? 'none' : 'block';
+    if(details.style.display === 'block'){  
+      sCard.style.display = 'none';
+    }
+  }
+
+  function hide(index){
+    const details = document.getElementById('details-' + index);
+    const button = document.getElementById('detailButton-' + index);
+    const sCard = document.getElementById('sCard-' + index);
+    if(details.style.display === 'block'){
+      details.style.display = 'none';
+      sCard.style.display = 'flex';
+    }
+  }
+
+  function filter() {
+            const filter = document.getElementById('filter');
+            filter.style.display = filter.style.display === 'none' ? 'block' : 'none';
+        }
+function sort() {
+            const sort = document.getElementById('sort');
+            sort.style.display = sort.style.display === 'none' ? 'block' : 'none';
+        }
+
+
+  function sortList(criteria) {
+   
+            const cards = document.querySelectorAll('.criminal-card');
+            const cardArray = Array.from(cards);
+
+            let sortedCards;
+            if (criteria === 'name') {
+                sortedCards = cardArray.sort((a, b) => {
+                    const nameA = a.querySelector('.criminal-name').innerText.toLowerCase();
+                    const nameB = b.querySelector('.criminal-name').innerText.toLowerCase();
+                    if (currentSortOrder.name === 'asc') {
+                        return nameA.localeCompare(nameB);
+                    } else {
+                        return nameB.localeCompare(nameA);
+                    }
+                });
+                currentSortOrder.name = currentSortOrder.name === 'asc' ? 'desc' : 'asc';
+            } else if (criteria === 'crimes') {
+                sortedCards = cardArray.sort((a, b) => {
+                    const crimesA = parseInt(a.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
+                    const crimesB = parseInt(b.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
+                    if (currentSortOrder.crimes === 'asc') {
+                        return crimesA - crimesB;
+                    } else {
+                        return crimesB - crimesA;
+                    }
+                });
+                currentSortOrder.crimes = currentSortOrder.crimes === 'asc' ? 'desc' : 'asc';
+            }
+
+            const container = document.querySelector('.container');
+            sortedCards.forEach(card => container.appendChild(card));
+        }
+</script>
+</body>
+</html>
