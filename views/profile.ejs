@@ -19,8 +19,8 @@
                 disabled>
         </div>
         <div>
-            <label for="location" class="text-xl">Address</label>
-            <input id="location" type="text" name="location" value="<%= user.defaultLocation %>"
+            <label for="address" class="text-xl">Address</label>
+            <input id="address" type="text" name="address" value="<%= user.address %>"
                 class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 disabled>
         </div>
@@ -30,20 +30,24 @@
             <button type="submit" id="saveBtn" class="bg-[#515F84] rounded-xl px-4 py-2" disabled>Save</button>
         </div>
     </form>
+    <br>
+    <div class="w-[70%] mx-auto bg-[#EAD797] flex flex-col justify-center p-10 text-[#515F84] rounded-xl gap-5">
+        <button>Order History</button>
+    </div>
 
     <script>
         function toggleEdit() {
             const editBtn = document.getElementById('editBtn');
             const username = document.getElementById('username');
             const email = document.getElementById('email');
-            const location = document.getElementById('location');
+            const address = document.getElementById('address');
             const saveBtn = document.getElementById('saveBtn');
 
             const isEditing = editBtn.innerText === "Edit";
             editBtn.innerText = isEditing ? "Cancel" : "Edit";
             username.disabled = !username.disabled;
             email.disabled = !email.disabled;
-            location.disabled = !location.disabled;
+            address.disabled = !address.disabled;
             saveBtn.disabled = !saveBtn.disabled;
         }
 
@@ -52,12 +56,12 @@
 
             const usernameField = document.getElementById('username');
             const emailField = document.getElementById('email');
-            const locationField = document.getElementById('location');
+            const addressField = document.getElementById('address');
 
             const updatedUser = {
                 username: usernameField.value,
                 email: emailField.value,
-                location: locationField.value
+                address: addressField.value
             };
 
             try {

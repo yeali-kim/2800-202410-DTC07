@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema({
     username: String,
     email: String,
     password: String,
+    address: String,
 });
 
 const robotSchema = new mongoose.Schema({
@@ -183,6 +184,7 @@ app.post("/signup", async (req, res) => {
         username: username,
         email: email,
         password: hashedPassword,
+        address: " "
     });
 
     req.session.email = email;
@@ -292,13 +294,13 @@ app.use(methodOverride('_method'));
 app.use(express.json()); // To parse JSON bodies
 
 app.put('/updateProfile', async (req, res) => {
-    const { username, email, location } = req.body;
+    const { username, email, address } = req.body;
     const sessionUsername = req.session.user.username;  // Use session to identify the user
 
     try {
         const user = await Users.findOneAndUpdate(
             { username: sessionUsername }, 
-            { username, email, defaultLocation: location }, 
+            { username, email, address: address }, 
             { new: true }
         );
 
@@ -309,7 +311,7 @@ app.put('/updateProfile', async (req, res) => {
         // Update the session user information
         req.session.user.username = username;
         req.session.user.email = email;
-        req.session.user.defaultLocation = location;
+        req.session.user.address = address;
 
         res.json(user);
     } catch (err) {
