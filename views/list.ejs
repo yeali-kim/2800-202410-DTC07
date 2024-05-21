@@ -1,19 +1,80 @@
 <%- include("templates/header") %>
+<style>
+    #filter {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        background-color: white;
+        color: black;
+        border-radius: 100px;
+        padding: 4px;
+        padding-left: 12px;
+        padding-right: 12px;
+        width: 40px;
+        height: 34px;
+        transition-property: all;
+        transition-duration: 0.5s;
+    }
+
+    .expand {
+        border-radius: 10px !important;
+        width: 500px !important;
+        height: 100px !important;
+    }
+</style>
     <main class="bg-[#515F84] text-white p-4 mt-8">
         <div class="container mx-auto">
             <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
             <div class="flex justify-between mb-5">
                 <div>
-                    <button class="bg-white text-black rounded-full p-1 px-3" onclick="filter()">
+                    <button class="" id="filter">
                         <span class="material-symbols-outlined text-base">filter_alt</span>
                     </button>
-                    <button class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
+                    <script>
+                        filter.addEventListener("click", function expandFilter() {
+                            const btn = document.getElementById('filter');
+                            btn.classList.toggle("expand")
+                            if (btn.classList.contains("expand")){
+                                btn.removeEventListener('click', expandFilter);
+                                setTimeout(() => {
+                                    btn.innerHTML = `
+                                        <div class="w-full flex justify-start">
+                                            <button id="closeButton">
+                                                <span class="material-symbols-outlined">close</span>
+                                            </button>
+                                        </div>
+                                        <div class="w-full flex justify-center items-center gap-2">
+                                            <input type="checkbox">
+                                            <label>Crime 1</label>
+                                            <input type="checkbox">
+                                            <label>Crime 2</label>
+                                            <input type="checkbox">
+                                            <label>Crime 3</label>
+                                            <input type="checkbox">
+                                            <label>Crime 4</label>
+                                        </div>
+                                    `;
+                                    const closeBtn = btn.querySelector('#closeButton')
+                                    closeBtn.addEventListener('click', expandFilter);
+                                }, 500);
+                            } else {
+                                setTimeout(() => {
+                                    btn.addEventListener('click', expandFilter);
+                                }, 500);
+                                btn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
+                            }
+                        });
+                    </script>
+                    <button class="invisible bg-white text-black rounded-full p-1 px-3" id="">
+                        <span class="material-symbols-outlined text-base">filter_alt</span>
+                    </button>
+                    <button id="sort" class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
                         <span class="material-symbols-outlined text-base">sort</span>
                     </button>
                 </div>
                 <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
             </div>
-            <div id="filter" style="display: none;" class="mb-5">
+            <!-- <div id="filter" style="display: none;" class="mb-5">
                 <input type="checkbox">
                 <label>Crime 1</label>
                 <input type="checkbox">
@@ -22,7 +83,7 @@
                 <label>Crime 3</label>
                 <input type="checkbox">
                 <label>Crime 4</label>
-            </div>
+            </div> -->
             <div id="sort" style="display: none;" class="pb-5">
                 <div class="flex justify-start gap-8">
                     <button id="sortName" onclick="sortList('name')">Name</button>
