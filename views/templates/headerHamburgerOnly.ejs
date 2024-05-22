@@ -157,6 +157,7 @@
       color: #EAD797;
     }
 
+    /* Hide #back at first and show #back with transition if #appName has the class flip */
     #appName {
       perspective: 1000px;
       transform-style: preserve-3d;
@@ -246,10 +247,10 @@
       document.body.style.overflowY = 'auto'; // Re-enable scrolling
     });
     
+    // CampUs EasterEgg
     var clickCount = 0;
 
     appName.addEventListener('click', () => {
-      console.log(clickCount);
       clickCount++;
       if (clickCount >= 8) {
         appName.classList.add("flip");
