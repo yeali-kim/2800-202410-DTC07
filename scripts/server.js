@@ -184,7 +184,7 @@ app.post("/signup", async (req, res) => {
         username: username,
         email: email,
         password: hashedPassword,
-        address: " "
+        address: "Add your address"
     });
 
     req.session.email = email;
