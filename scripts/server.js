@@ -264,8 +264,14 @@ app.get("/protection", validateUser, (req, res) => {
 });
 
 app.get("/robots", validateUser, async (req, res) => {
-    const robots = await Robots.find();
-    res.render("robots", { robots: robots, user: req.session.user });
+    try {
+        const robots = await Robots.find();
+        const uniqueTypes = await Robots.distinct("type");
+        const uniqueManufacturers = await Robots.distinct("manufacturer");
+        res.render("robots", { robots: robots, uniqueTypes: uniqueTypes, uniqueManufacturers: uniqueManufacturers,user: req.session.user });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 });
 
 app.get("/drones", validateUser, async (req, res) => {
