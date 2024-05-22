@@ -64,9 +64,8 @@ const droneSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
     price: Number,
-    colour: String,
-    weight: Number,
-    description: String,
+    location: String,
+    type: String,
 });
 
 const cyberSchema = new mongoose.Schema({
