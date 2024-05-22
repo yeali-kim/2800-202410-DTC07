@@ -79,49 +79,6 @@
             }
 
 
-            // Filter criminals
-
-
-            // function applyFilters() {
-            //     const filters = {
-            //         name: document.getElementById('name').value,
-            //         crimes: Array.from(document.querySelectorAll('input[name="crime"]:checked')).map(input => input.value),
-            //         sentenceMin: document.getElementById('sentence-min').value,
-            //         sentenceMax: document.getElementById('sentence-max').value,
-            //     };
-            //     const filteredCriminals = criminals.filter(criminal => {
-            //         // Replace these with your actual filter conditions
-            //         const nameMatches = filters.name === '' || criminal.name.includes(filters.name);
-            //         const crimeMatches = filters.crimes.length === 0 || filters.crimes.includes(criminal.crime);
-            //         const sentenceMatches = (filters.sentenceMin === '' || criminal.sentence >= parseInt(filters.sentenceMin)) &&
-            //             (filters.sentenceMax === '' || criminal.sentence <= parseInt(filters.sentenceMax));
-
-            //         return nameMatches && crimeMatches && sentenceMatches;
-            //     });
-
-            //     // Clear existing markers
-            //     for (let i = 0; i < criminalMarkers.length; i++) {
-            //         criminalMarkers[i].setMap(null);
-            //     }
-            //     criminalMarkers = [];
-            //     const geocoder = new google.maps.Geocoder();
-            //     // Add new markers for each filtered criminal
-            //     filteredCriminals.forEach(criminal => {
-            //         geocoder.geocode({ address: criminal.address }, (results, status) => {
-            //             if (status === 'OK') {
-            //                 const marker = new google.maps.Marker({
-            //                     position: results[0].geometry.location,
-            //                     map: map
-            //                 });
-            //                 criminalMarkers.push(marker);
-            //             } else {
-            //                 console.error('Geocode was not successful for the following reason: ' + status);
-            //             }
-            //         });
-            //     });
-            // }
-
-
             // Initialize map
             function initMap() {
                 navigator.geolocation.getCurrentPosition(function (position) {
