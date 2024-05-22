@@ -1,10 +1,101 @@
 <%- include('templates/header') %>
+    <style>
+        #filter {
+            display: flex;
+            flex-direction: column;
+            position: absolute;
+            background-color: white;
+            color: black;
+            border-radius: 100px;
+            padding: 4px;
+            padding-left: 12px;
+            padding-right: 12px;
+            width: 50px;
+            height: 34px;
+            transition-property: all;
+            transition-duration: 0.5s;
+        }
+
+        .expand {
+            border-radius: 10px !important;
+            width: 410px !important;
+            height: 150px !important;
+        }
+    </style>
+
     <div class="flex justify-center mt-32 mb-28">
         <h1 class="font-bold text-white text-4xl">Security Robots</h1>
     </div>
     <div class="container mx-auto">
-        <div class="flex justify-end mb-6 gap-4 w-[95%]">
-            <button class="bg-white rounded-full pt-2 px-3">
+        <div class="flex justify-start mb-6 gap-4 w-[95%] px-2">
+            <button class="" id="filter">
+                <span class="material-symbols-outlined">
+                    filter_alt
+                </span>
+            </button>
+            <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const btn = document.getElementById('filter');
+                    const initialHTML = btn.innerHTML;  // Store initial HTML
+                    const initialWidth = btn.style.width;  // Store initial width
+                    const initialHeight = btn.style.height;  // Store initial height
+
+                    function expandFilter() {
+                        btn.classList.toggle('expand');
+                        if (btn.classList.contains('expand')) {
+                            btn.removeEventListener('click', expandFilter);
+                            setTimeout(() => {
+                                btn.innerHTML = `
+                                                                <div class='w-full flex justify-start'>
+                                                                    <button id='closeButton'>
+                                                                        <span class='material-symbols-outlined'>
+                                                                            close
+                                                                        </span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class='w-full flex flex-col gap-2'>
+                                                                    <div>
+                                                                        <label for='priceRange'>Price: </label>
+                                        <input type='range' id='priceRange' name='priceRange' min='0' max='10000' value='0' oninput='this.nextElementSibling.value = this.value'>
+                                        <output>0</output>
+                                                                    </div>
+                                                                    <div>
+                                                                        <label for='manufacturerFilter'>Manufacturer</label>
+                                                                        <select id='manufacturerFilter'>
+                                                                            <option value=''>Select Manufacturer: </option>
+                                                                            <% uniqueManufacturers.forEach(manufacturer => { %>
+                                                                                <option value='<%= manufacturer %>'><%= manufacturer %></option>
+                                                                            <% }); %>
+                                                                        </select>
+                                                                        </div>
+                                                                    <div>
+                                                                        <label for='typeFilter'>Type: </label>
+                                                                        <select id='typeFilter'>
+                                                                            <option value=''>Select Type</option>
+                                                                            <% uniqueTypes.forEach(type => { %>
+                                                                                <option value='<%= type %>'><%= type %></option>
+                                                                            <% }); %>
+                                                                        </select>
+                                                                        </div>
+                                                                </div>
+                                                            `;
+                                const closeBtn = btn.querySelector('#closeButton');
+                                closeBtn.addEventListener('click', expandFilter);
+                            }, 500);
+                        } else {
+                            setTimeout(() => {
+                                btn.addEventListener('click', expandFilter);
+                            }, 500);
+                            btn.innerHTML = initialHTML;
+                            btn.style.width = initialWidth;
+                            btn.style.height = initialHeight;
+                        }
+                    }
+
+                    btn.addEventListener('click', expandFilter);
+                });
+            </script>
+            <button class="invisible bg-white rounded-full pt-2 px-3">
                 <span class="material-symbols-outlined">
                     filter_alt
                 </span>
@@ -122,4 +213,9 @@
                     // Initial assignment of event listeners
                     reassignEventListeners();
                 });
+
+                function filter() {
+                    const filter = document.getElementById('filter');
+                    filter.style.display = filter.style.display === 'none' ? 'block' : 'none';
+                }
             </script>
