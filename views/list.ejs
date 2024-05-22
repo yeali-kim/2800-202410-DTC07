@@ -1,98 +1,137 @@
 <%- include("templates/header") %>
-<main class="bg-[#515F84] text-white p-4 mt-8">
-    <div class="container mx-auto">
-        <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
-        <div class="flex justify-between mb-5">
-            <div>
-                <button class="bg-white text-black rounded-full p-1 px-3">
-                    <span class="material-symbols-outlined text-base" onclick="toggleFilter()">filter_alt</span>
-                    <div id="filter" class="filter-options">
-                    <input type="checkbox">
-                    <label>Crime 1</label>
-                    <input type="checkbox">
-                    <label>Crime 2</label>
-                    <input type="checkbox">
-                    <label>Crime 3</label>
-                    <input type="checkbox">
-                    <label>Crime 4</label>
-                </div>
-                </button>
-                
-                <button class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
-                    <span class="material-symbols-outlined text-base">sort</span>
-                </button>
-            </div>
-            <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
-        </div>
-
-        <div id="sort" style="display: none;" class="pb-5">
-            <div class="flex justify-start gap-8">
-                <button id="sortName" onclick="sortList('name')">Name</button>
-                <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
-            </div>
-        </div>
-        <% criminals.forEach(function(criminal, index) { %>
-            <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;">
-                <div class="flex justify-between" id="sCard-<%= index %>">
-                    <div class="flex justify-start">
-                        <img style="height: 100px;" src="<%= criminal.image %>">
-                        <div class="flex-col mx-3">
-                            <h2 class="criminal-name text-xl font-semibold">Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></h2>
-                            <p class="criminal-crimes">Number of offenses: <%= criminal.convictions.length %></p>
-                        </div>
-                    </div>
-                    <button onclick="toggleDetails(event, '<%= index %>')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" id="detailButton-<%= index %>">Details</button>
-                </div>
-                <div id="details-<%= index %>" class="hidden" style="transition: all 2s ease;">
-                    <div>
-                        <div>
-                            <p>Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></p>
-                            <p>DOB: <%= criminal.dob %></p>
-                            <p>Address: <%= criminal.address.address %>, <%= criminal.address.city %> <%= criminal.address.province %></p>
-                            <p>Gender: <%= criminal.gender %></p>
-                            <p class="pb-8">Description: </p>
-                            <div class="overflow-y-scroll bg-white text-black p-5">
-                                <p><%= criminal.description %></p>
-                                <p>Nature of Crime: <%= criminal.nature_of_crime %></p>
-                                <p>Date of Crime: <%= criminal.date_of_crime %></p>
-                                <p>Sentence: <%= criminal.sentence %></p>
-                                <ul>
-                                    <% criminal.convictions.forEach(function(crime) { %>
-                                        <li><%= crime.crime %> - <%= crime.date %> - <%= crime.sentence %></li>
-                                    <% }); %>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="text-right pt-5">
-                            <button class="rounded-full bg-cyan-600 p-2 px-3 hover:bg-cyan-700" onclick="location.href='/protection'">Protect Us</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <% }); %>
-    </div>
-</main>
-
 <style>
-    .filter-options {
-        display: none;
-        overflow: hidden;
-        max-height: 0;
-        opacity: 0;
-        transition: max-height 0.5s ease, opacity 0.5s ease;
+    #filter {
+        display: flex;
+        flex-direction: column;
         position: absolute;
         background-color: white;
-        padding: 10px;
-        border-radius: 5px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        color: black;
+        border-radius: 100px;
+        padding: 4px;
+        padding-left: 12px;
+        padding-right: 12px;
+        width: 40px;
+        height: 34px;
+        transition-property: all;
+        transition-duration: 0.5s;
     }
 
-    .filter-options.show {
-        display: block;
-        max-height: 200px; /* Adjust to the maximum height you expect */
-        opacity: 1;
+    .expand {
+        border-radius: 10px !important;
+        width: 400px !important;
+        height: 100px !important;
     }
 </style>
+    <main class="bg-[#515F84] text-white p-4 mt-8">
+        <div class="container mx-auto">
+            <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
+            <div class="flex justify-between mb-5">
+                <div>
+                    <button class="" id="filter">
+                        <span class="material-symbols-outlined text-base">filter_alt</span>
+                    </button>
+                    <script>
+                        filter.addEventListener("click", function expandFilter() {
+                            const btn = document.getElementById('filter');
+                            btn.classList.toggle("expand")
+                            if (btn.classList.contains("expand")){
+                                btn.removeEventListener('click', expandFilter);
+                                setTimeout(() => {
+                                    btn.innerHTML = `
+                                        <div class="w-full flex justify-start">
+                                            <button id="closeButton">
+                                                <span class="material-symbols-outlined">close</span>
+                                            </button>
+                                        </div>
+                                        <div class="w-full flex justify-center items-center gap-2">
+                                            <input type="checkbox">
+                                            <label>Crime 1</label>
+                                            <input type="checkbox">
+                                            <label>Crime 2</label>
+                                            <input type="checkbox">
+                                            <label>Crime 3</label>
+                                            <input type="checkbox">
+                                            <label>Crime 4</label>
+                                        </div>
+                                    `;
+                                    const closeBtn = btn.querySelector('#closeButton')
+                                    closeBtn.addEventListener('click', expandFilter);
+                                }, 500);
+                            } else {
+                                setTimeout(() => {
+                                    btn.addEventListener('click', expandFilter);
+                                }, 500);
+                                btn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
+                            }
+                        });
+                    </script>
+                    <button class="invisible bg-white text-black rounded-full p-1 px-3" id="">
+                        <span class="material-symbols-outlined text-base">filter_alt</span>
+                    </button>
+                    <button id="sort" class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
+                        <span class="material-symbols-outlined text-base">sort</span>
+                    </button>
+                </div>
+                <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
+            </div>
+            <!-- <div id="filter" style="display: none;" class="mb-5">
+                <input type="checkbox">
+                <label>Crime 1</label>
+                <input type="checkbox">
+                <label>Crime 2</label>
+                <input type="checkbox">
+                <label>Crime 3</label>
+                <input type="checkbox">
+                <label>Crime 4</label>
+            </div> -->
+            <div id="sort" style="display: none;" class="pb-5">
+                <div class="flex justify-start gap-8">
+                    <button id="sortName" onclick="sortList('name')">Name</button>
+                    <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
+                </div>
+            </div>
+            <% criminals.forEach(function(criminal, index) { %>
+                <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;">
+                    <div class="flex justify-between" id="sCard-<%= index %>">
+                        <div class="flex justify-start">
+                            
+                                <img style="height: 100px;" src="<%= criminal.image %>">
+                                <div class="flex-col mx-3">
+                                <h2 class="criminal-name text-xl font-semibold">Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></h2>
+                                <p class="criminal-crimes">Number of offenses: <%= criminal.convictions.length %></p>
+                            </div>
+                        </div>
+                        <button onclick="toggleDetails(event, '<%= index %>')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" id="detailButton-<%= index %>">Details</button>
+                    </div>
+                    <div id="details-<%= index %>" class="hidden" style="transition: all 2s ease;">
+                        <div>
+                            <div>
+                                <p>Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></p>
+                                <p>DOB: <%= criminal.dob %></p>
+                                <p>Address: <%= criminal.address.address %>, <%= criminal.address.city %> <%= criminal.address.province %></p>
+                                <p>Gender: <%= criminal.gender %></p>
+                                <p class="pb-8">Description: </p>
+                                <div class="overflow-y-scroll bg-white text-black p-5">
+                                    <p><%= criminal.description %></p>
+                                    <p>Nature of Crime: <%= criminal.nature_of_crime %></p>
+                                    <p>Date of Crime: <%= criminal.date_of_crime %></p>
+                                    <p>Sentence: <%= criminal.sentence %></p>
+                                    <ul>
+                                        <% criminal.convictions.forEach(function(crime) { %>
+                                            <li><%= crime.crime %> - <%= crime.date %> - <%= crime.sentence %></li>
+                                        <% }); %>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="text-right pt-5">
+                                <button class="rounded-full bg-cyan-600 p-2 px-3 hover:bg-cyan-700" onclick="location.href='/protection'">Protect Us</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <% }); %>
+        </div>
+    </main>
 
 <script>
     let currentSortOrder = {
@@ -192,5 +231,7 @@ function sortList(criteria) {
 }
 
 </script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&callback=initMap">
+        </script>
 </body>
 </html>
