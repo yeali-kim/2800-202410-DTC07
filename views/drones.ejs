@@ -1,43 +1,137 @@
 <%- include('templates/header') %>
-    <div class="flex justify-center mt-32 mb-28">
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
+
+    <!-- Title -->
+    <div class="flex justify-center mt-28 mb-14">
         <h1 class="font-bold text-white text-4xl">Surveillance Drones</h1>
     </div>
-    <div class="container mx-auto">
-        <div class="flex justify-end mb-6 gap-4 w-[95%]">
-            <button class="bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    filter_alt
-                </span>
-            </button>
-            <button class="bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    sort
-                </span>
-            </button>
-        </div>
-        <div class="flex flex-col items-center gap-14 font-bold text-3xl">
-            <div class="flex bg-gray-300 text-center w-[90%] rounded-lg py-5">
-                <span class="material-symbols-outlined text-[70px]">
-                    nest_tag
-                </span>
-                <div class="flex justify-between">
-                    <div class="flex flex-col text-left pt-2">
-                        <h2 class="text-lg">Model:</h2>
-                        <p class="text-lg">Suitable for:</p>
-                    </div>
-                    <button data-modal-target="drone-modal" data-modal-toggle="drone-modal" class="text-lg ml-36"
-                        type="button">
-                        Details
-                    </button>
-                </div>
-            </div>
+
+    <!-- Sort button with dropdown menu -->
+    <div class="sort-options">
+        <button id="sort" class="bg-white px-2 rounded-full ms-4">
+            <span class="font-bold text-gray-700 pt-1 material-symbols-outlined">Sort</span>
+        </button>
+
+        <!-- Sort options dropdown -->
+        <div id="sort-options-container" class="hidden bg-white p-3 mx-4 text-center rounded-lg">
+            <button value="manufacturer" onclick="sortItems('manufacturer')">Manufacturer</button><br>
+            <button value="type" onclick="sortItems('type')">Type</button><br>
+            <button value="price-asc" onclick="sortItems('price-asc')">Price: Low to High</button><br>
+            <button value="price-desc" onclick="sortItems('price-desc')">Price: High to Low</button><br>
         </div>
     </div>
-    <%- include('templates/modal', { modalId: 'drone-modal' , icon: 'nest_tag' , description: '(model description)' })
-        %>
+
+    <!-- Filter button -->
+
+
+
+
+
+    <!-- Drones list -->
+    <div id="drones-list" class="flex flex-wrap items-center">
+        <% drones.forEach(function(drone) { %>
+            <div class="item m-4 w-full bg-white h-full shadow-lg rounded-lg overflow-hidden text-center"
+                data-manufacturer="<%= drone.manufacturer %>" data-type="<%= drone.type %>"
+                data-price="<%= drone.price %>">
+                <div class="p-6 flex justify-between flex-col">
+                    <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Model</h2>
+                    <h1 class="title-font text-lg font-medium text-gray-900 mb-3">
+                        <%= drone.model %>
+                    </h1>
+                    <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Manufacturer</h2>
+                    <p class="leading-relaxed mb-3">
+                        <%= drone.manufacturer %>
+                    </p>
+                    <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Price</h2>
+                    <p class="leading-relaxed mb-3">
+                        $<%= drone.price %> / month
+                    </p>
+                    <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Type</h2>
+                    <p class="leading-relaxed mb-3">
+                        <%= drone.type %>
+                    </p>
+                    <button type="button" data-modal-toggle="drone-modal"
+                        class="flex bg-cyan-600 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">Place
+                        an Order</button>
+                </div>
+            </div>
+            <% }); %>
+    </div>
+
+    <%- include('templates/modal', { modalId: 'drone-modal' , description: '(model description)' }) %>
         <%- include('templates/footer') %>
 
             <script>
+
+                // Sort button click opens sort options
+                document.getElementById('sort').addEventListener('click', function () {
+                    const sortOptionsContainer = document.getElementById('sort-options-container');
+                    if (sortOptionsContainer.classList.contains('hidden')) {
+                        sortOptionsContainer.classList.remove('hidden');
+                    } else {
+                        sortOptionsContainer.classList.add('hidden');
+                    }
+                });
+
+                let sortOrder = {
+                    manufacturer: 'asc',
+                    type: 'asc'
+                };
+
+                // Sort items based on selected criteria
+                function sortItems(criteria) {
+                    console.log(`Sorting by: ${criteria}`);
+                    const items = document.querySelectorAll('.item');
+                    const itemsArray = Array.from(items);
+                    itemsArray.sort((a, b) => {
+                        let aValue, bValue;
+                        switch (criteria) {
+                            case 'manufacturer':
+                                aValue = a.dataset.manufacturer.toLowerCase();
+                                bValue = b.dataset.manufacturer.toLowerCase();
+                                break;
+                            case 'type':
+                                aValue = a.dataset.type.toLowerCase();
+                                bValue = b.dataset.type.toLowerCase();
+                                break;
+                            case 'price-asc':
+                                aValue = parseFloat(a.dataset.price);
+                                bValue = parseFloat(b.dataset.price);
+                                return aValue - bValue;
+                            case 'price-desc':
+                                aValue = parseFloat(a.dataset.price);
+                                bValue = parseFloat(b.dataset.price);
+                                return bValue - aValue;
+                        }
+                        if (sortOrder[criteria] === 'asc') {
+                            if (aValue < bValue) return -1;
+                            if (aValue > bValue) return 1;
+                        } else {
+                            if (aValue < bValue) return 1;
+                            if (aValue > bValue) return -1;
+                        }
+                        return 0;
+                    });
+
+                    if (criteria === 'manufacturer' || criteria === 'type') {
+                        // Toggle sort order for manufacturer and type (asc/desc)
+                        sortOrder[criteria] = sortOrder[criteria] === 'asc' ? 'desc' : 'asc';
+                    }
+
+                    // Hide the sort options
+                    document.getElementById('sort-options-container').classList.add('hidden');
+
+                    // display sorted items
+                    const container = document.getElementById('drones-list');
+                    container.innerHTML = '';
+                    itemsArray.forEach(item => container.appendChild(item));
+                }
+
+
                 // Custom JavaScript to handle modal toggle
                 document.addEventListener('DOMContentLoaded', function () {
                     const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
@@ -52,17 +146,28 @@
                     const initialModalBodyContent = modalBody.innerHTML;
                     const initialModalFooterContent = modalFooter.innerHTML;
 
+                    // Add click event listener to each "Details" button
+                    modalToggleButtons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            // Show the modal
+                            document.getElementById('drone-modal').classList.remove('hidden');
+                        });
+                    });
+
+                    // Add click event listener to each "Close" button
+                    modalHideButtons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            // Hide the modal
+                            document.getElementById('drone-modal').classList.add('hidden');
+                        });
+                    });
+
                     function reassignEventListeners() {
                         bookNowButton.addEventListener('click', function () {
                             modalBody.innerHTML = `
-                    <div class="flex justify-center mb-4">
-                        <span class="material-symbols-outlined text-[70px]">
-                        nest_tag
-                    </span>
-                    </div>
-                    <div class="bg-gray-200 text-center py-10 rounded-lg">
-                        <p class="text-lg">Order Template</p>
-                    </div>
+                <div class="bg-gray-200 text-center py-10 rounded-lg">
+                    <p class="text-lg">Order Template</p>
+                </div>
                 `;
                             bookNowButton.style.display = 'none';
                             orderButton.style.display = 'block';
@@ -71,14 +176,9 @@
 
                         orderButton.addEventListener('click', function () {
                             modalBody.innerHTML = `
-                    <div class="flex justify-center mb-4">
-                        <span class="material-symbols-outlined text-[70px]">
-                        nest_tag
-                    </span>
-                    </div>
-                    <div class="bg-gray-200 text-center py-10 rounded-lg">
-                        <p class="text-lg">Order Confirmation</p>
-                    </div>
+                <div class="bg-gray-200 text-center py-10 rounded-lg">
+                    <p class="text-lg">Order Confirmation</p>
+                </div>
                 `;
                             orderButton.style.display = 'none';
                             homeButton.style.display = 'block';
@@ -120,3 +220,6 @@
                     reassignEventListeners();
                 });
             </script>
+            </body>
+
+            </html>
