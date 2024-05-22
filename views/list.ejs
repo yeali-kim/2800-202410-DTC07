@@ -22,15 +22,15 @@
         height: 100px !important;
     }
 </style>
-    <main class="bg-[#515F84] text-white p-4 mt-8">
-        <div class="container mx-auto">
-            <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
-            <div class="flex justify-between mb-5">
-                <div>
-                    <button class="" id="filter">
-                        <span class="material-symbols-outlined text-base">filter_alt</span>
-                    </button>
-                    <script>
+<main class="bg-[#515F84] text-white p-4 mt-8">
+    <div class="container mx-auto">
+        <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
+        <div class="flex justify-between mb-5">
+            <div>
+                <button class="" id="filter">
+                    <span class="material-symbols-outlined text-base">filter_alt</span>
+                </button>
+                                    <script>
                         filter.addEventListener("click", function expandFilter() {
                             const btn = document.getElementById('filter');
                             btn.classList.toggle("expand")
@@ -65,78 +65,80 @@
                             }
                         });
                     </script>
-                    <button class="invisible bg-white text-black rounded-full p-1 px-3" id="">
-                        <span class="material-symbols-outlined text-base">filter_alt</span>
-                    </button>
-                    <button id="sort" class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
-                        <span class="material-symbols-outlined text-base">sort</span>
-                    </button>
-                </div>
-                <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
-            </div>
-            <!-- <div id="filter" style="display: none;" class="mb-5">
-                <input type="checkbox">
-                <label>Crime 1</label>
-                <input type="checkbox">
-                <label>Crime 2</label>
-                <input type="checkbox">
-                <label>Crime 3</label>
-                <input type="checkbox">
-                <label>Crime 4</label>
-            </div> -->
-            <div id="sort" style="display: none;" class="pb-5">
-                <div class="flex justify-start gap-8">
-                    <button id="sortName" onclick="sortList('name')">Name</button>
-                    <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
-                </div>
-            </div>
-            <% criminals.forEach(function(criminal, index) { %>
-                <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;">
-                    <div class="flex justify-between" id="sCard-<%= index %>">
-                        <div class="flex justify-start">
-                            
-                                <img style="height: 100px;" src="<%= criminal.image %>">
-                                <div class="flex-col mx-3">
-                                <h2 class="criminal-name text-xl font-semibold">Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></h2>
-                                <p class="criminal-crimes">Number of offenses: <%= criminal.convictions.length %></p>
-                            </div>
-                        </div>
-                        <button onclick="toggleDetails(event, '<%= index %>')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" id="detailButton-<%= index %>">Details</button>
-                    </div>
-                    <div id="details-<%= index %>" class="hidden" style="transition: all 2s ease;">
-                        <div>
-                            <div>
-                                <p>Name: <%= criminal.firstName %><%= criminal.middleName %> <%= criminal.lastName %></p>
-                                <p>DOB: <%= criminal.dob %></p>
-                                <p>Address: <%= criminal.address.address %>, <%= criminal.address.city %> <%= criminal.address.province %></p>
-                                <p>Gender: <%= criminal.gender %></p>
-                                <p class="pb-8">Description: </p>
-                                <div class="overflow-y-scroll bg-white text-black p-5">
-                                    <p><%= criminal.description %></p>
-                                    <p>Nature of Crime: <%= criminal.nature_of_crime %></p>
-                                    <p>Date of Crime: <%= criminal.date_of_crime %></p>
-                                    <p>Sentence: <%= criminal.sentence %></p>
-                                    <ul>
-                                        <% criminal.convictions.forEach(function(crime) { %>
-                                            <li><%= crime.crime %> - <%= crime.date %> - <%= crime.sentence %></li>
-                                        <% }); %>
-                                    </ul>
-                                </div>
-                            </div>
-                            <div class="text-right pt-5">
-                                <button class="rounded-full bg-cyan-600 p-2 px-3 hover:bg-cyan-700" onclick="location.href='/protection'">Protect Us</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            <% }); %>
-        </div>
-    </main>
 
+                <button class="invisible bg-white text-black rounded-full p-1 px-3" id="">
+                    <span class="material-symbols-outlined text-base">filter_alt</span>
+                </button>
+                <button class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
+                    <span class="material-symbols-outlined text-base">sort</span>
+                </button>
+            </div>
+            <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
+        </div>
+        <div id="sort" style="display: none;" class="pb-5">
+            <div class="flex justify-start gap-8">
+                <button id="sortName" onclick="sortList('name')">Name</button>
+                <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
+                <button id="sortDistance" onclick="sortList('distance')">Distance</button>
+            </div>
+        </div>
+        <% criminals.forEach(function(criminal, index) { %>
+            <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>">
+                <div class="flex justify-between" id="sCard-<%= index %>">
+                    <div class="flex justify-start">
+                        <img style="height: 100px;" src="<%= criminal.image %>">
+                        <div class="flex-col mx-3">
+                            <h2 class="criminal-name text-xl font-semibold">Name: <%= criminal.firstName %> <%= criminal.middleName %> <%= criminal.lastName %></h2>
+                            <p class="criminal-crimes">Number of offenses: <%= criminal.convictions.length %></p>
+                            <% if (criminal.distanceText) { %>
+                            <p class="criminal-distance">Distance: <%= criminal.distanceText %></p>
+                            <% } %>
+                        </div>
+                    </div>
+                    <button onclick="toggleDetails(event, '<%= index %>')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" id="detailButton-<%= index %>">Details</button>
+                </div>
+                <div id="details-<%= index %>" class="hidden" style="transition: all 2s ease;">
+                    <div>
+                        <div>
+                            <p>Name: <%= criminal.firstName %> <%= criminal.middleName %> <%= criminal.lastName %></p>
+                            <p>DOB: <%= criminal.dob %></p>
+                            <p>Address: <%= criminal.address %></p>
+                            <p>Gender: <%= criminal.gender %></p>
+                            <% if (criminal.distanceText) { %>
+                            <p class="criminal-distance">Distance: <%= criminal.distanceText %></p>
+                            <% } %>
+                            <p class="pb-8">Description: </p>
+                            <div class="overflow-y-scroll bg-white text-black p-5">
+                                <p>Physical Description:</p>
+                                <ul>
+                                    <% criminal.physicalDescriptions.forEach(function(desc) { %>
+                                        <li><%= desc %></li>
+                                    <% }); %>
+                                </ul>
+                                <p>Nature of Crime: <%= criminal.nature_of_crime %></p>
+                                <p>Date of Crime: <%= criminal.date_of_crime %></p>
+                                <p>Sentence: <%= criminal.sentence %></p>
+                                <ul>
+                                    <% criminal.convictions.forEach(function(crime) { %>
+                                        <li><%= crime.crime %> - <%= crime.date %> - <%= crime.sentence %></li>
+                                    <% }); %>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="text-right pt-5">
+                            <button class="rounded-full bg-cyan-600 p-2 px-3 hover:bg-cyan-700" onclick="location.href='/protection'">Protect Us</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }); %>
+    </div>
+</main>
 <script>
     let currentSortOrder = {
         name: 'asc',
-        crimes: 'asc'
+        crimes: 'asc',
+        distance: 'asc'
     };
 
     function toggleDetails(event, index) {
@@ -150,28 +152,13 @@
         }
     }
 
-    function hide(index){
+    function hide(index) {
         const details = document.getElementById('details-' + index);
         const button = document.getElementById('detailButton-' + index);
         const sCard = document.getElementById('sCard-' + index);
-        if(details.style.display === 'block'){
+        if(details.style.display === 'block') {
             details.style.display = 'none';
             sCard.style.display = 'flex';
-        }
-    }
-
-    function toggleFilter() {
-        const filter = document.getElementById('filter');
-        if (filter.classList.contains('show')) {
-            filter.classList.remove('show');
-            setTimeout(() => {
-                filter.style.display = 'none';
-            }, 500); // Matches the transition duration
-        } else {
-            filter.style.display = 'block';
-            setTimeout(() => {
-                filter.classList.add('show');
-            }, 10); // Allow for the display change to take effect
         }
     }
 
@@ -180,58 +167,105 @@
         sort.style.display = sort.style.display === 'none' ? 'block' : 'none';
     }
 
-    // Function to sort the list of criminal cards based on a specified criteria ('name' or 'crimes')
-function sortList(criteria) {
-    // Select all elements with the class 'criminal-card' and convert the NodeList to an array
-    const cards = document.querySelectorAll('.criminal-card');
-    const cardArray = Array.from(cards);
+    function sortList(criteria) {
+        const cards = document.querySelectorAll('.criminal-card');
+        const cardArray = Array.from(cards);
+        let sortedCards;
 
-    // Declare a variable to hold the sorted cards
-    let sortedCards;
+        if (criteria === 'name') {
+            sortedCards = cardArray.sort((a, b) => {
+                const nameA = a.querySelector('.criminal-name').innerText.toLowerCase();
+                const nameB = b.querySelector('.criminal-name').innerText.toLowerCase();
+                return currentSortOrder.name === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+            });
+            currentSortOrder.name = currentSortOrder.name === 'asc' ? 'desc' : 'asc';
+        } else if (criteria === 'crimes') {
+            sortedCards = cardArray.sort((a, b) => {
+                const crimesA = parseInt(a.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
+                const crimesB = parseInt(b.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
+                return currentSortOrder.crimes === 'asc' ? crimesA - crimesB : crimesB - crimesA;
+            });
+            currentSortOrder.crimes = currentSortOrder.crimes === 'asc' ? 'desc' : 'asc';
+        } else if (criteria === 'distance') {
+            sortedCards = cardArray.sort((a, b) => {
+                const distanceA = parseFloat(a.getAttribute('data-distance'));
+                const distanceB = parseFloat(b.getAttribute('data-distance'));
+                return currentSortOrder.distance === 'asc' ? distanceA - distanceB : distanceB - distanceA;
+            });
+            currentSortOrder.distance = currentSortOrder.distance === 'asc' ? 'desc' : 'asc';
+        }
 
-    // If the criteria is 'name', sort by the criminal's name
-    if (criteria === 'name') {
-        // Sort the array of cards based on the name of the criminal
-        sortedCards = cardArray.sort((a, b) => {
-            // Retrieve and convert the names to lowercase for comparison
-            const nameA = a.querySelector('.criminal-name').innerText.toLowerCase();
-            const nameB = b.querySelector('.criminal-name').innerText.toLowerCase();
-            // Compare names and return the sorted result based on the current sort order
-            if (currentSortOrder.name === 'asc') {
-                return nameA.localeCompare(nameB);
-            } else {
-                return nameB.localeCompare(nameA);
-            }
-        });
-        // Toggle the sort order for the next time the function is called
-        currentSortOrder.name = currentSortOrder.name === 'asc' ? 'desc' : 'asc';
-
-    // If the criteria is 'crimes', sort by the number of offenses
-    } else if (criteria === 'crimes') {
-        // Sort the array of cards based on the number of offenses
-        sortedCards = cardArray.sort((a, b) => {
-            // Retrieve and convert the number of crimes to an integer for comparison
-            const crimesA = parseInt(a.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
-            const crimesB = parseInt(b.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
-            // Compare the number of crimes and return the sorted result based on the current sort order
-            if (currentSortOrder.crimes === 'asc') {
-                return crimesA - crimesB;
-            } else {
-                return crimesB - crimesA;
-            }
-        });
-        // Toggle the sort order for the next time the function is called
-        currentSortOrder.crimes = currentSortOrder.crimes === 'asc' ? 'desc' : 'asc';
+        const container = document.querySelector('.container');
+        sortedCards.forEach(card => container.appendChild(card));
     }
 
-    // Select the container element that holds the cards
-    const container = document.querySelector('.container');
-    // Append each card from the sorted array back into the container, effectively reordering them
-    sortedCards.forEach(card => container.appendChild(card));
-}
+    function haversineDistance(lat1, lon1, lat2, lon2) {
+        const R = 6371; // Radius of the Earth in kilometers
+        const dLat = degreesToRadians(lat2 - lat1);
+        const dLon = degreesToRadians(lon2 - lon1);
+        const a = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                  Math.cos(degreesToRadians(lat1)) * Math.cos(degreesToRadians(lat2)) *
+                  Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c; // Distance in kilometers
+    }
 
+    function degreesToRadians(degrees) {
+        return degrees * (Math.PI / 180);
+    }
+
+    async function initMap(criminals) {
+        navigator.geolocation.getCurrentPosition(async function(position) {
+            const userLocation = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            const geocodedLocations = await Promise.all(criminals.map(async (criminal) => {
+                const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(criminal.address)}&key=<%= apiKey %>`);
+                const data = await response.json();
+                return data.results[0].geometry.location;
+            }));
+
+            geocodedLocations.forEach((location, index) => {
+                const distance = haversineDistance(userLocation.lat, userLocation.lng, location.lat, location.lng);
+                criminals[index].distance = distance;
+                criminals[index].distanceText = `${distance.toFixed(2)} km`;
+
+                // Update the data-distance attribute and content
+                const card = document.querySelectorAll('.criminal-card')[index];
+                card.setAttribute('data-distance', distance);
+
+                // Add distance to card only if it's not already present
+                const cardContent = card.querySelector('.flex-col');
+                if (!cardContent.querySelector('.criminal-distance')) {
+                    const distanceElement = document.createElement('p');
+                    distanceElement.classList.add('criminal-distance');
+                    distanceElement.innerText = `Distance: ${distance.toFixed(2)} km`;
+                    cardContent.appendChild(distanceElement); // Insert after Number of offenses
+                }
+
+                // For expanded view, add distance only if it's not already present
+                const expandedContent = document.querySelector(`#details-${index} .overflow-y-scroll`);
+                if (!expandedContent.querySelector('.criminal-distance')) {
+                    const expandedDistanceElement = document.createElement('p');
+                    expandedDistanceElement.classList.add('criminal-distance');
+                    expandedDistanceElement.innerText = `Distance: ${distance.toFixed(2)} km`;
+                    expandedContent.insertBefore(expandedDistanceElement, expandedContent.querySelector('.pb-8')); // Insert after gender
+                }
+            });
+
+            // Sort by distance initially
+            sortList('distance');
+        });
+    }
+
+    // Fetching the criminals data from the server
+    document.addEventListener("DOMContentLoaded", function() {
+        const criminals = <%- JSON.stringify(criminals) %>;
+        initMap(criminals);
+    });
 </script>
-<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&callback=initMap">
-        </script>
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>"></script>
 </body>
 </html>
