@@ -53,29 +53,28 @@ const userSchema = new mongoose.Schema({
     password: String,
 });
 
+
 const robotSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
     price: Number,
-    description: String,
+    location: String,
+    type: String,
 });
 
 const droneSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
     price: Number,
-    colour: String,
-    weight: Number,
-    description: String,
+    location: String,
+    type: String,
 });
 
 const cyberSchema = new mongoose.Schema({
     price: Number,
-    description: String,
-    manufacturer: String,
-    model: String,
-    url: String,
+    type: String,
 });
+
 
 // Ensure that the model name matches the actual collection name
 const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
