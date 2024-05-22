@@ -101,11 +101,28 @@
     h3 {
         color: #515f84;
     }
+
+    .user {
+        display: none;
+    }
 </style>
 
 <!-- Dialog (hidden) -->
 <dialog id="orderDialog">
     <div>
+        <input
+            type="text"
+            class="user"
+            id="userAddress"
+            value="<%= user.address %>"
+            disabled />
+        <input
+            type="text"
+            name="email"
+            class="user"
+            id="userEmail"
+            value="<%= user.email %>"
+            disabled />
         <button onclick="orderDialog.close()" id="closeModal">
             <span class="material-symbols-outlined"> close </span>
         </button>
@@ -120,15 +137,28 @@
                         <input
                             type="text"
                             name="address"
+                            id="address"
                             placeholder="Address"
                             required />
                     </div>
+                    <% if (user.address == "Add your address") { %>
                     <div>
                         <input type="checkbox" name="setAddress" />
                         <label for="setAddress" class="checkbox"
                             >make this my default address</label
                         >
                     </div>
+                    <% } else { %>
+                    <div>
+                        <input
+                            type="checkbox"
+                            name="setAddress"
+                            onclick="useDefaultAddress(this)" />
+                        <label for="setAddress" class="checkbox"
+                            >use my default address</label
+                        >
+                    </div>
+                    <% } %>
                 </section>
                 <section id="paymentMethod">
                     <h3>Payment Method</h3>
@@ -180,10 +210,17 @@
             <section id="orderSummary">
                 <h3>Order Summary</h3>
                 <div class="orderDetails">
-                    <p><b>Model: </b><span id="model">Mini 2 SE</span></p>
-                    <p><b>Price: </b><span id="price">$356.99</span></p>
+                    <p>
+                        <b>Model: </b><span id="model"><%= drone.model %></span>
+                    </p>
+                    <p><b>Type: </b><span id="type"><%= drone.type %></span></p>
+                    <p>
+                        <b>Price: </b><span id="price"><%= drone.price %></span>
+                    </p>
                 </div>
-                <h4 class="totalCost">Order Total: <span>$356.99</span></h4>
+                <h4 class="totalCost">
+                    Order Total: <span><%= drone.price %></span>
+                </h4>
             </section>
         </div>
         <button type="submit">Order</button>
@@ -195,4 +232,15 @@
     order.addEventListener("click", function () {
         orderDialog.showModal();
     });
+
+    function useDefaultAddress(element) {
+        if (element.checked) {
+            address.value = userAddress.innerText;
+            address.disabled = true;
+            address.style.backgroundColor = "lightgray";
+        } else {
+            address.disabled = false;
+            address.style.backgroundColor = "white";
+        }
+    }
 </script>
