@@ -265,10 +265,28 @@ app.get("/protection", validateUser, (req, res) => {
 
 app.get("/robots", validateUser, async (req, res) => {
     try {
-        const robots = await Robots.find();
+        const { type, manufacturer, maxPrice } = req.query;
+
+        let filter = {};
+        if (type) {
+            filter.type = type;
+        }
+        if (manufacturer) {
+            filter.manufacturer = manufacturer;
+        }
+        if (maxPrice) {
+            filter.price = { $lte: maxPrice };
+        }
+
+        const robots = await Robots.find(filter);
         const uniqueTypes = await Robots.distinct("type");
         const uniqueManufacturers = await Robots.distinct("manufacturer");
-        res.render("robots", { robots: robots, uniqueTypes: uniqueTypes, uniqueManufacturers: uniqueManufacturers,user: req.session.user });
+        res.render("robots", { 
+            robots: robots, 
+            uniqueTypes: uniqueTypes, 
+            uniqueManufacturers: uniqueManufacturers,
+            user: req.session.user 
+        });
     } catch (error) {
         res.status(500).send(error.message);
     }
