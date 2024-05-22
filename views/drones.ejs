@@ -2,40 +2,41 @@
     <div class="flex justify-center mt-32 mb-28">
         <h1 class="font-bold text-white text-4xl">Surveillance Drones</h1>
     </div>
-    <div class="container mx-auto">
-        <div class="flex justify-end mb-6 gap-4 w-[95%]">
-            <button class="bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    filter_alt
-                </span>
-            </button>
-            <button class="bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    sort
-                </span>
-            </button>
-        </div>
-        <div class="flex flex-col items-center gap-14 font-bold text-3xl">
-            <div class="flex bg-gray-300 text-center w-[90%] rounded-lg py-5">
-                <span class="material-symbols-outlined text-[70px]">
-                    nest_tag
-                </span>
-                <div class="flex justify-between">
-                    <div class="flex flex-col text-left pt-2">
-                        <h2 class="text-lg">Model:</h2>
-                        <p class="text-lg">Suitable for:</p>
+    <div class="flex flex-wrap items-center">
+        <% drones.forEach(function(drone) { %>
+            <div class="m-4 w-full bg-white h-full shadow-lg rounded-lg overflow-hidden">
+                <div class="p-6 flex justify-between">
+                    <div class="flex flex-col">
+                        <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Model</h2>
+                        <h1 class="title-font text-lg font-medium text-gray-900 mb-3">
+                            <%= drone.model %>
+                        </h1>
+                        <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Manufacturer
+                        </h2>
+                        <p class="leading-relaxed mb-3">
+                            <%= drone.manufacturer %>
+                        </p>
+                        <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Monthly Price</h2>
+                        <p class="leading-relaxed mb-3">
+                            <%= drone.price %>
+                        </p>
+                        <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">Type</h2>
+                        <p class="leading-relaxed mb-3">
+                            <%= drone.type %>
+                        </p>
                     </div>
-                    <button data-modal-target="drone-modal" data-modal-toggle="drone-modal" class="text-lg ml-36"
-                        type="button">
-                        Details
+                    <button type="button" data-modal-toggle="drone-modal"
+                        class="flex bg-cyan-600 items-center text-center p-4 my-20 text-white font-bold rounded">Order
                     </button>
                 </div>
             </div>
-        </div>
+            <% }); %>
     </div>
+
     <%- include('templates/modal', { modalId: 'drone-modal' , icon: 'nest_tag' , description: '(model description)' })
         %>
         <%- include('templates/footer') %>
+            </body>
 
             <script>
                 // Custom JavaScript to handle modal toggle
@@ -51,6 +52,22 @@
 
                     const initialModalBodyContent = modalBody.innerHTML;
                     const initialModalFooterContent = modalFooter.innerHTML;
+
+                    // Add click event listener to each "Details" button
+                    modalToggleButtons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            // Show the modal
+                            document.getElementById('drone-modal').classList.remove('hidden');
+                        });
+                    });
+
+                    // Add click event listener to each "Close" button
+                    modalHideButtons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            // Hide the modal
+                            document.getElementById('drone-modal').classList.add('hidden');
+                        });
+                    });
 
                     function reassignEventListeners() {
                         bookNowButton.addEventListener('click', function () {
@@ -120,3 +137,6 @@
                     reassignEventListeners();
                 });
             </script>
+            </body>
+
+            </html>
