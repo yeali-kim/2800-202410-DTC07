@@ -156,6 +156,26 @@
       margin-top: 1rem;
       color: #EAD797;
     }
+
+    /* Hide #back at first and show #back with transition if #appName has the class flip */
+    #appName {
+      perspective: 1000px;
+      transform-style: preserve-3d;
+      transition: transform 1s;
+    }
+
+    #front, #back {
+      position: absolute;
+      backface-visibility: hidden;
+    }
+
+    #back {
+      transform: rotateY(180deg)
+    }
+
+    .flip {
+      transform: rotateY(180deg)
+    }
   </style>
 </head>
 
@@ -176,7 +196,13 @@
   <div id="sidebar" class="sidebar py-8 px-6 h-full overflow-y-auto">
     <div class="logo-container">
       <img src="logo.png" alt="Logo">
-      <h1>ProtectUs</h1>
+      <div id="appName">
+        <h1 id="back"><a href="https://bright-marshmallow-07dfb8.netlify.app">
+          <span style="color: #3BB1B3 ;">Camp</span><span style="color: #C07272;">US</span>
+        </a></h1>
+        <h1 id="front">ProtectUs</h1>
+        <h1 class="invisible">ProtectUs</h1>
+      </div>
     </div>
     <ul class="text-left">
       <li><a href="/profile">Profile</a></li>
@@ -220,6 +246,16 @@
       menuIcon.classList.remove('open');
       document.body.style.overflowY = 'auto'; // Re-enable scrolling
     });
+
+    // CampUs EasterEgg
+    var clickCount = 0;
+
+    appName.addEventListener('click', () => {
+      clickCount++;
+      if (clickCount >= 8) {
+        appName.classList.add("flip");
+      }
+    })
   </script>
 </body>
 
