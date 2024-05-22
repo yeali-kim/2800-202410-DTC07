@@ -31,7 +31,7 @@
             <% }); %>
     </div>
 
-    <%- include('templates/modal', { modalId: 'drone-modal' , icon: 'nest_tag' , description: '(model description)' })
+    <%- include('templates/modal', { modalId: 'drone-modal', description: '(model description)' })
         %>
         <%- include('templates/footer') %>
             </body>
@@ -70,11 +70,7 @@
                     function reassignEventListeners() {
                         bookNowButton.addEventListener('click', function () {
                             modalBody.innerHTML = `
-                    <div class="flex justify-center mb-4">
-                        <span class="material-symbols-outlined text-[70px]">
-                        nest_tag
-                    </span>
-                    </div>
+
                     <div class="bg-gray-200 text-center py-10 rounded-lg">
                         <p class="text-lg">Order Template</p>
                     </div>
@@ -86,11 +82,7 @@
 
                         orderButton.addEventListener('click', function () {
                             modalBody.innerHTML = `
-                    <div class="flex justify-center mb-4">
-                        <span class="material-symbols-outlined text-[70px]">
-                        nest_tag
-                    </span>
-                    </div>
+
                     <div class="bg-gray-200 text-center py-10 rounded-lg">
                         <p class="text-lg">Order Confirmation</p>
                     </div>
