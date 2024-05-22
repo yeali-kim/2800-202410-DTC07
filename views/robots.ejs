@@ -19,7 +19,7 @@
         .expand {
             border-radius: 10px !important;
             width: 410px !important;
-            height: 150px !important;
+            height: 200px !important;
         }
     </style>
 
@@ -31,6 +31,16 @@
             <button class="" id="filter">
                 <span class="material-symbols-outlined">
                     filter_alt
+                </span>
+            </button>
+            <button class="invisible bg-white rounded-full pt-2 px-3">
+                <span class="material-symbols-outlined">
+                    filter_alt
+                </span>
+            </button>
+            <button class="bg-white rounded-full pt-2 px-3" id="sort">
+                <span class="material-symbols-outlined">
+                    sort
                 </span>
             </button>
             <script>
@@ -46,41 +56,46 @@
                             btn.removeEventListener('click', expandFilter);
                             setTimeout(() => {
                                 btn.innerHTML = `
-                                                                <div class='w-full flex justify-start'>
-                                                                    <button id='closeButton'>
-                                                                        <span class='material-symbols-outlined'>
-                                                                            close
-                                                                        </span>
-                                                                    </button>
-                                                                </div>
-                                                                <div class='w-full flex flex-col gap-2'>
-                                                                    <div>
-                                                                        <label for='priceRange'>Price: </label>
-                                        <input type='range' id='priceRange' name='priceRange' min='0' max='10000' value='0' oninput='this.nextElementSibling.value = this.value'>
-                                        <output>0</output>
-                                                                    </div>
-                                                                    <div>
-                                                                        <label for='manufacturerFilter'>Manufacturer</label>
-                                                                        <select id='manufacturerFilter'>
-                                                                            <option value=''>Select Manufacturer: </option>
-                                                                            <% uniqueManufacturers.forEach(manufacturer => { %>
-                                                                                <option value='<%= manufacturer %>'><%= manufacturer %></option>
-                                                                            <% }); %>
-                                                                        </select>
-                                                                        </div>
-                                                                    <div>
-                                                                        <label for='typeFilter'>Type: </label>
-                                                                        <select id='typeFilter'>
-                                                                            <option value=''>Select Type</option>
-                                                                            <% uniqueTypes.forEach(type => { %>
-                                                                                <option value='<%= type %>'><%= type %></option>
-                                                                            <% }); %>
-                                                                        </select>
-                                                                        </div>
-                                                                </div>
-                                                            `;
+                                    <div class='w-full flex justify-start'>
+                                        <button id='closeButton'>
+                                            <span class='material-symbols-outlined'>
+                                                close
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class='w-full flex flex-col gap-2'>
+                                        <div>
+                                            <label for='priceRange'>Price: </label>
+                                            <input type='range' id='priceRange' name='priceRange' min='0' max='10000' value='0' oninput='this.nextElementSibling.value = this.value'>
+                                            <output>0</output>
+                                        </div>
+                                        <div>
+                                            <label for='manufacturerFilter'>Manufacturer</label>
+                                            <select id='manufacturerFilter'>
+                                                <option value=''>Select Manufacturer: </option>
+                                                <% uniqueManufacturers.forEach(manufacturer => { %>
+                                                    <option value='<%= manufacturer %>'><%= manufacturer %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for='typeFilter'>Type: </label>
+                                            <select id='typeFilter'>
+                                                <option value=''>Select Type</option>
+                                                <% uniqueTypes.forEach(type => { %>
+                                                    <option value='<%= type %>'><%= type %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="flex justify-end">
+                                            <button id="filterOkButton" class="flex justify-center items-center w-10 bg-blue-500 text-white rounded px-4 py-2 mt-2">OK</button>
+                                        </div>
+                                    </div>
+                                    `;
                                 const closeBtn = btn.querySelector('#closeButton');
                                 closeBtn.addEventListener('click', expandFilter);
+                                const filterOkButton = btn.querySelector('#filterOkButton');
+                                filterOkButton.addEventListener('click', filterRobots);
                             }, 500);
                         } else {
                             setTimeout(() => {
@@ -91,23 +106,27 @@
                             btn.style.height = initialHeight;
                         }
                     }
+                    function filterRobots() {
+                        const selectedType = document.getElementById('typeFilter').value;
+                        const selectedManufacturer = document.getElementById('manufacturerFilter').value;
+                        const maxPrice = document.getElementById('priceRange').value;
+
+                        const queryParams = new URLSearchParams({
+                            type: selectedType,
+                            manufacturer: selectedManufacturer,
+                            price: maxPrice
+                        }).toString();
+
+                        window.location.href = `/robots?${queryParams}`;
+                    }
 
                     btn.addEventListener('click', expandFilter);
                 });
             </script>
-            <button class="invisible bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    filter_alt
-                </span>
-            </button>
-            <button class="bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    sort
-                </span>
-            </button>
         </div>
         <% for(let i=0; i<robots.length; i++) {%>
-            <div class="flex flex-col items-center gap-14 font-bold text-3xl">
+            <div class="flex flex-col items-center gap-14 font-bold text-3xl robot-container"
+                data-type="<% robots[i].type %>">
                 <div class="flex bg-gray-300 text-center w-[90%] rounded-lg py-5 mb-4">
                     <span class="material-symbols-outlined text-[70px]">
                         robot_2
