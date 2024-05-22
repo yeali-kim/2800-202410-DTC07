@@ -54,11 +54,13 @@ const userSchema = new mongoose.Schema({
     address: String,
 });
 
+
 const robotSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
     price: Number,
-    description: String,
+    location: String,
+    type: String,
 });
 
 const droneSchema = new mongoose.Schema({
@@ -71,11 +73,9 @@ const droneSchema = new mongoose.Schema({
 
 const cyberSchema = new mongoose.Schema({
     price: Number,
-    description: String,
-    manufacturer: String,
-    model: String,
-    url: String,
+    type: String,
 });
+
 
 // Ensure that the model name matches the actual collection name
 const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
@@ -266,8 +266,32 @@ app.get("/protection", validateUser, (req, res) => {
 });
 
 app.get("/robots", validateUser, async (req, res) => {
-    const robots = await Robots.find();
-    res.render("robots", { robots: robots, user: req.session.user });
+    try {
+        const { type, manufacturer, maxPrice } = req.query;
+
+        let filter = {};
+        if (type) {
+            filter.type = type;
+        }
+        if (manufacturer) {
+            filter.manufacturer = manufacturer;
+        }
+        if (maxPrice) {
+            filter.price = { $lte: maxPrice };
+        }
+
+        const robots = await Robots.find(filter);
+        const uniqueTypes = await Robots.distinct("type");
+        const uniqueManufacturers = await Robots.distinct("manufacturer");
+        res.render("robots", { 
+            robots: robots, 
+            uniqueTypes: uniqueTypes, 
+            uniqueManufacturers: uniqueManufacturers,
+            user: req.session.user 
+        });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
 });
 
 app.get("/drones", validateUser, async (req, res) => {
