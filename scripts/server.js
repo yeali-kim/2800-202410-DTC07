@@ -51,6 +51,7 @@ const userSchema = new mongoose.Schema({
     username: String,
     email: String,
     password: String,
+    address: String,
 });
 
 const robotSchema = new mongoose.Schema({
@@ -183,6 +184,7 @@ app.post("/signup", async (req, res) => {
         username: username,
         email: email,
         password: hashedPassword,
+        address: "Add your address"
     });
 
     req.session.email = email;
@@ -285,6 +287,41 @@ app.get("/cybersecurity", validateUser, async (req, res) => {
 app.get("/profile", validateUser, async (req, res) => {
     res.render("profile", { user: req.session.user });
 });
+
+const methodOverride = require('method-override');
+app.use(methodOverride('_method'));
+
+app.use(express.json()); // To parse JSON bodies
+
+app.put('/updateProfile', async (req, res) => {
+    const { username, email, address } = req.body;
+    const sessionUsername = req.session.user.username;  // Use session to identify the user
+
+    try {
+        const user = await Users.findOneAndUpdate(
+            { username: sessionUsername }, 
+            { username, email, address: address }, 
+            { new: true }
+        );
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Update the session user information
+        req.session.user.username = username;
+        req.session.user.email = email;
+        req.session.user.address = address;
+
+        res.json(user);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+
+
 
 app.get("/logout", validateUser, (req, res) => {
     req.session.destroy();

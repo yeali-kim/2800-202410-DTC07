@@ -1,64 +1,132 @@
 <%- include('templates/headerHamburgerOnly') %>
-<header class="text-white text-6xl text-center m-10 mt-32">Profile</header>
+    <style>
+        .hidden {
+  display: hidden;
+}
+    </style>
+    <header class="text-white text-4xl text-center mx-10 mt-32 flex gap-3">
+        <span class="material-symbols-outlined text-7xl">
+            account_circle
+        </span>
+        <span class="flex text-center items-center"><%= user.username %></span>
+    </header>
 
-<form
-    action=""
-    class="w-[70%] mx-auto bg-[#EAD797] flex flex-col justify-center p-10 text-[#515F84] rounded-xl gap-5">
-    <div>
-        <label for="username" class="text-xl">Username</label>
-        <input
-            id="username"
-            type="text"
-            name="username"
-            value="<%= user.username %>"
-            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            disabled />
+    <div class="flex mx-10 my-6 gap-3 text-slate-300 flex-col">
+        <span class="flex items-center text-center">
+            <span class="material-symbols-outlined">
+                home
+            </span>
+            <span><%= user.address %></span>
+        </span>
+        <span class="flex items-center text-center">
+            <span class="material-symbols-outlined">
+                mail
+            </span>
+            <span>
+                <%= user.email %>
+            </span>
+        </span>
     </div>
-    <div>
-        <label for="email" class="text-xl">Email</label>
-        <input
-            id="email"
-            type="text"
-            name="email"
-            value="<%= user.email %>"
-            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            disabled />
-    </div>
-    <div>
-        <label for="location" class="text-xl">Default Location</label>
-        <input
-            id="location"
-            type="text"
-            name="location"
-            value="<%= user.defaultLocation %>"
-            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            disabled />
-    </div>
-    <div class="w-full flex flex-row justify-between align-center text-white">
-        <button
-            type="button"
-            id="editBtn"
-            onclick="toggleEdit()"
-            class="bg-indigo-500 rounded-xl px-4 py-2">
-            Edit
-        </button>
-        <button
-            type="submit"
-            id="saveBtn"
-            class="bg-[#515F84] rounded-xl px-4 py-2"
-            disabled>
-            Save
-        </button>
-    </div>
-</form>
 
-<script>
-    function toggleEdit() {
-        editBtn.innerText = editBtn.innerText == "Edit" ? "Cancel" : "Edit";
-        username.disabled = !username.disabled;
-        email.disabled = !email.disabled;
-        location.disabled = !location.disabled;
-        saveBtn.disabled = !saveBtn.disabled;
+    <div class="flex justify-end mr-[69px]">
+        <button class="flex bg-[#EAD797] text-[#515F84] p-2 rounded-xl border-double border-4 border-[#515F84]" onclick="showEdit()"> <span class="material-symbols-outlined">
+            edit
+        </span></button>
+    </div>
+
+
+
+    <form class="w-[70%] mx-auto bg-[#EAD797] flex flex-col justify-center p-10 text-[#515F84] rounded-xl gap-5 mt-3 hidden"
+        id="profileForm" method="POST" action="/updateProfile">
+        <input type="hidden" name="_method" value="PUT">
+        <div>
+            <label for="username" class="text-xl">Username</label>
+            <input id="username" type="text" name="username" value="<%= user.username %>"
+                class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                >
+        </div>
+        <div>
+            <label for="email" class="text-xl">Email</label>
+            <input id="email" type="email" name="email" value="<%= user.email %>"
+                class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                >
+        </div>
+        <div>
+            <label for="address" class="text-xl">Address</label>
+            <input id="address" type="text" name="address" value="<%= user.address %>"
+                class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                >
+        </div>
+        <div class="w-full flex flex-row justify-center align-center text-white">
+            <!-- <button type="button" id="editBtn" 
+                class="bg-indigo-500 rounded-xl px-4 py-2">Edit</button> -->
+            <button type="submit" id="saveBtn" class="bg-[#515F84] rounded-xl px-4 py-2" onclick="saveEdit()" >Save</button>
+        </div>
+    </form>
+    <br>
+    <div class="w-[70%] mx-auto bg-[#EAD797] flex flex-col justify-center p-10 text-[#515F84] rounded-xl gap-5">
+        <button>Order History</button>
+    </div>
+
+    <script>
+        // function toggleEdit() {
+        //     const editBtn = document.getElementById('editBtn');
+        //     const username = document.getElementById('username');
+        //     const email = document.getElementById('email');
+        //     const address = document.getElementById('address');
+        //     const saveBtn = document.getElementById('saveBtn');
+
+        //     const isEditing = editBtn.innerText === "Edit";
+        //     editBtn.innerText = isEditing ? "Cancel" : "Edit";
+        //     username.disabled = !username.disabled;
+        //     email.disabled = !email.disabled;
+        //     address.disabled = !address.disabled;
+        //     saveBtn.disabled = !saveBtn.disabled;
+        // }
+
+        document.getElementById('profileForm').addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const usernameField = document.getElementById('username');
+            const emailField = document.getElementById('email');
+            const addressField = document.getElementById('address');
+
+            const updatedUser = {
+                username: usernameField.value,
+                email: emailField.value,
+                address: addressField.value
+            };
+
+            try {
+                const response = await fetch('/updateProfile', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(updatedUser),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log('Success:', data);
+                    // Optionally update the UI or notify the user of success
+                    location.reload(); // Reload the page to reflect the updated data
+                } else {
+                    console.error('Error:', response.statusText);
+                    // Optionally notify the user of an error
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+    
+    function showEdit(){
+        menu = document.getElementById('profileForm');
+        menu.classList.toggle("hidden")
     }
-</script>
-<%- include('templates/footer') %>
+    function saveEdit() {
+        menu = document.getElementById('profileForm');
+        menu.classList.toggle("hidden")
+    }
+    </script>
+    <%- include('templates/footer') %>
