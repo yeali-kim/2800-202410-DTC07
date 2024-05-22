@@ -63,7 +63,7 @@ const robotSchema = new mongoose.Schema({
 const droneSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
-    price: Number,
+    price: String,
     location: String,
     type: String,
 });
