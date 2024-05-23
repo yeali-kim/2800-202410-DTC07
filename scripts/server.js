@@ -320,6 +320,22 @@ app.get("/profile", validateUser, async (req, res) => {
     res.render("profile", { user: req.session.user });
 });
 
+app.get("/getProduct", async (req, res) => {
+    const model = req.query.model;
+
+    var product = await Drones.findOne({ model: model });
+    if (!product) {
+        var product = await Robots.findOne({ model: model });
+    }
+    if (!product) {
+        var product = await CyberSecurities.findOne({ type: model });
+    }
+
+    console.log(product);
+
+    res.json(product);
+});
+
 const methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 
@@ -384,11 +400,9 @@ app.post("/order", async (req, res) => {
         return;
     }
 
-    const hashedCardNum = await bcrypt.hash(cardnumber, saltRounds);
-
     const order = {
         cardname: cardname,
-        cardnum: hashedCardNum,
+        cardnum: cardnum,
         address: address,
         model: model,
         date: new Date(),
