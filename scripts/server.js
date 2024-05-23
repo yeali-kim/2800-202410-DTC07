@@ -386,6 +386,7 @@ app.post("/order", async (req, res) => {
     if (validationResult.error != null) {
         console.log(validationResult.error);
         res.json({ success: false });
+        return;
     }
 
     const hashedCardNum = await bcrypt.hash(cardnumber, saltRounds);
@@ -406,6 +407,10 @@ app.post("/order", async (req, res) => {
     }
     if (!drone) {
         drone = await CyberSecurities.findOne({ type: model });
+    }
+    if (!drone) {
+        res.json({ success: false });
+        return;
     }
 
     res.json({ success: true, user: user, drone: drone });
