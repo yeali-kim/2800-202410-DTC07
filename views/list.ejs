@@ -499,12 +499,16 @@
         } });
     }
 
+    function searchClick(){
+        document.getElementById('searchBar').addEventListener('click', search())
+    }
+
     // Fetching the criminals data from the server
     document.addEventListener("DOMContentLoaded", function() {
         const criminals = <%- JSON.stringify(criminals) %>;
         const user = <%- JSON.stringify(user) %>;
         initMap(criminals, user);
-        search();
+        searchClick();
        
     });
 </script>
