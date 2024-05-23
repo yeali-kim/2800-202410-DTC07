@@ -1,10 +1,7 @@
 <%- include('templates/header') %>
     <style>
-        .hidden {
-            display: none;
-        }
-
-        #filter {
+        #filter,
+        #sort {
             display: flex;
             flex-direction: column;
             position: absolute;
@@ -22,8 +19,9 @@
 
         .expand {
             border-radius: 10px !important;
-            width: 410px !important;
-            height: 200px !important;
+            width: 260px !important;
+            height: 215px !important;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
         }
 
         .back-button {
@@ -33,7 +31,6 @@
         }
     </style>
 
-    <!-- Title -->
     <a href="/protection" class="back-button">
         <span
             class="material-symbols-outlined absolute top-0 left-0 mt-4 ml-4 inline-block px-3 py-1 bg-[#515F84] rounded-lg text-[#EAD797]">
@@ -44,119 +41,28 @@
         <h1 class="font-bold text-white text-4xl">Surveillance Drones</h1>
     </div>
 
-    <div class="container mx-auto">
-        <div class="flex justify-start mb-6 gap-4 w-[95%] px-2">
-            <!-- Filter button -->
-            <button class="" id="filter">
+    <div class="container flex mb-8">
+        <!-- Filter button -->
+        <div class="ms-4">
+            <button class="z-10" id="filter">
                 <span class="material-symbols-outlined">
                     filter_alt
                 </span>
             </button>
-            <button class="invisible bg-white rounded-full pt-2 px-3">
+        </div>
+
+        <!-- Sort button -->
+        <div class="ms-12 ps-2">
+            <button class="" id="sort">
                 <span class="material-symbols-outlined">
-                    filter_alt
+                    Sort
                 </span>
             </button>
-            <script>
-                document.addEventListener('DOMContentLoaded', function () {
-                    const btn = document.getElementById('filter');
-                    const initialHTML = btn.innerHTML;  // Store initial HTML
-                    const initialWidth = btn.style.width;  // Store initial width
-                    const initialHeight = btn.style.height;  // Store initial height
-
-                    function expandFilter() {
-                        btn.classList.toggle('expand');
-                        if (btn.classList.contains('expand')) {
-                            btn.removeEventListener('click', expandFilter);
-                            setTimeout(() => {
-                                btn.innerHTML = `
-                                            <div class='w-full flex justify-start'>
-                                                <button id='closeButton'>
-                                                    <span class='material-symbols-outlined'>
-                                                        close
-                                                    </span>
-                                                </button>
-                                            </div>
-                                            <div class='w-full flex flex-col gap-2'>
-                                                <div>
-                                                    <label for='priceRange'>Price: </label>
-                                                    <input type='range' id='priceRange' name='priceRange' min='0' max='5000' value='0' oninput='this.nextElementSibling.value = this.value'>
-                                                    <output>0</output>
-                                                </div>
-                                                <div>
-                                                    <label for='manufacturerFilter'>Manufacturer</label>
-                                                    <select id='manufacturerFilter'>
-                                                        <option value=''>Select Manufacturer: </option>
-                                                        <% uniqueManufacturers.forEach(manufacturer => { %>
-                                                            <option value='<%= manufacturer %>'><%= manufacturer %></option>
-                                                        <% }); %>
-                                                    </select>
-                                                </div>
-                                                <div>
-                                                    <label for='typeFilter'>Type: </label>
-                                                    <select id='typeFilter'>
-                                                        <option value=''>Select Type</option>
-                                                        <% uniqueTypes.forEach(type => { %>
-                                                            <option value='<%= type %>'><%= type %></option>
-                                                        <% }); %>
-                                                    </select>
-                                                </div>
-                                                <div class="flex justify-end">
-                                                    <button id="filterOkButton" class="flex justify-center items-center w-10 bg-blue-500 text-white rounded px-4 py-2 mt-2">OK</button>
-                                                </div>
-                                            </div>
-                                            `;
-                                const closeBtn = btn.querySelector('#closeButton');
-                                closeBtn.addEventListener('click', expandFilter);
-                                const filterOkButton = btn.querySelector('#filterOkButton');
-                                filterOkButton.addEventListener('click', filterDrones);
-                            }, 500);
-                        } else {
-                            setTimeout(() => {
-                                btn.addEventListener('click', expandFilter);
-                            }, 500);
-                            btn.innerHTML = initialHTML;
-                            btn.style.width = initialWidth;
-                            btn.style.height = initialHeight;
-                        }
-                    }
-                    function filterDrones() {
-                        const selectedType = document.getElementById('typeFilter').value;
-                        const selectedManufacturer = document.getElementById('manufacturerFilter').value;
-                        const price = document.getElementById('priceRange').value;
-
-                        const queryParams = new URLSearchParams({
-                            type: selectedType,
-                            manufacturer: selectedManufacturer,
-                            price: price
-                        }).toString();
-
-                        window.location.href = `/drones?${queryParams}`;
-                    }
-
-                    btn.addEventListener('click', expandFilter);
-                });
-            </script>
-
-            <!-- Sort button with dropdown menu -->
-            <div class="sort-options">
-                <button id="sort" class="bg-white px-2 rounded-full ms-4">
-                    <span class="font-bold text-gray-700 pt-1 material-symbols-outlined">Sort</span>
-                </button>
-
-                <!-- Sort options dropdown -->
-                <div id="sort-options-container" class="hidden bg-white p-3 mx-4 text-center rounded-lg">
-                    <button value="manufacturer" onclick="sortItems('manufacturer')">Manufacturer</button><br>
-                    <button value="type" onclick="sortItems('type')">Type</button><br>
-                    <button value="price-asc" onclick="sortItems('price-asc')">Price: Low to High</button><br>
-                    <button value="price-desc" onclick="sortItems('price-desc')">Price: High to Low</button><br>
-                </div>
-            </div>
         </div>
     </div>
 
-    <!-- Drones list -->
-    <div id="drones-list" class="flex flex-wrap items-center">
+    <!-- drone cards -->
+    <div id="drone-container" class="flex flex-wrap items-center" data-drones="<%- JSON.stringify(drones) %>">
         <% drones.forEach(function(drone) { %>
             <div class="item m-4 w-full bg-white h-full shadow-lg rounded-lg overflow-hidden text-center"
                 data-manufacturer="<%= drone.manufacturer %>" data-type="<%= drone.type %>"
@@ -178,7 +84,7 @@
                     <p class="leading-relaxed mb-3">
                         <%= drone.type %>
                     </p>
-                    <button type="button" data-modal-toggle="drone-modal" id="<%= drone.id %>"
+                    <button type="button" data-modal-toggle="drone-modal" id="<%=drone.id %>"
                         class="orderBtn flex bg-cyan-600 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">Place
                         an Order</button>
                 </div>
@@ -186,28 +92,169 @@
             <% }); %>
     </div>
 
-    <%- include('templates/orderSummary', { user: user , btnClass: 'orderBtn' }) %>
+    <%- include('templates/orderSummary', { user: user, btnClass: "orderBtn" } ) %>
+
         <%- include('templates/footer') %>
 
             <script>
+                document.addEventListener('DOMContentLoaded', function () {
+                    const filterBtn = document.getElementById('filter');
+                    const sortBtn = document.getElementById('sort');
 
-                // Sort button click opens sort options
-                document.getElementById('sort').addEventListener('click', function () {
-                    const sortOptionsContainer = document.getElementById('sort-options-container');
-                    if (sortOptionsContainer.classList.contains('hidden')) {
-                        sortOptionsContainer.classList.remove('hidden');
-                    } else {
-                        sortOptionsContainer.classList.add('hidden');
+                    const initialFilterHTML = filterBtn.innerHTML;
+                    const initialFilterWidth = filterBtn.style.width;
+                    const initialFilterHeight = filterBtn.style.height;
+
+                    const initialSortHTML = sortBtn.innerHTML;
+                    const initialSortWidth = sortBtn.style.width;
+                    const initialSortHeight = sortBtn.style.height;
+
+
+                    // Expand filter button and display filter options
+                    function expandFilter() {
+                        filterBtn.classList.toggle('expand');
+                        if (filterBtn.classList.contains('expand')) {
+                            collapseSort();
+                            filterBtn.removeEventListener('click', expandFilter);
+                            setTimeout(() => {
+                                filterBtn.innerHTML = `
+                                    <div class='w-full flex justify-start'>
+                                        <button id='closeButton'>
+                                            <span class='material-symbols-outlined'>
+                                                close
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class='text-start w-full h-full flex flex-col gap-2 p-3'>
+                                        <div>
+                                            <label for='priceRange'>Price: </label>
+                                            <input type='range' id='priceRange' name='priceRange' min='0' max='10000' value='0' oninput='this.nextElementSibling.value = this.value'>
+                                            <output>0</output>
+                                        </div>
+                                        <div>
+                                            <label for='manufacturerFilter'>Manufacturer: </label>
+                                            <select id='manufacturerFilter'>
+                                                <option value=''>All</option>
+                                                <% uniqueManufacturers.forEach(manufacturer => { %>
+                                                    <option value='<%= manufacturer %>'><%= manufacturer %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for='typeFilter'>Type: </label>
+                                            <select id='typeFilter'>
+                                                <option value=''>All</option>
+                                                <% uniqueTypes.forEach(type => { %>
+                                                    <option value='<%= type %>'><%= type %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="flex justify-end">
+                                            <button id="filterOkButton" class="flex justify-center items-center w-10 bg-blue-500 text-white rounded px-4 py-2 mt-2">OK</button>
+                                        </div>
+                                    </div>
+                                `;
+                                const closeBtn = filterBtn.querySelector('#closeButton');
+                                closeBtn.addEventListener('click', expandFilter);
+                                const filterOkButton = filterBtn.querySelector('#filterOkButton');
+                                filterOkButton.addEventListener('click', filterdrones);
+                            }, 500);
+                        } else {
+                            setTimeout(() => {
+                                filterBtn.addEventListener('click', expandFilter);
+                            }, 500);
+                            filterBtn.innerHTML = initialFilterHTML;
+                            filterBtn.style.width = initialFilterWidth;
+                            filterBtn.style.height = initialFilterHeight;
+                        }
                     }
+
+                    // Expand sort button and display sort options
+                    function expandSort() {
+                        sortBtn.classList.toggle('expand');
+                        if (sortBtn.classList.contains('expand')) {
+                            collapseFilter();
+                            sortBtn.removeEventListener('click', expandSort);
+                            setTimeout(() => {
+                                sortBtn.innerHTML = `
+                                    <div class='w-full flex justify-start'>
+                                        <button id='closeButton'>
+                                            <span class='material-symbols-outlined'>
+                                                close
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class='text-start w-full h-full flex flex-col p-3 gap-3'>
+                                        <button value="manufacturer" onclick="sortdrones('manufacturer')">Manufacturer</button>
+                                        <button value="type" onclick="sortdrones('type')">Type</button>
+                                        <button value="price-asc" onclick="sortdrones('price-asc')">Price: Low to High</button>
+                                        <button value="price-desc" onclick="sortdrones('price-desc')">Price: High to Low</button>
+                                    </div>
+                                `;
+                                const closeBtn = sortBtn.querySelector('#closeButton');
+                                closeBtn.addEventListener('click', expandSort);
+                            }, 500);
+                        } else {
+                            setTimeout(() => {
+                                sortBtn.addEventListener('click', expandSort);
+                            }, 500);
+                            sortBtn.innerHTML = initialSortHTML;
+                            sortBtn.style.width = initialSortWidth;
+                            sortBtn.style.height = initialSortHeight;
+                        }
+                    }
+
+                    // Collapse filter button and hide filter options
+                    function collapseFilter() {
+                        if (filterBtn.classList.contains('expand')) {
+                            filterBtn.classList.remove('expand');
+                            filterBtn.innerHTML = initialFilterHTML;
+                            filterBtn.style.width = initialFilterWidth;
+                            filterBtn.style.height = initialFilterHeight;
+                            filterBtn.addEventListener('click', expandFilter);
+                        }
+                    }
+
+                    // Collapse sort button and hide sort options
+                    function collapseSort() {
+                        if (sortBtn.classList.contains('expand')) {
+                            sortBtn.classList.remove('expand');
+                            sortBtn.innerHTML = initialSortHTML;
+                            sortBtn.style.width = initialSortWidth;
+                            sortBtn.style.height = initialSortHeight;
+                            sortBtn.addEventListener('click', expandSort);
+                        }
+                    }
+
+                    // When filter and sort buttons are clicked, they expand and display options
+                    filterBtn.addEventListener('click', expandFilter);
+                    sortBtn.addEventListener('click', expandSort);
+
+                    // Filtering drones based on selected options
+                    function filterdrones() {
+                        const selectedType = document.getElementById('typeFilter').value;
+                        const selectedManufacturer = document.getElementById('manufacturerFilter').value;
+                        const maxPrice = document.getElementById('priceRange').value;
+
+                        const queryParams = new URLSearchParams({
+                            type: selectedType,
+                            manufacturer: selectedManufacturer,
+                            price: maxPrice
+                        }).toString();
+
+                        window.location.href = `/drones?${queryParams}`;
+                    }
+
                 });
 
+                // Sorting drones based on selected criteria
                 let sortOrder = {
+                    price: 'asc',
                     manufacturer: 'asc',
                     type: 'asc'
                 };
 
-                // Sort items based on selected criteria
-                function sortItems(criteria) {
+                function sortdrones(criteria) {
                     console.log(`Sorting by: ${criteria}`);
                     const items = document.querySelectorAll('.item');
                     const itemsArray = Array.from(items);
@@ -246,17 +293,25 @@
                         sortOrder[criteria] = sortOrder[criteria] === 'asc' ? 'desc' : 'asc';
                     }
 
-                    // Hide the sort options
-                    document.getElementById('sort-options-container').classList.add('hidden');
-
                     // display sorted items
-                    const container = document.getElementById('drones-list');
+                    const container = document.getElementById('drone-container');
                     container.innerHTML = '';
                     itemsArray.forEach(item => container.appendChild(item));
+
+                    // Re-append sorted elements to the container
+                    drones.forEach(drone => droneContainer.appendChild(drone));
+
+                    // Collapse the sort options
+                    collapseSort();
                 }
 
+                // Custom JavaScript to handle filter toggle
+                function filter() {
+                    const filter = document.getElementById('filter');
+                    filter.style.display = filter.style.display === 'none' ? 'block' : 'none';
+                }
 
-                // Custom JavaScript to handle modal toggle
+                //     // Custom JavaScript to handle modal toggle
                 document.addEventListener('DOMContentLoaded', function () {
                     const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
                     const modalHideButtons = document.querySelectorAll('[data-modal-hide]');
