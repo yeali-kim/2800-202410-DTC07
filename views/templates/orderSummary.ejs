@@ -1,3 +1,9 @@
+<!-- In order to use this template, you must provide the following:
+    user: an object containing user information from the database.
+    drone: an object containing drone/robot information from the database.
+    btnID: a string of button id to show the dialog.
+-->
+
 <!-- Style dialog -->
 <style>
     #closeModal {
@@ -105,6 +111,58 @@
     .hide {
         display: none;
     }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    main > section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .success {
+        color: teal;
+    }
+
+    .error {
+        color: darkred;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        transform: scale(4);
+        margin: 4px;
+    }
+
+    #return {
+        align-self: center;
+        width: 50%;
+        background-color: rgb(29 78 216);
+        color: white;
+        padding: 12px;
+        border-radius: 999px;
+        border: none;
+    }
+
+    #return:hover {
+        background-color: rgb(37 99 235);
+    }
+
+    .info {
+        width: 90%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
 </style>
 
 <div class="hide" id="user"><%= user.email %></div>
@@ -208,13 +266,19 @@
                     <p>
                         <b>Model: </b><span id="model"><%= drone.model %></span>
                     </p>
+                    <p>
+                        <b>Manufacturer: </b
+                        ><span id="type"><%= drone.manufacturer %></span>
+                    </p>
                     <p><b>Type: </b><span id="type"><%= drone.type %></span></p>
                     <p>
-                        <b>Price: </b><span id="price"><%= drone.price %></span>
+                        <b>Price: </b>$<span id="price"
+                            ><%= drone.price %></span
+                        >
                     </p>
                 </div>
                 <h4 class="totalCost">
-                    Order Total: <span><%= drone.price %></span>
+                    Order Total: $<span><%= drone.price %></span>
                 </h4>
             </section>
         </div>
@@ -223,9 +287,64 @@
 </dialog>
 
 <dialog id="confirmDialog">
-    <button onclick="confirmDialog.close()" id="closeModal">
-        <span class="material-symbols-outlined"> close </span>
-    </button>
+    <div>
+        <button onclick="confirmDialog.close()" id="closeModal">
+            <span class="material-symbols-outlined"> close </span>
+        </button>
+    </div>
+    <main>
+        <div class="icon">
+            <span class="material-symbols-outlined success"> task_alt </span>
+        </div>
+        <h2 class="success">Thank You For Your Order!</h2>
+        <section>
+            <h3>Purchased Item</h3>
+            <div class="info">
+                <b>Model:</b><span id="droneModel">model</span>
+            </div>
+            <div class="info">
+                <b>Manufacturer:</b
+                ><span id="droneManufacturer">manufacturer</span>
+            </div>
+            <div class="info"><b>Type:</b><span id="droneType">type</span></div>
+            <div class="info">
+                <b>Price:</b><span id="dronePrice">price</span>
+            </div>
+        </section>
+        <section>
+            <h3>Delivery Address</h3>
+            <div class="info">
+                <b>Address</b><span id="deliveryAddress">address</span>
+            </div>
+        </section>
+        <section>
+            <h3>Payment Information</h3>
+            <div class="info">
+                <b>Card Name</b><span id="paymentname">name</span>
+            </div>
+            <div class="info">
+                <b>Card Number</b><span id="paymentnum">num</span>
+            </div>
+        </section>
+    </main>
+    <form action="/map">
+        <button type="submit" id="return">Return Home</button>
+    </form>
+</dialog>
+
+<dialog id="errorDialog">
+    <div>
+        <button onclick="errorDialog.close()" id="closeModal">
+            <span class="material-symbols-outlined"> close </span>
+        </button>
+    </div>
+    <main>
+        <div class="icon">
+            <span class="material-symbols-outlined error"> error </span>
+        </div>
+        <h2 class="error">Oops, Something Went Wrong</h2>
+        <h3>Please Try Again.</h3>
+    </main>
 </dialog>
 
 <!-- Javascript for the dialog -->
@@ -233,9 +352,6 @@
     const btn = document.getElementById("<%= btnID %>");
     const user = document.getElementById("user").innerText;
     const drone = document.getElementById("drone").innerText;
-
-    console.log(user);
-    console.log(drone);
 
     btn.addEventListener("click", function () {
         orderDialog.showModal();
@@ -267,20 +383,30 @@
         });
 
         const result = await resultString.json();
-        console.log(result);
 
         orderDialog.close();
-        confirmDialog.showModal();
+        if (result.success) {
+            const droneModel = document.getElementById("droneModel");
+            const droneManu = document.getElementById("droneManufacturer");
+            const droneType = document.getElementById("droneType");
+            const dronePrice = document.getElementById("dronePrice");
+            const deliveryAddress = document.getElementById("deliveryAddress");
+            const paymentname = document.getElementById("paymentname");
+            const paymentnum = document.getElementById("paymentnum");
+
+            droneModel.innerText = result.drone.model;
+            droneManu.innerText = result.drone.manufacturer;
+            droneType.innerText = result.drone.type;
+            dronePrice.innerText = result.drone.price;
+            deliveryAddress.innerText = address;
+            paymentname.innerText = cardName;
+            paymentnum.innerText = `Card ending in ${cardNumber.slice(-4)}`;
+
+            confirmDialog.showModal();
+        } else {
+            errorDialog.showModal();
+        }
     });
-
-    function submitForm() {
-        event.preventDefault();
-
-        await;
-
-        orderDialog.close();
-        confirmDialog.showModal();
-    }
 
     function useDefaultAddress(element) {
         if (element.checked) {
