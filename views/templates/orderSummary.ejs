@@ -1,6 +1,6 @@
 <!-- In order to use this template, you must provide the following:
     user: an object containing user information from the database.
-    drone: an object containing drone/robot information from the database.
+    drone: an object containing drone/robot/cybersecurity information from the database.
     btnID: a string of button id to show the dialog.
 -->
 
@@ -167,7 +167,11 @@
 
 <div class="hide" id="user"><%= user.email %></div>
 <div class="hide" id="userAddress"><%= user.address %></div>
+<% if (drone.manufacturer) { %>
 <div class="hide" id="drone"><%= drone.model %></div>
+<% } else { %>
+<div class="hide" id="drone"><%= drone.type %></div>
+<% } %>
 
 <!-- Order Summary -->
 <dialog id="orderDialog">
@@ -263,6 +267,7 @@
             <section id="orderSummary">
                 <h3>Order Summary</h3>
                 <div class="orderDetails">
+                    <% if (drone.manufacturer) { %>
                     <p>
                         <b>Model: </b><span id="model"><%= drone.model %></span>
                     </p>
@@ -270,6 +275,7 @@
                         <b>Manufacturer: </b
                         ><span id="type"><%= drone.manufacturer %></span>
                     </p>
+                    <% } %>
                     <p><b>Type: </b><span id="type"><%= drone.type %></span></p>
                     <p>
                         <b>Price: </b>$<span id="price"
@@ -299,6 +305,7 @@
         </div>
         <h2 class="success">Thank You For Your Order!</h2>
         <section>
+            <% if(drone.manufacturer) { %>
             <h3>Purchased Item</h3>
             <div class="info">
                 <b>Model:</b><span id="droneModel">model</span>
@@ -307,6 +314,7 @@
                 <b>Manufacturer:</b
                 ><span id="droneManufacturer">manufacturer</span>
             </div>
+            <% } %>
             <div class="info"><b>Type:</b><span id="droneType">type</span></div>
             <div class="info">
                 <b>Price:</b><span id="dronePrice">price</span>
@@ -393,16 +401,19 @@
         orderDialog.close();
 
         if (result.success) {
-            const droneModel = document.getElementById("droneModel");
-            const droneManu = document.getElementById("droneManufacturer");
+            if (result.drone.manufacturer) {
+                const droneModel = document.getElementById("droneModel");
+                const droneManu = document.getElementById("droneManufacturer");
+                droneModel.innerText = result.drone.model;
+                droneManu.innerText = result.drone.manufacturer;
+            }
+
             const droneType = document.getElementById("droneType");
             const dronePrice = document.getElementById("dronePrice");
             const deliveryAddress = document.getElementById("deliveryAddress");
             const paymentname = document.getElementById("paymentname");
             const paymentnum = document.getElementById("paymentnum");
 
-            droneModel.innerText = result.drone.model;
-            droneManu.innerText = result.drone.manufacturer;
             droneType.innerText = result.drone.type;
             dronePrice.innerText = result.drone.price;
             deliveryAddress.innerText = address;

@@ -353,7 +353,8 @@ app.put("/updateProfile", async (req, res) => {
 
 app.get("/test", async (req, res) => {
     const user = await Users.findOne({ email: "test@user.ca" });
-    const drone = await Drones.findOne({ model: "Mini 2 SE" });
+    const drone = await CyberSecurities.findOne({ type: "standard" });
+    console.log(drone);
     res.render("test", { user: user, drone: drone });
 });
 
@@ -399,7 +400,13 @@ app.post("/order", async (req, res) => {
     await Users.updateOne({ email: email }, { $push: { orderHistory: order } });
 
     const user = await Users.findOne({ email: email });
-    const drone = await Drones.findOne({ model: model });
+    let drone = await Drones.findOne({ model: model });
+    if (!drone) {
+        drone = await Robots.findOne({ model: model });
+    }
+    if (!drone) {
+        drone = await CyberSecurities.findOne({ type: model });
+    }
 
     res.json({ success: true, user: user, drone: drone });
 });
