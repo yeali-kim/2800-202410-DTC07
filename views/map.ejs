@@ -68,7 +68,6 @@
             mapContainer.style.height = "97vh";
 
             // Declare global variables
-            let map;
             let geocoder;
             let infoWindow;
             let criminalMarkers = [];
@@ -84,16 +83,20 @@
                 });
             }
 
+            var map;
+            var marker;
+            var userLocation;
+
 
             // Initialize map
             function initMap() {
                 navigator.geolocation.getCurrentPosition(function (position) {
-                    const userLocation = {
+                    userLocation = {
                         lat: position.coords.latitude,
                         lng: position.coords.longitude
                     };
                     // Map is centered at userLocation with zoom level 17 (higher->closer)
-                    const map = new google.maps.Map(document.getElementById("map"), {
+                    map = new google.maps.Map(document.getElementById("map"), {
                         zoom: 17,
                         center: userLocation,
                         fullscreenControl: false,
@@ -102,7 +105,7 @@
                     });
 
                     // Add blue marker at the user's location
-                    const marker = new google.maps.Marker({
+                    marker = new google.maps.Marker({
                         position: userLocation,
                         map: map,
                         icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker
@@ -358,6 +361,36 @@
                 });
             }
             // David's test branch
+
+            function search(){
+                document.getElementById('searchBar').addEventListener("keydown", async function (e) { 
+        if (e.key === 'Enter') { 
+            const search = document.getElementById('searchBar').value.toLowerCase();
+
+            try {
+                const searchAddress = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(search)}&key=<%= apiKey %>`);
+                const searchJson = await searchAddress.json();
+                userLocation = searchJson.results[0].geometry.location; 
+                console.log(userLocation)
+            } catch (error) {
+                var searchCoordinate = { lat: 49.28341676133127, lng: -123.11536009794918 };
+            };
+            marker.setMap(null);
+            marker = new google.maps.Marker({
+                        position: userLocation,
+                        map: map,
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker 
+                    });
+                    console.log(userLocation)
+        }
+    }
+    )}
+
+        document.addEventListener("DOMContentLoaded", function() {
+        
+        search();
+       
+    });
         </script>
 
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&callback=initMap">
