@@ -310,7 +310,7 @@
                     filter.style.display = filter.style.display === 'none' ? 'block' : 'none';
                 }
 
-                // Custom JavaScript to handle modal toggle
+                //     // Custom JavaScript to handle modal toggle
                 document.addEventListener('DOMContentLoaded', function () {
                     const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
                     const modalHideButtons = document.querySelectorAll('[data-modal-hide]');
@@ -324,18 +324,29 @@
                     const initialModalBodyContent = modalBody.innerHTML;
                     const initialModalFooterContent = modalFooter.innerHTML;
 
+                    // Add click event listener to each "Details" button
+                    modalToggleButtons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            // Show the modal
+                            document.getElementById('robot-modal').classList.remove('hidden');
+                        });
+                    });
+
+                    // Add click event listener to each "Close" button
+                    modalHideButtons.forEach(function (button) {
+                        button.addEventListener('click', function () {
+                            // Hide the modal
+                            document.getElementById('robot-modal').classList.add('hidden');
+                        });
+                    });
+
                     function reassignEventListeners() {
                         bookNowButton.addEventListener('click', function () {
                             modalBody.innerHTML = `
-                <div class="flex justify-center mb-4">
-                    <span class="material-symbols-outlined text-[70px]">
-                    robot_2
-                </span>
-                </div>
                 <div class="bg-gray-200 text-center py-10 rounded-lg">
                     <p class="text-lg">Order Template</p>
                 </div>
-            `;
+                `;
                             bookNowButton.style.display = 'none';
                             orderButton.style.display = 'block';
                             homeButton.style.display = 'none';
@@ -343,15 +354,10 @@
 
                         orderButton.addEventListener('click', function () {
                             modalBody.innerHTML = `
-                <div class="flex justify-center mb-4">
-                    <span class="material-symbols-outlined text-[70px]">
-                    robot_2
-                </span>
-                </div>
                 <div class="bg-gray-200 text-center py-10 rounded-lg">
                     <p class="text-lg">Order Confirmation</p>
                 </div>
-            `;
+                `;
                             orderButton.style.display = 'none';
                             homeButton.style.display = 'block';
                         });
