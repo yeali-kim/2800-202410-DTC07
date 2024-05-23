@@ -87,11 +87,9 @@
 </section>
 
 <script>
-    async function displayProductInformation() {
+    async function displayProductInformation(orderID) {
         const product = await (
-            await fetch(
-                `http://localhost:3000/getProduct?model=${orderModel.innerText}`
-            )
+            await fetch(`http://localhost:3000/getProduct?model=${orderID}`)
         ).json();
 
         if (product.manufacturer) {
@@ -110,7 +108,38 @@
         const type = document.createElement("div");
         const price = document.createElement("div");
     }
-    displayProductInformation();
+
+    const orderSummaries = document.querySelectorAll(".orderSummaryDiv");
+    orderSummaries.forEach(async (summary) => {
+        const product = await (
+            await fetch(`http://localhost:3000/getProduct?id=${summary.id}`)
+        ).json();
+
+        const productDiv = summary.querySelector("#productDiv");
+
+        if (product.manufacturer) {
+            const model = document.createElement("div");
+            model.innerText = product.model;
+            const manufacturer = document.createElement("div");
+            manufacturer.innerText = product.manufacturer;
+
+            productDiv.appendChild(model);
+            productDiv.appendChild(manufacturer);
+        } else {
+            const cyberDiv = document.createElement("div");
+            cyberDiv.innerText = "Cyber Security";
+            productDiv.appendChild(cyberDiv);
+        }
+
+        const type = document.createElement("div");
+        const price = document.createElement("div");
+        type.innerText = product.type;
+        type.classList.add("text-sm");
+        price.innerText = product.price;
+
+        productDiv.appendChild(type);
+        productDiv.appendChild(price);
+    });
 </script>
 
 <script>

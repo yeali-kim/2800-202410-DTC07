@@ -321,7 +321,14 @@ app.get("/profile", validateUser, async (req, res) => {
 });
 
 app.get("/getProduct", async (req, res) => {
-    const model = req.query.model;
+    const id = req.query.id;
+
+    const histories = req.session.user.orderHistory;
+    const order = histories.find((history) => {
+        return history._id == id;
+    });
+
+    const model = order.model;
 
     var product = await Drones.findOne({ model: model });
     if (!product) {
