@@ -263,6 +263,43 @@ app.get("/map", validateUser, async (req, res) => {
     });
 });
 
+app.get('/filterCriminals', async (req, res) => {
+    const name = req.query.name;
+    const crime = req.query.crime;
+    const sentenceMin = req.query.sentenceMin;
+    const sentenceMax = req.query.sentenceMax;
+
+    try {
+        let filter = {};
+
+        if (name) {
+            filter.$or = [
+                { firstName: new RegExp(name, 'i') },
+                { middleName: new RegExp(name, 'i') },
+                { lastName: new RegExp(name, 'i') }
+            ];
+        }
+
+        if (crime) {
+            filter['convictions.crime'] = new RegExp(crime, 'i');
+        }
+
+        if (sentenceMin) {
+            filter['convictions.sentence'] = { $gte: parseInt(sentenceMin, 10) };
+        }
+
+        if (sentenceMax) {
+            filter['convictions.sentence'] = { ...filter['convictions.sentence'], $lte: parseInt(sentenceMax, 10) };
+        }
+
+        const filteredCriminals = await CriminalProfile.find(filter);
+        res.json({ success: true, criminals: filteredCriminals });
+    } catch (error) {
+        console.error('Error fetching filtered criminals:', error);
+        res.status(500).json({ success: false, message: 'Internal server error' });
+    }
+});
+
 function calculateTotalPrisonYears(convictions) {
     return convictions.reduce((total, conviction) => {
         const yearsMatch = conviction.sentence.match(/(\d+)\s*years?/i);
