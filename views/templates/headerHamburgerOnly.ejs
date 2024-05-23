@@ -267,16 +267,35 @@
     })
 
 
-    document.getElementById('protectionServices').addEventListener('click', function (event) {
+    const protectionServices = document.getElementById('protectionServices');
+    const protectionServicesDropdown = protectionServices.nextElementSibling;
+
+    const criminalsNearYou = document.getElementById('criminalsNearYou');
+    const criminalsNearYouDropdown = criminalsNearYou.nextElementSibling;
+
+    // Function to toggle visibility of the dropdowns
+    function toggleDropdownVisibility(dropdownToShow, dropdownToHide) {
+      dropdownToShow.classList.remove('hidden');
+      dropdownToHide.classList.add('hidden');
+    }
+
+    // Click event listeners for protectionServices and criminalsNearYou
+    protectionServices.addEventListener('click', function (event) {
       event.preventDefault();
-      let dropdown = this.nextElementSibling;
-      dropdown.classList.toggle('hidden');
+      if (protectionServicesDropdown.classList.contains('hidden')) {
+        toggleDropdownVisibility(protectionServicesDropdown, criminalsNearYouDropdown);
+      } else {
+        protectionServicesDropdown.classList.add('hidden');
+      }
     });
 
-    document.getElementById('criminalsNearYou').addEventListener('click', function (event) {
+    criminalsNearYou.addEventListener('click', function (event) {
       event.preventDefault();
-      let dropdown = this.nextElementSibling;
-      dropdown.classList.toggle('hidden');
+      if (criminalsNearYouDropdown.classList.contains('hidden')) {
+        toggleDropdownVisibility(criminalsNearYouDropdown, protectionServicesDropdown);
+      } else {
+        criminalsNearYouDropdown.classList.add('hidden');
+      }
     });
   </script>
 </body>
