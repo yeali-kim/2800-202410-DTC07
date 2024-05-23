@@ -196,7 +196,7 @@
                         const cards = document.querySelectorAll('.criminal-card');
                         cards.forEach(card => {
                             const totalPrisonYears = parseInt(card.getAttribute('data-total-prison-years'), 10);
-                            card.style.display = totalPrisonYears <= sentenceRange ? 'block' : 'none';
+                            card.style.display = totalPrisonYears >= sentenceRange ? 'block' : 'none';
                         });
                     }
 
