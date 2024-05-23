@@ -325,8 +325,8 @@ function sortList(criteria) {
         currentSortOrder.crimes = currentSortOrder.crimes === 'asc' ? 'desc' : 'asc';
     } else if (criteria === 'distance') {
         sortedCards = cardArray.sort((a, b) => {
-            const distanceA = parseFloat(a.getAttribute('data-distance'));
-            const distanceB = parseFloat(b.getAttribute('data-distance'));
+            const distanceA = parseFloat(a.querySelector('.criminal-distance').innerText.slice(10, 14));
+            const distanceB = parseFloat(b.querySelector('.criminal-distance').innerText.slice(10, 14));
             return currentSortOrder.distance === 'asc' ? distanceA - distanceB : distanceB - distanceA;
         });
         currentSortOrder.distance = currentSortOrder.distance === 'asc' ? 'desc' : 'asc';
@@ -449,11 +449,10 @@ function sortList(criteria) {
         });
     }
  
-function search() {
+function search(criminals) {
     document.getElementById('searchBar').addEventListener("keydown", async function (e) { 
         if (e.key === 'Enter') { 
             const search = document.getElementById('searchBar').value.toLowerCase();
-            const criminals = <%- JSON.stringify(criminals) %>;
 
             try {
                 const searchAddress = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(search)}&key=<%= apiKey %>`);
@@ -498,6 +497,7 @@ function search() {
             });
 
             // Sort by distance initially
+            currentSortOrder.distance = 'asc';
             sortList('distance');
         }
     });
@@ -508,8 +508,9 @@ function search() {
         const criminals = <%- JSON.stringify(criminals) %>;
         const user = <%- JSON.stringify(user) %>;
         initMap(criminals, user);
-        search();
+        search(criminals);
        
+
     });
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>"></script>
