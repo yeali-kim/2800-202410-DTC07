@@ -22,6 +22,21 @@
         height: 300px !important;
         overflow: auto !important;
     }
+
+    .checkbox-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .checkbox-container label {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .checkbox-container input[type="checkbox"] {
+        margin-right: 8px;
+    }
 </style>
 <main class="bg-[#515F84] text-white p-4 mt-8">
     <div class="container mx-auto">
@@ -32,47 +47,66 @@
                     <span class="material-symbols-outlined text-base">filter_alt</span>
                 </button>
                 <script>
-                    filter.addEventListener("click", function expandFilter() {
+                    function expandFilter() {
                         const btn = document.getElementById('filter');
-                        btn.classList.toggle("expand")
+                        btn.classList.toggle("expand");
                         if (btn.classList.contains("expand")) {
-                            btn.removeEventListener('click', expandFilter);
-                            setTimeout(() => {
-                                btn.innerHTML = `
-                                    <div class="w-full flex justify-start">
-                                        <button id="closeButton">
-                                            <span class="material-symbols-outlined">close</span>
-                                        </button>
+                            document.addEventListener('click', closeFilterOnClickOutside);
+                            btn.innerHTML = `
+                                <div class="w-full flex justify-start">
+                                    <button id="closeButton">
+                                        <span class="material-symbols-outlined">close</span>
+                                    </button>
+                                </div>
+                                <div class="w-full flex flex-col items-start gap-2" id="filterOptions">
+                                    <label>Crime Type</label>
+                                    <div class="checkbox-container" id="crimeTypeContainer">
+                                        <label><input type="checkbox" value="aggravatedassault" onchange="filterByCrimeType()"> Aggravated assault</label>
+                                        <label><input type="checkbox" value="murder" onchange="filterByCrimeType()"> Murder</label>
+                                        <label><input type="checkbox" value="sexualassault" onchange="filterByCrimeType()"> Sexual assault</label>
+                                        <label><input type="checkbox" value="robbery" onchange="filterByCrimeType()"> Robbery</label>
+                                        <label><input type="checkbox" value="vandalism" onchange="filterByCrimeType()"> Vandalism</label>
+                                        <label><input type="checkbox" value="drugtrafficking" onchange="filterByCrimeType()"> Drug trafficking</label>
+                                        <label><input type="checkbox" value="identitytheft" onchange="filterByCrimeType()"> Identity theft</label>
+                                        <label><input type="checkbox" value="cyberattack" onchange="filterByCrimeType()"> Cyberattack</label>
                                     </div>
-                                    <div class="w-full flex flex-col items-start gap-2">
-                                        <label>Crime Type</label>
-                                        <select id="crimeTypeDropdown">
-                                            <option value="assault">Aggravated assault</option>
-                                            <option value="murder">Murder</option>
-                                            <option value="sexualAssault">Sexual assault</option>
-                                            <option value="robbery">Robbery</option>
-                                            <option value="vandalism">Vandalism</option>
-                                            <option value="drugTrafficking">Drug trafficking</option>
-                                            <option value="identityTheft">Identity theft</option>
-                                            <option value="cyberattack">Cyberattack</option>
-                                        </select>
-                                        <label>Sentence Range (years)</label>
-                                        <input type="range" id="sentenceRange" min="0" max="25" value="10" oninput="updateSentenceRange()">
-                                        <div id="sentenceValue" class="w-full text-center">10 years</div>
-                                        <label>Name</label>
-                                        <input type="text" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
-                                    </div>
-                                `;
-                                
-                                const closeBtn = btn.querySelector('#closeButton');
-                                closeBtn.addEventListener('click', expandFilter);
-                            }, 500);
+                                    <label>Sentence Range (years)</label>
+                                    <input type="range" id="sentenceRange" min="0" max="25" value="10" oninput="updateSentenceRange()">
+                                    <div id="sentenceValue" class="w-full text-center">10 years</div>
+                                    <label>Name</label>
+                                    <input type="text" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
+                                    <button onclick="clearFilters()" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Filters</button>
+                                </div>
+                            `;
+
+                            const closeBtn = btn.querySelector('#closeButton');
+                            closeBtn.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                                expandFilter();
+                            });
+
+                            const filterOptions = document.getElementById('filterOptions');
+                            filterOptions.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                            });
                         } else {
-                            setTimeout(() => {
-                                btn.addEventListener('click', expandFilter);
-                            }, 500);
+                            document.removeEventListener('click', closeFilterOnClickOutside);
                             btn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
                         }
+                    }
+
+                    function closeFilterOnClickOutside(event) {
+                        const btn = document.getElementById('filter');
+                        if (!btn.contains(event.target)) {
+                            btn.classList.remove("expand");
+                            document.removeEventListener('click', closeFilterOnClickOutside);
+                            btn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
+                        }
+                    }
+
+                    document.getElementById('filter').addEventListener("click", function(event) {
+                        event.stopPropagation();
+                        expandFilter();
                     });
 
                     function updateSentenceRange() {
@@ -98,6 +132,26 @@
                             card.style.display = totalPrisonYears >= sentenceRange ? 'block' : 'none';
                         });
                     }
+
+                    function filterByCrimeType() {
+                        const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]:checked');
+                        const selectedCrimeTypes = Array.from(checkboxes).map(checkbox => checkbox.value);
+                        const cards = document.querySelectorAll('.criminal-card');
+                        cards.forEach(card => {
+                            const crimes = card.getAttribute('data-crime-types').split(',');
+                            const match = selectedCrimeTypes.every(crimeType => crimes.includes(crimeType));
+                            card.style.display = selectedCrimeTypes.length === 0 || match ? 'block' : 'none';
+                        });
+                    }
+
+                    function clearFilters() {
+                        document.getElementById('crimeTypeContainer').querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+                        document.getElementById('sentenceRange').value = 10;
+                        document.getElementById('sentenceValue').innerText = '10 years';
+                        document.getElementById('nameFilter').value = '';
+                        const cards = document.querySelectorAll('.criminal-card');
+                        cards.forEach(card => card.style.display = 'block');
+                    }
                 </script>
                 <button class="invisible bg-white text-black rounded-full p-1 px-3" id="">
                     <span class="material-symbols-outlined text-base">filter_alt</span>
@@ -116,7 +170,7 @@
             </div>
         </div>
         <% criminals.forEach(function(criminal, index) { %>
-            <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>">
+            <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>" data-crime-types="<%= criminal.convictions.map(conviction => conviction.crime ? conviction.crime.replace(' ', '').toLowerCase() : '').join(',') %>">
                 <div class="flex justify-between" id="sCard-<%= index %>">
                     <div class="flex justify-start">
                         <img style="height: 100px;" src="<%= criminal.image %>">

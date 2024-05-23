@@ -251,14 +251,31 @@ app.get("/map", validateUser, async (req, res) => {
     });
 });
 
+function calculateTotalPrisonYears(convictions) {
+  return convictions.reduce((total, conviction) => {
+    const yearsMatch = conviction.sentence.match(/(\d+)\s*years?/i);
+    const years = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
+    return total + years;
+  }, 0);
+}
+
 app.get("/list", async (req, res) => {
-    const criminals = await CriminalProfile.find({});
-    res.render("list", {
-        criminals: criminals,
-        user: req.session.user,
-        apiKey: APIKEY,
+  const criminals = await CriminalProfile.find({});
+  criminals.forEach(criminal => {
+    criminal.totalPrisonYears = calculateTotalPrisonYears(criminal.convictions);
+    criminal.convictions.forEach(conviction => {
+      if (conviction && conviction.crime) {
+        conviction.crime = conviction.crime.replace(' ', '').toLowerCase();
+      }
     });
+  });
+  res.render("list", {
+    criminals: criminals,
+    user: req.session.user,
+    apiKey: APIKEY,
+  });
 });
+
 
 app.get("/protection", validateUser, (req, res) => {
     res.render("protection");
