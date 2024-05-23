@@ -86,8 +86,8 @@
                     <label><input type="checkbox" value="cyberattack" onchange="filterByCrimeType()"> Cyberattack</label>
                 </div>
                 <label>Sentence Range (years)</label>
-                <input type="range" id="sentenceRange" min="0" max="50" value="25" oninput="updateSentenceRange()">
-                <div id="sentenceValue" class="w-full text-center">25 years</div>
+                <input type="range" id="sentenceRange" min="0" max="25" value="10" oninput="updateSentenceRange()">
+                <div id="sentenceValue" class="w-full text-center">10 years</div>
                 <label>Name</label>
                 <input type="text" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
                 <button onclick="clearFilters()" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Filters</button>
@@ -213,8 +213,8 @@
 
                     function clearFilters() {
                         document.getElementById('crimeTypeContainer').querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
-                        document.getElementById('sentenceRange').value = 25;
-                        document.getElementById('sentenceValue').innerText = '25 years';
+                        document.getElementById('sentenceRange').value = 10;
+                        document.getElementById('sentenceValue').innerText = '10 years';
                         document.getElementById('nameFilter').value = '';
                         const cards = document.querySelectorAll('.criminal-card');
                         cards.forEach(card => card.style.display = 'block');
