@@ -60,6 +60,7 @@ const userSchema = new mongoose.Schema({
         address: String,
         model: String,
         date: String,
+        status: Boolean,
     }),
 });
 
@@ -263,30 +264,33 @@ app.get("/map", validateUser, async (req, res) => {
 });
 
 function calculateTotalPrisonYears(convictions) {
-  return convictions.reduce((total, conviction) => {
-    const yearsMatch = conviction.sentence.match(/(\d+)\s*years?/i);
-    const years = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
-    return total + years;
-  }, 0);
+    return convictions.reduce((total, conviction) => {
+        const yearsMatch = conviction.sentence.match(/(\d+)\s*years?/i);
+        const years = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
+        return total + years;
+    }, 0);
 }
 
 app.get("/list", async (req, res) => {
-  const criminals = await CriminalProfile.find({});
-  criminals.forEach(criminal => {
-    criminal.totalPrisonYears = calculateTotalPrisonYears(criminal.convictions);
-    criminal.convictions.forEach(conviction => {
-      if (conviction && conviction.crime) {
-        conviction.crime = conviction.crime.replace(' ', '').toLowerCase();
-      }
+    const criminals = await CriminalProfile.find({});
+    criminals.forEach((criminal) => {
+        criminal.totalPrisonYears = calculateTotalPrisonYears(
+            criminal.convictions
+        );
+        criminal.convictions.forEach((conviction) => {
+            if (conviction && conviction.crime) {
+                conviction.crime = conviction.crime
+                    .replace(" ", "")
+                    .toLowerCase();
+            }
+        });
     });
-  });
-  res.render("list", {
-    criminals: criminals,
-    user: req.session.user,
-    apiKey: APIKEY,
-  });
+    res.render("list", {
+        criminals: criminals,
+        user: req.session.user,
+        apiKey: APIKEY,
+    });
 });
-
 
 app.get("/protection", validateUser, (req, res) => {
     res.render("protection");
@@ -333,22 +337,23 @@ app.get("/drones", validateUser, async (req, res) => {
             filter.manufacturer = manufacturer;
         }
         if (price) {
-            filter.price = { $lte: mongoose.Types.Decimal128.fromString(price) };
+            filter.price = {
+                $lte: mongoose.Types.Decimal128.fromString(price),
+            };
         }
 
         const drones = await Drones.find(filter);
         const uniqueTypes = await Drones.distinct("type");
         const uniqueManufacturers = await Drones.distinct("manufacturer");
-        res.render("drones", { 
+        res.render("drones", {
             drones: drones,
             uniqueTypes: uniqueTypes,
-            uniqueManufacturers: uniqueManufacturers, 
-            user: req.session.user 
+            uniqueManufacturers: uniqueManufacturers,
+            user: req.session.user,
         });
     } catch (error) {
         res.status(500).send(error.message);
     }
-    
 });
 
 app.get("/cybersecurity", validateUser, async (req, res) => {
@@ -359,8 +364,79 @@ app.get("/cybersecurity", validateUser, async (req, res) => {
     });
 });
 
+app.get("/getProductByID/", validateUser, async (req, res) => {
+    const ID = req.query.id;
+
+    var product = await Drones.findOne({ _id: ID });
+    if (!product) {
+        product = await Robots.findOne({ _id: ID });
+    }
+    if (!product) {
+        product = await CyberSecurities.findOne({ _id: ID });
+    }
+
+    res.json(product);
+});
+
 app.get("/profile", validateUser, async (req, res) => {
     res.render("profile", { user: req.session.user });
+});
+
+app.get("/getProduct", validateUser, async (req, res) => {
+    const id = req.query.id;
+
+    const histories = req.session.user.orderHistory;
+    const order = histories.find((history) => {
+        return history._id == id;
+    });
+
+    const model = order.model;
+
+    var product = await Drones.findOne({ model: model });
+    if (!product) {
+        var product = await Robots.findOne({ model: model });
+    }
+    if (!product) {
+        var product = await CyberSecurities.findOne({ type: model });
+    }
+
+    res.json(product);
+});
+
+app.get("/createOrder", async (req, res) => {
+    const order = {
+        cardname: "TestUser",
+        cardnum: "1234123412341234",
+        address: "myAddress",
+        model: "Mini 2 SE",
+        date: new Date(),
+        status: true,
+    };
+    await Users.updateOne(
+        { email: "test@user.ca" },
+        { $push: { orderHistory: order } }
+    );
+    res.send("Complete");
+});
+
+app.post("/cancelSubscription", validateUser, async (req, res) => {
+    const id = req.body.orderid;
+    const email = req.session.user.email;
+
+    const user = await Users.findOne({ email: email });
+
+    const histories = user.orderHistory;
+
+    const newHistories = histories.map((history) => {
+        if (history.id == id) {
+            history.status = false;
+        }
+        return history;
+    });
+
+    await Users.updateOne({ email: email }, { orderHistory: newHistories });
+
+    res.redirect("/profile");
 });
 
 const methodOverride = require("method-override");
@@ -368,7 +444,7 @@ app.use(methodOverride("_method"));
 
 app.use(express.json()); // To parse JSON bodies
 
-app.put("/updateProfile", async (req, res) => {
+app.put("/updateProfile", validateUser, async (req, res) => {
     const { username, email, address } = req.body;
     const sessionUsername = req.session.user.username; // Use session to identify the user
 
@@ -395,11 +471,11 @@ app.put("/updateProfile", async (req, res) => {
     }
 });
 
-app.get("/resetPasswordProfile", (req, res) => {
-    res.render("resetPasswordProfile", {email: req.session.user.email});
+app.get("/resetPasswordProfile", validateUser, (req, res) => {
+    res.render("resetPasswordProfile", { email: req.session.user.email });
 });
 
-app.post("/resetPasswordProfile", async (req, res) => {
+app.post("/resetPasswordProfile", validateUser, async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -428,40 +504,7 @@ app.post("/resetPasswordProfile", async (req, res) => {
     res.redirect("/profile");
 });
 
-app.get("/resetPasswordProfile", (req, res) => {
-    res.render("resetPasswordProfile", {email: req.session.user.email});
-});
-
-app.post("/resetPasswordProfile", async (req, res) => {
-    const email = req.body.email;
-    const password = req.body.password;
-
-    const schema = Joi.object({
-        password: Joi.string().max(20).required(),
-        email: Joi.string().email({
-            minDomainSegments: 2,
-            tlds: { allow: ["com", "ca"] },
-        }),
-    });
-
-    const validationResult = schema.validate({ password, email });
-    if (validationResult.error != null) {
-        console.log(validationResult.error);
-        res.redirect("/profile");
-        return;
-    }
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    const user = await Users.findOne({ email: email });
-
-    if (user) {
-        await Users.updateOne({ email: email }, { password: hashedPassword });
-    }
-
-    res.redirect("/profile");
-});
-
-app.post("/order", async (req, res) => {
+app.post("/order", validateUser, async (req, res) => {
     const email = req.body.user;
     const model = req.body.drone;
     const cardnumber = req.body.cardNumber;
@@ -493,14 +536,13 @@ app.post("/order", async (req, res) => {
         return;
     }
 
-    const hashedCardNum = await bcrypt.hash(cardnumber, saltRounds);
-
     const order = {
         cardname: cardname,
-        cardnum: hashedCardNum,
+        cardnum: cardnumber,
         address: address,
         model: model,
         date: new Date(),
+        status: true,
     };
     await Users.updateOne({ email: email }, { $push: { orderHistory: order } });
 

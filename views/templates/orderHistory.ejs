@@ -1,0 +1,35 @@
+<!-- Get product by model -->
+<div
+    class="w-full flex flex-row justify-between itmes-center bg-slate-100 rounded-lg p-4 orderSummaryDiv"
+    id="<%= order.id %>">
+    <div
+        class="basis-1/4 flex flex-col items-center justify-center"
+        id="productDiv"></div>
+    <div class="basis-1/4 flex flex-col items-center justify-center">
+        <div><%= order.address %></div>
+        <% var date = new Date(order.date); %>
+        <div><%= date.toLocaleDateString(); %></div>
+    </div>
+    <div class="basis-1/4 flex flex-col items-center justify-center">
+        <div><%= order.cardname %></div>
+        <div>Card ending in <%= order.cardnum.slice(-4) %></div>
+    </div>
+    <div class="basis-1/4 flex flex-col items-center justify-center">
+        <% if (order.status) { %>
+        <form action="/cancelSubscription" method="post">
+            <input
+                type="text"
+                class="hidden"
+                name="orderid"
+                value="<%= order.id %>" />
+            <button
+                type="submit"
+                class="text-blue-500 underline cancelOrderBtn">
+                Cancel
+            </button>
+        </form>
+        <% } else { %>
+        <div>Canceled</div>
+        <% } %>
+    </div>
+</div>
