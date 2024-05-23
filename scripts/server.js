@@ -59,6 +59,7 @@ const userSchema = new mongoose.Schema({
         address: String,
         model: String,
         date: String,
+        status: Boolean,
     }),
 });
 
@@ -391,6 +392,7 @@ app.post("/order", async (req, res) => {
         address: address,
         model: model,
         date: new Date(),
+        status: true,
     };
     await Users.updateOne({ email: email }, { $push: { orderHistory: order } });
 
