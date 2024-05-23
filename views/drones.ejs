@@ -31,6 +31,24 @@
             top: 60px;
             left: 0px;
         }
+
+        .range-slider {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .noUi-target,
+        .noUi-ltr,
+        .noUi-horizontal {
+            width: 100%;
+        }
+
+        .noUi-handle {
+            background: #2c3e50 !important;
+        }
     </style>
 
     <!-- Title -->
@@ -78,11 +96,14 @@
                                                 </button>
                                             </div>
                                             <div class='w-full flex flex-col gap-2'>
+                                                <<div class="range-slider">
+                                                <label for="priceRange">Price: </label>
+                                                <div id="priceRange"></div>
                                                 <div>
-                                                    <label for='priceRange'>Price: </label>
-                                                    <input type='range' id='priceRange' name='priceRange' min='0' max='5000' value='0' oninput='this.nextElementSibling.value = this.value'>
-                                                    <output>0</output>
+                                                    <span id="minPriceValue">0</span> -
+                                                    <span id="maxPriceValue">5000</span>
                                                 </div>
+                                            </div>
                                                 <div>
                                                     <label for='manufacturerFilter'>Manufacturer</label>
                                                     <select id='manufacturerFilter'>
