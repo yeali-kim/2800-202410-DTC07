@@ -58,7 +58,7 @@ const userSchema = new mongoose.Schema({
 const robotSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
-    price: String,
+    price: Number,
     location: String,
     type: String,
 });
@@ -66,13 +66,13 @@ const robotSchema = new mongoose.Schema({
 const droneSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
-    price: String,
+    price: Number,
     location: String,
     type: String,
 });
 
 const cyberSchema = new mongoose.Schema({
-    price: String,
+    price: Number,
     type: String,
 });
 
