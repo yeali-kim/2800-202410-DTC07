@@ -331,6 +331,7 @@
 <script>
     const btns = document.querySelectorAll(".<%= btnClass %>");
     const user = document.getElementById("user").innerText;
+    var drone;
 
     // show order summary on click
     btns.forEach((btn) => {
@@ -350,6 +351,10 @@
                     <b>Manufacturer: </b
                     ><span id="type">${product.manufacturer}</span>
                 </p>`;
+
+                drone = product.model;
+            } else {
+                drone = product.type;
             }
 
             orderDetails.innerHTML += `
@@ -390,7 +395,7 @@
                 cardName: cardName,
                 expiryDate: expiryDate,
                 securityCode: securityCode,
-                setAddress: setAddress.checked,
+                setAddress: setAddress ? setAddress.checked : false,
             }),
             headers: {
                 "Content-type": "application/json; charset=UTF-8",

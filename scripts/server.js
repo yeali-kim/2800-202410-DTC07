@@ -261,7 +261,7 @@ app.get("/map", validateUser, async (req, res) => {
     });
 });
 
-app.get("/list", async (req, res) => {
+app.get("/list", validateUser, async (req, res) => {
     const criminals = await CriminalProfile.find({});
     res.render("list", {
         criminals: criminals,
@@ -334,7 +334,7 @@ app.get("/profile", validateUser, async (req, res) => {
     res.render("profile", { user: req.session.user });
 });
 
-app.get("/getProduct", async (req, res) => {
+app.get("/getProduct", validateUser, async (req, res) => {
     const id = req.query.id;
 
     const histories = req.session.user.orderHistory;
@@ -371,7 +371,7 @@ app.get("/createOrder", async (req, res) => {
     res.send("Complete");
 });
 
-app.post("/cancelSubscription", async (req, res) => {
+app.post("/cancelSubscription", validateUser, async (req, res) => {
     const id = req.body.orderid;
     const email = req.session.user.email;
 
@@ -400,7 +400,7 @@ app.use(methodOverride("_method"));
 
 app.use(express.json()); // To parse JSON bodies
 
-app.put("/updateProfile", async (req, res) => {
+app.put("/updateProfile", validateUser, async (req, res) => {
     const { username, email, address } = req.body;
     const sessionUsername = req.session.user.username; // Use session to identify the user
 
@@ -427,7 +427,7 @@ app.put("/updateProfile", async (req, res) => {
     }
 });
 
-app.post("/order", async (req, res) => {
+app.post("/order", validateUser, async (req, res) => {
     const email = req.body.user;
     const model = req.body.drone;
     const cardnumber = req.body.cardNumber;
@@ -461,7 +461,7 @@ app.post("/order", async (req, res) => {
 
     const order = {
         cardname: cardname,
-        cardnum: cardnum,
+        cardnum: cardnumber,
         address: address,
         model: model,
         date: new Date(),
