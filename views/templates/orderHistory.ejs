@@ -1,0 +1,50 @@
+<!-- Get product by model -->
+<div class="hidden" id="orderModel"><%= order.model %></div>
+<div
+    class="w-full flex flex-row justify-between itmes-center bg-slate-100 rounded-lg p-4">
+    <div
+        class="basis-1/4 flex flex-col items-center justify-center"
+        id="productDiv"></div>
+    <div class="basis-1/4 flex flex-col items-center justify-center">
+        <div><%= order.address %></div>
+    </div>
+    <div class="basis-1/4 flex flex-col items-center justify-center">
+        <div><%= order.cardname %></div>
+        <div>Card ending in <%= order.cardnum.slice(-4) %></div>
+    </div>
+    <div class="basis-1/4 flex flex-col items-center justify-center">
+        <% if (order.status) { %>
+        <button class="text-blue-500 underline">Cancel</button>
+        <% } else { %>
+        <div>Canceled</div>
+        <% } %>
+    </div>
+</div>
+
+<script>
+    async function displayProductInformation() {
+        const productDiv = document.getElementById("productDiv");
+
+        const product = await (
+            await fetch(
+                `http://localhost:3000/getProduct?model=${orderModel.innerText}`
+            )
+        ).json();
+
+        if (product.manufacturer) {
+            const model = document.createElement("div");
+            model.innerText = product.model;
+            const manufacturer = document.createElement("div");
+            manufacturer.innerText = product.manufacturer;
+
+            productDiv.appendChild(model);
+            productDiv.appendChild(manufacturer);
+        } else {
+            const cyberDiv = document.createElement("div");
+            cyberDiv.innerText = "Cyber Security";
+            productDiv.appendChild(cyberDiv);
+        }
+        const type = document.createElement("div");
+        const price = document.createElement("div");
+    }
+</script>

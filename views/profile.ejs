@@ -76,9 +76,45 @@
 <br />
 
 <!-- Order History -->
+<section
+    class="container mx-auto flex flex-col items-center bg-[#EAD797] p-4 rounded-lg gap-2 text-[#515F84]">
+    <div class="text-4xl p-4 items-center flex gap-4" id="orderHistoryDiv">
+        <span class="material-symbols-outlined text-6xl"> receipt_long </span>
+        <div>Order History</div>
+    </div>
+    <% user.orderHistory.forEach(async (order) => { %> 
+    <%- include("templates/orderHistory", {order: order}) %> 
+    <% }); %>
+</section>
 
 <script>
-    // function toggleEdit() {
+    async function displayProductInformation() {
+        const productDiv = document.getElementById("productDiv");
+
+        const product = await (
+            await fetch(
+                `http://localhost:3000/getProduct?model=${orderModel.innerText}`
+            )
+        ).json();
+
+        if (product.manufacturer) {
+            const model = document.createElement("div");
+            model.innerText = product.model;
+            const manufacturer = document.createElement("div");
+            manufacturer.innerText = product.manufacturer;
+
+            productDiv.appendChild(model);
+            productDiv.appendChild(manufacturer);
+        } else {
+            const cyberDiv = document.createElement("div");
+            cyberDiv.innerText = "Cyber Security";
+            productDiv.appendChild(cyberDiv);
+        }
+        const type = document.createElement("div");
+        const price = document.createElement("div");
+    }
+
+    //     function toggleEdit() {
     //     const editBtn = document.getElementById('editBtn');
     //     const username = document.getElementById('username');
     //     const email = document.getElementById('email');
