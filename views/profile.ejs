@@ -82,15 +82,12 @@
         <span class="material-symbols-outlined text-6xl"> receipt_long </span>
         <div>Order History</div>
     </div>
-    <% user.orderHistory.forEach(async (order) => { %> 
-    <%- include("templates/orderHistory", {order: order}) %> 
-    <% }); %>
+    <% user.orderHistory.forEach(async (order) => { %> <%-
+    include("templates/orderHistory", {order: order}) %> <% }); %>
 </section>
 
 <script>
     async function displayProductInformation() {
-        const productDiv = document.getElementById("productDiv");
-
         const product = await (
             await fetch(
                 `http://localhost:3000/getProduct?model=${orderModel.innerText}`
@@ -113,7 +110,10 @@
         const type = document.createElement("div");
         const price = document.createElement("div");
     }
+    displayProductInformation();
+</script>
 
+<script>
     //     function toggleEdit() {
     //     const editBtn = document.getElementById('editBtn');
     //     const username = document.getElementById('username');

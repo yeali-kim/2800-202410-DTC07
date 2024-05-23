@@ -336,6 +336,46 @@ app.get("/getProduct", async (req, res) => {
     res.json(product);
 });
 
+app.get("/createOrder", async (req, res) => {
+    const order = {
+        cardname: "TestUser",
+        cardnum: "1234123412341234",
+        address: "myAddress",
+        model: "Mini 2 SE",
+        date: new Date(),
+        status: true,
+    };
+    await Users.updateOne(
+        { email: "test@user.ca" },
+        { $push: { orderHistory: order } }
+    );
+    res.send("Complete");
+});
+
+app.post("/cancelSubscription", async (req, res) => {
+    const id = req.body.orderid;
+    const email = req.session.user.email;
+
+    console.log(id);
+
+    const user = await Users.findOne({ email: email });
+
+    const histories = user.orderHistory;
+
+    const newHistories = histories.map((history) => {
+        if (history.id == id) {
+            history.status = false;
+        }
+        return history;
+    });
+
+    console.log(newHistories);
+
+    await Users.updateOne({ email: email }, { orderHistory: newHistories });
+
+    res.redirect("/profile");
+});
+
 const methodOverride = require("method-override");
 app.use(methodOverride("_method"));
 
