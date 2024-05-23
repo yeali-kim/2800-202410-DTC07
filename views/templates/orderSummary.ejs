@@ -337,7 +337,6 @@
         btn.addEventListener("click", async function () {
             orderDetails.innerHTML = "";
             const ID = btn.id;
-            console.log(ID);
 
             const product = await (
                 await fetch(`http://localhost:3000/getProductByID?id=${ID}`)

@@ -318,7 +318,6 @@ app.get("/cybersecurity", validateUser, async (req, res) => {
 
 app.get("/getProductByID/", validateUser, async (req, res) => {
     const ID = req.query.id;
-    console.log(ID);
 
     var product = await Drones.findOne({ _id: ID });
     if (!product) {
@@ -327,8 +326,6 @@ app.get("/getProductByID/", validateUser, async (req, res) => {
     if (!product) {
         product = await CyberSecurities.findOne({ _id: ID });
     }
-
-    console.log(product);
 
     res.json(product);
 });
