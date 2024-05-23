@@ -375,8 +375,6 @@ app.post("/cancelSubscription", validateUser, async (req, res) => {
     const id = req.body.orderid;
     const email = req.session.user.email;
 
-    console.log(id);
-
     const user = await Users.findOne({ email: email });
 
     const histories = user.orderHistory;
@@ -387,8 +385,6 @@ app.post("/cancelSubscription", validateUser, async (req, res) => {
         }
         return history;
     });
-
-    console.log(newHistories);
 
     await Users.updateOne({ email: email }, { orderHistory: newHistories });
 
