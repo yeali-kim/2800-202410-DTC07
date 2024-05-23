@@ -351,13 +351,6 @@ app.put("/updateProfile", async (req, res) => {
     }
 });
 
-app.get("/test", async (req, res) => {
-    const user = await Users.findOne({ email: "test@user.ca" });
-    const drone = await CyberSecurities.findOne({ type: "premium" });
-    console.log(drone);
-    res.render("test", { user: user, drone: drone });
-});
-
 app.post("/order", async (req, res) => {
     const email = req.body.user;
     const model = req.body.drone;
