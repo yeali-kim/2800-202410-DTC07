@@ -178,15 +178,15 @@
                     <p class="leading-relaxed mb-3">
                         <%= drone.type %>
                     </p>
-                    <button type="button" data-modal-toggle="drone-modal"
-                        class="flex bg-cyan-600 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">Place
+                    <button type="button" data-modal-toggle="drone-modal" id="<%= drone.id %>"
+                        class="orderBtn flex bg-cyan-600 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">Place
                         an Order</button>
                 </div>
             </div>
             <% }); %>
     </div>
 
-    <%- include('templates/modal', { modalId: 'drone-modal' , description: '(model description)' }) %>
+    <%- include('templates/orderSummary', { user: user , btnClass: 'orderBtn' }) %>
         <%- include('templates/footer') %>
 
             <script>
