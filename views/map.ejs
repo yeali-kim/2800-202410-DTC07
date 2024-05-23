@@ -125,15 +125,30 @@
                                 criminalMarkers.push(criminalMarker);
 
                                 // Info bubble for each criminal
-                                const generateInfoWindowContent = (criminal) => `
-                                    <div style="font-size: 16px;">
-                                        <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
-                                        <p># convictions: ${criminal.convictions.length}</p>
-                                        <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
-                                            <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
-                                        </div>
+                                // const generateInfoWindowContent = (criminal) => `
+                                //     <div style="font-size: 16px;">
+                                //         <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                //         <p># convictions: ${criminal.convictions.length}</p>
+                                //         <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
+                                //             <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                //         </div>
+                                //     </div>
+                                // `;
+
+                                // <span style="font-weight: bold;">Name</span>
+
+                              const generateInfoWindowContent = (criminal) => `
+                                <div style="font-family: 'Arial', sans-serif; font-size: 16px; color: #333; line-height: 1.6; background-color: #f8f9fa; padding: 16px; border-radius: 8px;">
+                                    <h2 style="margin-bottom: 8px; font-weight: bold">${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                    <p style="margin-bottom: 16px;"><span style="font-weight: bold;"># of Convictions</span>: ${criminal.convictions.length}</p>
+                                    <div style="display: flex; justify-content: flex-end;">
+                                        <a style="font-size: 14px; color: #007bff; text-decoration: none; border-bottom: 1px solid #007bff; transition: border-bottom 0.3s ease;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
                                     </div>
-                                `;
+                                </div>
+                            `;
+
+
+
 
                                 // When marker is clicked, info bubble pops up  
                                 criminalMarker.addListener('click', () => {
