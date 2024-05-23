@@ -316,6 +316,23 @@ app.get("/cybersecurity", validateUser, async (req, res) => {
     });
 });
 
+app.get("/getProductByID/", validateUser, async (req, res) => {
+    const ID = req.query.id;
+    console.log(ID);
+
+    var product = await Drones.findOne({ _id: ID });
+    if (!product) {
+        product = await Robots.findOne({ _id: ID });
+    }
+    if (!product) {
+        product = await CyberSecurities.findOne({ _id: ID });
+    }
+
+    console.log(product);
+
+    res.json(product);
+});
+
 app.get("/profile", validateUser, async (req, res) => {
     res.render("profile", { user: req.session.user });
 });
@@ -337,8 +354,6 @@ app.get("/getProduct", async (req, res) => {
     if (!product) {
         var product = await CyberSecurities.findOne({ type: model });
     }
-
-    console.log(product);
 
     res.json(product);
 });

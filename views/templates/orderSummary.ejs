@@ -1,7 +1,6 @@
 <!-- In order to use this template, you must provide the following:
     user: an object containing user information from the database.
-    drone: an object containing drone/robot/cybersecurity information from the database.
-    btnID: a string of button id to show the dialog.
+    btnClass: the class of the button to open the modal. Must contain product id as id.
 -->
 
 <!-- Style dialog -->
@@ -16,6 +15,10 @@
         border-radius: 5px;
         padding: 8px;
         font-size: small;
+    }
+
+    dialog {
+        padding: 30px;
     }
 
     dialog > div {
@@ -167,11 +170,6 @@
 
 <div class="hide" id="user"><%= user.email %></div>
 <div class="hide" id="userAddress"><%= user.address %></div>
-<% if (drone.manufacturer) { %>
-<div class="hide" id="drone"><%= drone.model %></div>
-<% } else { %>
-<div class="hide" id="drone"><%= drone.type %></div>
-<% } %>
 
 <!-- Order Summary -->
 <dialog id="orderDialog">
@@ -269,25 +267,9 @@
             </div>
             <section id="orderSummary">
                 <h3>Order Summary</h3>
-                <div class="orderDetails">
-                    <% if (drone.manufacturer) { %>
-                    <p>
-                        <b>Model: </b><span id="model"><%= drone.model %></span>
-                    </p>
-                    <p>
-                        <b>Manufacturer: </b
-                        ><span id="type"><%= drone.manufacturer %></span>
-                    </p>
-                    <% } %>
-                    <p><b>Type: </b><span id="type"><%= drone.type %></span></p>
-                    <p>
-                        <b>Price: </b>$<span id="price"
-                            ><%= drone.price %></span
-                        >
-                    </p>
-                </div>
+                <div class="orderDetails" id="orderDetails"></div>
                 <h4 class="totalCost">
-                    Order Total: $<span><%= drone.price %></span>
+                    Order Total: $<span id="dronePrice"></span>
                 </h4>
             </section>
         </div>
@@ -307,22 +289,7 @@
             <span class="material-symbols-outlined success"> task_alt </span>
         </div>
         <h2 class="success">Thank You For Your Order!</h2>
-        <section>
-            <% if(drone.manufacturer) { %>
-            <h3>Purchased Item</h3>
-            <div class="info">
-                <b>Model:</b><span id="droneModel">model</span>
-            </div>
-            <div class="info">
-                <b>Manufacturer:</b
-                ><span id="droneManufacturer">manufacturer</span>
-            </div>
-            <% } %>
-            <div class="info"><b>Type:</b><span id="droneType">type</span></div>
-            <div class="info">
-                <b>Price:</b><span id="dronePrice">price</span>
-            </div>
-        </section>
+        <section id="productDetails"></section>
         <section>
             <h3>Delivery Address</h3>
             <div class="info">
@@ -362,13 +329,43 @@
 
 <!-- Javascript for the dialog -->
 <script>
-    const btn = document.getElementById("<%= btnID %>");
+    const btns = document.querySelectorAll(".<%= btnClass %>");
     const user = document.getElementById("user").innerText;
-    const drone = document.getElementById("drone").innerText;
 
     // show order summary on click
-    btn.addEventListener("click", function () {
-        orderDialog.showModal();
+    btns.forEach((btn) => {
+        btn.addEventListener("click", async function () {
+            orderDetails.innerHTML = "";
+            const ID = btn.id;
+            console.log(ID);
+
+            const product = await (
+                await fetch(`http://localhost:3000/getProductByID?id=${ID}`)
+            ).json();
+
+            if (product.manufacturer) {
+                orderDetails.innerHTML += `<p>
+                <b>Model: </b><span id="model">${product.model}</span>
+                </p>
+                <p>
+                    <b>Manufacturer: </b
+                    ><span id="type">${product.manufacturer}</span>
+                </p>`;
+            }
+
+            orderDetails.innerHTML += `
+                <p><b>Type: </b><span id="type">${product.type}</span></p>
+                <p>
+                    <b>Price: </b>$<span id="price"
+                        >${product.price}</span
+                    >
+                </p>
+            `;
+
+            dronePrice.innerText = product.price;
+
+            orderDialog.showModal();
+        });
     });
 
     // update user database with given information and show order confirmation
@@ -405,22 +402,32 @@
 
         orderDialog.close();
 
+        productDetails.innerHTML = "<h3>Purchased Item</h3>";
+
         if (result.success) {
             if (result.drone.manufacturer) {
-                const droneModel = document.getElementById("droneModel");
-                const droneManu = document.getElementById("droneManufacturer");
-                droneModel.innerText = result.drone.model;
-                droneManu.innerText = result.drone.manufacturer;
+                productDetails.innerHTML += `
+                    <div class="info">
+                        <b>Model:</b><span id="droneModel">${result.drone.model}</span>
+                    </div>
+                    <div class="info">
+                        <b>Manufacturer:</b
+                        ><span id="droneManufacturer">${result.drone.manufacturer}</span>
+                    </div>
+                `;
             }
 
-            const droneType = document.getElementById("droneType");
-            const dronePrice = document.getElementById("dronePrice");
+            productDetails.innerHTML += `
+                <div class="info"><b>Type:</b><span>${result.drone.type}</span></div>
+                <div class="info">
+                    <b>Price:</b><span>${result.drone.price}</span>
+                </div>
+            `;
+
             const deliveryAddress = document.getElementById("deliveryAddress");
             const paymentname = document.getElementById("paymentname");
             const paymentnum = document.getElementById("paymentnum");
 
-            droneType.innerText = result.drone.type;
-            dronePrice.innerText = result.drone.price;
             deliveryAddress.innerText = address;
             paymentname.innerText = cardName;
             paymentnum.innerText = `Card ending in ${cardNumber.slice(-4)}`;
