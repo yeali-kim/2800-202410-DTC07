@@ -81,7 +81,7 @@ const droneSchema = new mongoose.Schema({
 const cyberSchema = new mongoose.Schema({
     type: String,
     price: Number,
-    feature: Array({ service: String, description: String }),
+    features: Array({ service: String, description: String }),
 });
 
 // Ensure that the model name matches the actual collection name
