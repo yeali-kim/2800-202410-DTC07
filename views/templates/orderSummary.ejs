@@ -102,32 +102,22 @@
         color: #515f84;
     }
 
-    .user {
+    .hide {
         display: none;
     }
 </style>
 
+<div class="hide" id="user"><%= user.email %></div>
+<div class="hide" id="drone"><%= drone.model %></div>
+
 <!-- Dialog (hidden) -->
 <dialog id="orderDialog">
     <div>
-        <input
-            type="text"
-            class="user"
-            id="userAddress"
-            value="<%= user.address %>"
-            disabled />
-        <input
-            type="text"
-            name="email"
-            class="user"
-            id="userEmail"
-            value="<%= user.email %>"
-            disabled />
         <button onclick="orderDialog.close()" id="closeModal">
             <span class="material-symbols-outlined"> close </span>
         </button>
     </div>
-    <form action="/order" method="post">
+    <form id="orderForm">
         <div>
             <div id="input">
                 <section id="shippingAddress">
@@ -171,6 +161,7 @@
                             autocomplete="cc-number"
                             maxlength="19"
                             name="cardNumber"
+                            id="cardNumber"
                             placeholder="Card Number"
                             required />
                     </div>
@@ -181,6 +172,7 @@
                                 type="text"
                                 inputmode="numeric"
                                 name="expiryDate"
+                                id="expiryDate"
                                 placeholder="MM/YY"
                                 maxlength="5"
                                 required />
@@ -190,6 +182,7 @@
                             <input
                                 type="text"
                                 name="securityCode"
+                                id="securityCode"
                                 inputmode="numeric"
                                 placeholder="CVV 3-4 digits"
                                 minlength="3"
@@ -202,6 +195,7 @@
                         <input
                             type="text"
                             name="cardName"
+                            id="cardName"
                             placeholder="First and last name"
                             required />
                     </div>
@@ -223,19 +217,73 @@
                 </h4>
             </section>
         </div>
-        <button type="submit">Order</button>
+        <button type="submit" id="submit">Order</button>
     </form>
+</dialog>
+
+<dialog id="confirmDialog">
+    <button onclick="confirmDialog.close()" id="closeModal">
+        <span class="material-symbols-outlined"> close </span>
+    </button>
 </dialog>
 
 <!-- Javascript for the dialog -->
 <script>
-    order.addEventListener("click", function () {
+    const btn = document.getElementById("<%= btnID %>");
+    const user = document.getElementById("user").innerText;
+    const drone = document.getElementById("drone").innerText;
+
+    console.log(user);
+    console.log(drone);
+
+    btn.addEventListener("click", function () {
         orderDialog.showModal();
     });
 
+    orderForm.addEventListener("submit", async function () {
+        event.preventDefault();
+
+        const address = document.getElementById("address").value;
+        const cardNumber = document.getElementById("cardNumber").value;
+        const cardName = document.getElementById("cardName").value;
+        const expiryDate = document.getElementById("expiryDate").value;
+        const securityCode = document.getElementById("securityCode").value;
+
+        const resultString = await fetch("http://localhost:3000/order", {
+            method: "POST",
+            body: JSON.stringify({
+                user: user,
+                drone: drone,
+                address: address,
+                cardNumber: cardNumber,
+                cardName: cardName,
+                expiryDate: expiryDate,
+                securityCode: securityCode,
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        });
+
+        const result = await resultString.json();
+        console.log(result);
+
+        orderDialog.close();
+        confirmDialog.showModal();
+    });
+
+    function submitForm() {
+        event.preventDefault();
+
+        await;
+
+        orderDialog.close();
+        confirmDialog.showModal();
+    }
+
     function useDefaultAddress(element) {
         if (element.checked) {
-            address.value = userAddress.innerText;
+            address.value = user.address;
             address.disabled = true;
             address.style.backgroundColor = "lightgray";
         } else {
