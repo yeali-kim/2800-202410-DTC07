@@ -233,19 +233,23 @@
         </ul>
       </li>
       <br><br><br><br><br><br><br><br><br><br>
-      <li class="mt-16" style="position: fixed; right: 200px; bottom: 20px;"><a href="/" style="font-size: 15px;">Log
-          Out</a></li>
+      <li class="mt-16" id="logoutBtn" style="position: absolute; bottom: 20px; right: 190px; display: none;"><a
+          href="/" style="font-size: 15px;">Log Out</a></li>
     </ul>
   </div>
+
 
   <script>
     document.getElementById('hamburgerMenu').addEventListener('click', () => {
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('overlay');
       const menuIcon = document.getElementById('hamburgerMenu');
+      const logoutBtn = document.getElementById('logoutBtn');
+
       sidebar.classList.toggle('show');
       overlay.classList.toggle('show');
       menuIcon.classList.toggle('open');
+      logoutBtn.style.display = sidebar.classList.contains('show') ? 'block' : 'none';
 
       // Disable scrolling when sidebar is open
       if (sidebar.classList.contains('show')) {
@@ -260,9 +264,13 @@
       const sidebar = document.getElementById('sidebar');
       const overlay = document.getElementById('overlay');
       const menuIcon = document.getElementById('hamburgerMenu');
+      const logoutBtn = document.getElementById('logoutBtn');
+
       sidebar.classList.remove('show');
       overlay.classList.remove('show');
       menuIcon.classList.remove('open');
+      logoutBtn.style.display = 'none'; // Hide logoutBtn
+
       document.body.style.overflowY = 'auto'; // Re-enable scrolling
     });
 
@@ -307,6 +315,7 @@
       }
     });
   </script>
+
 </body>
 
 </html>
