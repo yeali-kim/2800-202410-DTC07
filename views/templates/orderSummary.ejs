@@ -196,7 +196,10 @@
                     </div>
                     <% if (user.address == "Add your address") { %>
                     <div>
-                        <input type="checkbox" name="setAddress" />
+                        <input
+                            type="checkbox"
+                            name="setAddress"
+                            id="setAddress" />
                         <label for="setAddress" class="checkbox"
                             >make this my default address</label
                         >
@@ -378,6 +381,7 @@
         const cardName = document.getElementById("cardName").value;
         const expiryDate = document.getElementById("expiryDate").value;
         const securityCode = document.getElementById("securityCode").value;
+        const setAddress = document.getElementById("setAddress");
 
         // send to backend
         const resultString = await fetch("http://localhost:3000/order", {
@@ -390,6 +394,7 @@
                 cardName: cardName,
                 expiryDate: expiryDate,
                 securityCode: securityCode,
+                setAddress: setAddress.checked,
             }),
             headers: {
                 "Content-type": "application/json; charset=UTF-8",

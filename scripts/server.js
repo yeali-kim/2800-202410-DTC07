@@ -353,7 +353,7 @@ app.put("/updateProfile", async (req, res) => {
 
 app.get("/test", async (req, res) => {
     const user = await Users.findOne({ email: "test@user.ca" });
-    const drone = await CyberSecurities.findOne({ type: "standard" });
+    const drone = await CyberSecurities.findOne({ type: "premium" });
     console.log(drone);
     res.render("test", { user: user, drone: drone });
 });
@@ -364,6 +364,7 @@ app.post("/order", async (req, res) => {
     const cardnumber = req.body.cardNumber;
     const cardname = req.body.cardName;
     const address = req.body.address;
+    const setAddress = req.body.setAddress;
 
     const schema = Joi.object({
         email: Joi.string().email({
@@ -399,6 +400,10 @@ app.post("/order", async (req, res) => {
         date: new Date(),
     };
     await Users.updateOne({ email: email }, { $push: { orderHistory: order } });
+
+    if (setAddress) {
+        await Users.updateOne({ email: email }, { address: address });
+    }
 
     const user = await Users.findOne({ email: email });
     let drone = await Drones.findOne({ model: model });
