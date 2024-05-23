@@ -1,99 +1,117 @@
 <%- include('templates/header') %>
-<style>
-    .back-button {
-        position: absolute;
-        top: 60px;
-        left: 0px;
-    }
-</style>
-<a href="/protection" class="back-button">
-    <span
-        class="material-symbols-outlined absolute top-0 left-0 mt-4 ml-4 inline-block px-3 py-1 bg-[#515F84] rounded-lg text-[#EAD797]">
-        arrow_back_ios
-    </span>
-</a>
-<link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.4/dist/css/splide.min.css" rel="stylesheet">
+    <style>
+        .back-button {
+            position: absolute;
+            top: 60px;
+            left: 0px;
+        }
+    </style>
+    <a href="/protection" class="back-button">
+        <span
+            class="material-symbols-outlined absolute top-0 left-0 mt-4 ml-4 inline-block px-3 py-1 bg-[#515F84] rounded-lg text-[#EAD797]">
+            arrow_back_ios
+        </span>
+    </a>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.4/dist/css/splide.min.css" rel="stylesheet">
 
-<body class="bg-gray-100 text-gray-900">
-    <div class="container mx-auto">
-        <h1 class="text-4xl font-bold text-white text-center mt-28 mb-20">Cybersecurity Packages</h1>
-        <div id="carousel" class="splide mx-auto">
-            <div class="splide__track">
-                <ul class="splide__list">
-                    <% cybersecurities.forEach(function(cybersecurity, index){%>
-                        <li class="splide__slide p-3">
-                            <div class="max-w-sm rounded- overflow-hidden shadow-lg bg-white mb-10 mx-auto">
-                                <!-- Center the card -->
-                                <div class="px-6 pt-4 text-center">
-                                    <div class="font-bold text-3xl mb-2">
-                                        <%= cybersecurity.type %>
-                                    </div>
-                                    <p class="text-gray-700 text-lg">
-                                        Price: $<%= cybersecurity.price %>
-                                    </p>
-                                </div>
-                                <!-- Display service and description of each feature -->
-                                <div class="px-6 pt-6 pb-2">
-                                    <div class="font-bold text-2xl justify-center flex mb-6"> Included Features </div>
-                                    <% cybersecurity.features.forEach(function(feature, featureIndex) { %>
-                                        <div class="flex flex-col mb-6">
-                                            <div class="flex justify-between">
-                                                <div class="h-12">
-                                                    <span class="font-bold">
-                                                        <%= feature.service %>:
-                                                    </span>
-                                                </div>
-                                                <!-- Add plus button to expand description -->
-                                                <div class="inline-block float-right">
-                                                    <button
-                                                        onclick="expandDesc('<%= index %>_<%= featureIndex %>')"
-                                                        id="expandDesc<%= index %>_<%= featureIndex %>"
-                                                        class="bg-[#223053] text-white text-xl font-bold w-8 h-8 pb-2 rounded-md">
-                                                        +
-                                                    </button>
-                                                </div>
-                                            </div>
-                                            <!-- When expandDesc button is clicked, show feature.description -->
-                                            <div id="desc<%= index %>_<%= featureIndex %>" class="hidden">
-                                                <span class="text-gray-600">
-                                                    <%= feature.description %>
-                                                </span>
-                                            </div>
+    <body class="bg-gray-100 text-gray-900">
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-bold text-white text-center mt-36 mb-12">Cybersecurity Packages</h1>
+            <div id="carousel" class="splide mx-auto">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <% cybersecurities.forEach(function(cybersecurity, index){%>
+                            <li class="splide__slide p-3">
+                                <div class="max-w-sm rounded-xl overflow-hidden shadow-xl bg-white mb-10 mx-auto">
+                                    <!-- Center the card -->
+                                    <div class="px-6 pt-4 pb-2 text-center border-b-4 border-double">
+                                        <div class="font-bold text-3xl mb-2">
+                                            <%= cybersecurity.type %>
                                         </div>
-                                        <% }); %>
-                                </div>
-                        </li>
-                        <% }); %>
-                </ul>
+                                        <p class="text-gray-700 text-lg">
+                                            Price: $<%= cybersecurity.price %>
+                                        </p>
+                                    </div>
+                                    <!-- Display service and description of each feature -->
+                                    <div class="px-6 pt-6 pb-2">
+                                        <div class="font-bold text-2xl justify-center flex mb-6 border-2"> Features
+                                        </div>
+                                        <% if (cybersecurity.type=="STANDARD-PLUS" ) { %>
+                                            <div class="text-lg text-center mb-4"> All features from
+                                                <span class="text-purple-700 font-bold">Standard Package</span> <br>
+                                                <span class="text-3xl font-bold">+</span>
+                                            </div>
+                                            <% } %>
+                                                <% if (cybersecurity.type=="PREMIUM" ) { %>
+                                                    <div class="text-lg text-center mb-4"> All features from<br>
+                                                        <span class="text-purple-700 font-bold">Standard-Plus
+                                                            Package</span> <br>
+                                                        <span class="text-3xl font-bold">+</span>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <% cybersecurity.features.forEach(function(feature,
+                                                            featureIndex) { %>
+                                                            <div class="flex flex-col mb-6">
+                                                                <div class="flex justify-between">
+                                                                    <div class="h-12">
+                                                                        <span class="font-bold">
+                                                                            <%= feature.service %>:
+                                                                        </span>
+                                                                    </div>
+                                                                    <!-- Add plus button to expand description -->
+                                                                    <div class="inline-block float-right">
+                                                                        <button
+                                                                            onclick="expandDesc('<%= index %>_<%= featureIndex %>')"
+                                                                            id="expandDesc<%= index %>_<%= featureIndex %>"
+                                                                            class="bg-[#223053] text-white text-xl font-bold w-8 h-8 pb-2 rounded-md">
+                                                                            +
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+                                                                <!-- When expandDesc button is clicked, show feature.description -->
+                                                                <div id="desc<%= index %>_<%= featureIndex %>"
+                                                                    class="hidden">
+                                                                    <span class="text-gray-600">
+                                                                        <%= feature.description %>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <% }); %>
+                                    </div>
+                            </li>
+                            <% }); %>
+                    </ul>
+                </div>
             </div>
         </div>
-    </div>
 
-    <!-- Splide.js JavaScript -->
-    <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.4/dist/js/splide.min.js"></script>
+        <!-- Splide.js JavaScript -->
+        <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.4/dist/js/splide.min.js"></script>
 
-    <script>
-        // Initialize Splide carousel
-        document.addEventListener('DOMContentLoaded', function () {
-            var splide = new Splide('#carousel', {
-                type: 'loop',
-                perPage: 1,
-                perMove: 1,
-                autoplay: false,
-                padding: '7%',
-                drag: 'true',
-            }).mount();
-        });
+        <script>
+            // Initialize Splide carousel
+            document.addEventListener('DOMContentLoaded', function () {
+                var splide = new Splide('#carousel', {
+                    type: 'loop',
+                    perPage: 1,
+                    perMove: 1,
+                    autoplay: false,
+                    padding: '7%',
+                    drag: 'true',
+                }).mount();
+            });
 
-        // Add event listener to expandDesc button
-        function expandDesc(id) {
-            console.log(id)
-            const desc = document.getElementById('desc' + id);
-            // Toggle the visibility of the description element
-            desc.classList.toggle('hidden');
-            // Change the button text based on the description visibility
-            const button = document.getElementById('expandDesc' + id);
-            button.innerHTML = desc.classList.contains('hidden') ? '+' : '-';
-        }
-    </script>
-</body>
+            // Add event listener to expandDesc button
+            function expandDesc(id) {
+                console.log(id)
+                const carousel = document.getElementById(`carousel-slide0${Number(id.slice(0, 1)) + 1}`);
+                const desc = carousel.querySelector(`#desc${id}`);
+                // Toggle the visibility of the description element
+                desc.classList.toggle('hidden');
+                // Change the button text based on the description visibility
+                const button = document.getElementById('expandDesc' + id);
+                button.innerHTML = desc.classList.contains('hidden') ? '+' : '-';
+            }
+        </script>
+    </body>
