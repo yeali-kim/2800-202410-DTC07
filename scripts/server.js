@@ -4,6 +4,7 @@ const session = require(`express-session`);
 const mongoose = require(`mongoose`);
 const bcrypt = require(`bcrypt`);
 const Joi = require(`joi`);
+const cors = require("cors");
 
 const mongo_user = process.env.MONGODB_USER;
 const mongo_password = process.env.MONGODB_PASSWORD;
@@ -52,8 +53,14 @@ const userSchema = new mongoose.Schema({
     email: String,
     password: String,
     address: String,
+    orderHistory: Array({
+        cardname: String,
+        cardnum: String,
+        address: String,
+        model: String,
+        date: String,
+    }),
 });
-
 
 const robotSchema = new mongoose.Schema({
     model: String,
@@ -76,7 +83,6 @@ const cyberSchema = new mongoose.Schema({
     type: String,
 });
 
-
 // Ensure that the model name matches the actual collection name
 const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
 const Users = mongoose.model("users", userSchema);
@@ -96,6 +102,8 @@ app.use(
         // cookie: { secure: true },
     })
 );
+
+app.use(cors());
 
 app.use(express.urlencoded({ extended: false }));
 
@@ -183,7 +191,7 @@ app.post("/signup", async (req, res) => {
         username: username,
         email: email,
         password: hashedPassword,
-        address: "Add your address"
+        address: "Add your address",
     });
 
     req.session.email = email;
@@ -283,11 +291,11 @@ app.get("/robots", validateUser, async (req, res) => {
         const robots = await Robots.find(filter);
         const uniqueTypes = await Robots.distinct("type");
         const uniqueManufacturers = await Robots.distinct("manufacturer");
-        res.render("robots", { 
-            robots: robots, 
-            uniqueTypes: uniqueTypes, 
+        res.render("robots", {
+            robots: robots,
+            uniqueTypes: uniqueTypes,
             uniqueManufacturers: uniqueManufacturers,
-            user: req.session.user 
+            user: req.session.user,
         });
     } catch (error) {
         res.status(500).send(error.message);
@@ -311,24 +319,24 @@ app.get("/profile", validateUser, async (req, res) => {
     res.render("profile", { user: req.session.user });
 });
 
-const methodOverride = require('method-override');
-app.use(methodOverride('_method'));
+const methodOverride = require("method-override");
+app.use(methodOverride("_method"));
 
 app.use(express.json()); // To parse JSON bodies
 
-app.put('/updateProfile', async (req, res) => {
+app.put("/updateProfile", async (req, res) => {
     const { username, email, address } = req.body;
-    const sessionUsername = req.session.user.username;  // Use session to identify the user
+    const sessionUsername = req.session.user.username; // Use session to identify the user
 
     try {
         const user = await Users.findOneAndUpdate(
-            { username: sessionUsername }, 
-            { username, email, address: address }, 
+            { username: sessionUsername },
+            { username, email, address: address },
             { new: true }
         );
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ message: "User not found" });
         }
 
         // Update the session user information
@@ -339,12 +347,62 @@ app.put('/updateProfile', async (req, res) => {
         res.json(user);
     } catch (err) {
         console.error(err);
-        res.status(500).json({ message: 'Server Error' });
+        res.status(500).json({ message: "Server Error" });
     }
 });
 
+app.get("/test", async (req, res) => {
+    const user = await Users.findOne({ email: "test@user.ca" });
+    const drone = await Drones.findOne({ model: "Mini 2 SE" });
+    res.render("test", { user: user, drone: drone });
+});
 
+app.post("/order", async (req, res) => {
+    const email = req.body.user;
+    const model = req.body.drone;
+    const cardnumber = req.body.cardNumber;
+    const cardname = req.body.cardName;
+    const address = req.body.address;
 
+    const schema = Joi.object({
+        email: Joi.string().email({
+            minDomainSegments: 2,
+            tlds: { allow: ["com", "ca"] },
+        }),
+        model: Joi.string(),
+        cardnumber: Joi.number(),
+        cardname: Joi.string(),
+        address: Joi.string(),
+    });
+
+    const validationResult = schema.validate({
+        email,
+        model,
+        cardnumber,
+        cardname,
+        address,
+    });
+    if (validationResult.error != null) {
+        console.log(validationResult.error);
+        res.json({ success: false });
+    }
+
+    const hashedCardNum = await bcrypt.hash(cardnumber, saltRounds);
+
+    const order = {
+        cardname: cardname,
+        cardnum: hashedCardNum,
+        address: address,
+        model: model,
+        date: new Date(),
+    };
+    await Users.updateOne({ email: email }, { $push: { orderHistory: order } });
+
+    const user = await Users.findOne({ email: email });
+    const drone = await Drones.findOne({ model: model });
+
+    res.json({ success: true, user: user, drone: drone });
+});
 
 app.get("/logout", validateUser, (req, res) => {
     req.session.destroy();
