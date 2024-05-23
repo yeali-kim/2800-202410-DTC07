@@ -16,6 +16,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const saltRounds = Number(process.env.SALT_ROUNDS);
 const expireTime = 1000 * 60 * 60;
+const { Decimal128 } = mongoose.Schema.Types;
 
 main().catch((err) => console.error("MongoDB connection error:", err)); // Log MongoDB connection errors
 
@@ -66,7 +67,7 @@ const robotSchema = new mongoose.Schema({
 const droneSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
-    price: String,
+    price: Decimal128,
     location: String,
     type: String,
 });
@@ -295,8 +296,33 @@ app.get("/robots", validateUser, async (req, res) => {
 });
 
 app.get("/drones", validateUser, async (req, res) => {
-    const drones = await Drones.find();
-    res.render("drones", { drones: drones, user: req.session.user });
+    try {
+        const { type, manufacturer, price } = req.query;
+
+        let filter = {};
+        if (type) {
+            filter.type = type;
+        }
+        if (manufacturer) {
+            filter.manufacturer = manufacturer;
+        }
+        if (price) {
+            filter.price = { $lte: mongoose.Types.Decimal128.fromString(price) };
+        }
+
+        const drones = await Drones.find(filter);
+        const uniqueTypes = await Drones.distinct("type");
+        const uniqueManufacturers = await Drones.distinct("manufacturer");
+        res.render("drones", { 
+            drones: drones,
+            uniqueTypes: uniqueTypes,
+            uniqueManufacturers: uniqueManufacturers, 
+            user: req.session.user 
+        });
+    } catch (error) {
+        res.status(500).send(error.message);
+    }
+    
 });
 
 app.get("/cybersecurity", validateUser, async (req, res) => {
