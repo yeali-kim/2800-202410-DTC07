@@ -169,7 +169,7 @@
 <div class="hide" id="userAddress"><%= user.address %></div>
 <div class="hide" id="drone"><%= drone.model %></div>
 
-<!-- Dialog (hidden) -->
+<!-- Order Summary -->
 <dialog id="orderDialog">
     <div>
         <button onclick="orderDialog.close()" id="closeModal">
@@ -286,6 +286,7 @@
     </form>
 </dialog>
 
+<!-- Order confirmation -->
 <dialog id="confirmDialog">
     <div>
         <button onclick="confirmDialog.close()" id="closeModal">
@@ -332,6 +333,7 @@
     </form>
 </dialog>
 
+<!-- Error -->
 <dialog id="errorDialog">
     <div>
         <button onclick="errorDialog.close()" id="closeModal">
@@ -353,10 +355,13 @@
     const user = document.getElementById("user").innerText;
     const drone = document.getElementById("drone").innerText;
 
+    // show order summary on click
     btn.addEventListener("click", function () {
         orderDialog.showModal();
     });
 
+    // update user database with given information and show order confirmation
+    // may show error dialog instead depending on the result from the backend
     orderForm.addEventListener("submit", async function () {
         event.preventDefault();
 
@@ -366,6 +371,7 @@
         const expiryDate = document.getElementById("expiryDate").value;
         const securityCode = document.getElementById("securityCode").value;
 
+        // send to backend
         const resultString = await fetch("http://localhost:3000/order", {
             method: "POST",
             body: JSON.stringify({
@@ -385,6 +391,7 @@
         const result = await resultString.json();
 
         orderDialog.close();
+
         if (result.success) {
             const droneModel = document.getElementById("droneModel");
             const droneManu = document.getElementById("droneManufacturer");
@@ -408,6 +415,7 @@
         }
     });
 
+    // use the address from user object
     function useDefaultAddress(element) {
         if (element.checked) {
             address.value = userAddress.innerText;
