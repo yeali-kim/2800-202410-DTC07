@@ -164,7 +164,8 @@
       transition: transform 1s;
     }
 
-    #front, #back {
+    #front,
+    #back {
       position: absolute;
       backface-visibility: hidden;
     }
@@ -182,7 +183,7 @@
 <body class="bg-[#515F84]">
   <div class="bg-[#515F84] py-4 px-6 flex justify-between items-center" id="navbar">
     <input type="text"
-      class="w-3/4 md:w-2/4 px-4 py-2 rounded-lg bg-[#c1c4cd] text-white focus:outline-none focus:bg-gray-900 invisible"
+      class="w-3/4 md:w-3/4 px-4 py-2 rounded-lg bg-[#c1c4cd] text-white focus:outline-none focus:bg-gray-900 invisible"
       placeholder="Search...">
     <div class="menu-btn cursor-pointer" id="hamburgerMenu">
       <span></span>
@@ -198,24 +199,32 @@
       <img src="logo.png" alt="Logo">
       <div id="appName">
         <h1 id="back"><a href="https://bright-marshmallow-07dfb8.netlify.app">
-          <span style="color: #3BB1B3 ;">Camp</span><span style="color: #C07272;">US</span>
-        </a></h1>
-        <h1 id="front">ProtectUs</h1>
+            <span style="color: #3BB1B3 ;">Camp</span><span style="color: #C07272;">US</span>
+          </a></h1>
+        <h1 id="front" style="font-family: ">ProtectUs</h1>
         <h1 class="invisible">ProtectUs</h1>
       </div>
     </div>
     <ul class="text-left">
       <li><a href="/profile">Profile</a></li>
       <li>
-        <a href="#">Criminals near you</a>
-        <ul>
+        <a href="#" id="criminalsNearYou">Criminals near you</a>
+        <ul class="hidden">
           <li><a href="/map">Map</a></li>
           <li><a href="/list">List</a></li>
         </ul>
       </li>
-      <li><a href="/protection">Protection Services</a></li>
-      <li><a href="/about.html">Contact Us</a></li>
-      <li class="mt-8"><a href="/">Log Out</a></li>
+      <li>
+        <a href="" id="protectionServices">Protection Services</a>
+        <ul class="hidden">
+          <li><a href="/robots">Guardian Robot</a></li>
+          <li><a href="/drones">Security Drone</a></li>
+          <li><a href="/cybersecurity">Cyber Security</a></li>
+        </ul>
+      </li>
+      <br><br><br><br><br><br><br><br><br><br>
+      <li class="mt-16" style="position: fixed; right: 200px; bottom: 20px;"><a href="/" style="font-size: 15px;">Log
+          Out</a></li>
     </ul>
   </div>
 
@@ -246,7 +255,7 @@
       menuIcon.classList.remove('open');
       document.body.style.overflowY = 'auto'; // Re-enable scrolling
     });
-    
+
     // CampUs EasterEgg
     var clickCount = 0;
 
@@ -256,6 +265,19 @@
         appName.classList.add("flip");
       }
     })
+
+
+    document.getElementById('protectionServices').addEventListener('click', function (event) {
+      event.preventDefault();
+      let dropdown = this.nextElementSibling;
+      dropdown.classList.toggle('hidden');
+    });
+
+    document.getElementById('criminalsNearYou').addEventListener('click', function (event) {
+      event.preventDefault();
+      let dropdown = this.nextElementSibling;
+      dropdown.classList.toggle('hidden');
+    });
   </script>
 </body>
 
