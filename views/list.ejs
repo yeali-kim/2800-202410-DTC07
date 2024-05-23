@@ -353,7 +353,7 @@
         return degrees * (Math.PI / 180);
     }
 
-    async function initMap(criminals) {
+    async function initMap(criminals, user) {
         navigator.geolocation.getCurrentPosition(async function(position) {
             const userLocation = {
                 lat: position.coords.latitude,
@@ -398,7 +398,16 @@
             // Sort by distance initially
             sortList('distance');
         }, async function() {
-            const bcit = { lat: 49.28341676133127, lng: -123.11536009794918 };
+            try {
+                const userText =  await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(user.address)}&key=<%= apiKey %>`);
+                const userJson = await userText.json();
+                var userAddress = userJson.results[0].geometry.location ;
+            } catch(error) {
+                var userAddress = { lat: 49.28341676133127, lng: -123.11536009794918 };
+            }
+        
+            console.log(userAddress)
+            console.log(user)
             const geocodedLocations = await Promise.all(criminals.map(async (criminal) => {
                 const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(criminal.address)}&key=<%= apiKey %>`);
                 const data = await response.json();
@@ -406,7 +415,7 @@
             }));
 
             geocodedLocations.forEach((location, index) => {
-                const distance = haversineDistance(bcit.lat, bcit.lng, location.lat, location.lng);
+                const distance = haversineDistance(userAddress.lat, userAddress.lng, location.lat, location.lng);
                 criminals[index].distance = distance;
                 criminals[index].distanceText = `${distance.toFixed(2)} km`;
 
@@ -441,7 +450,8 @@
     // Fetching the criminals data from the server
     document.addEventListener("DOMContentLoaded", function() {
         const criminals = <%- JSON.stringify(criminals) %>;
-        initMap(criminals);
+        const user = <%- JSON.stringify(user) %>;
+        initMap(criminals, user);
     });
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>"></script>
