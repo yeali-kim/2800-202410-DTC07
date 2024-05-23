@@ -303,37 +303,39 @@
         }
     }
 
-    function sortList(criteria) {
-        const cards = document.querySelectorAll('.criminal-card');
-        const cardArray = Array.from(cards);
-        let sortedCards;
+    
+function sortList(criteria) {
+    const cards = document.querySelectorAll('.criminal-card');
+    const cardArray = Array.from(cards);
+    let sortedCards;
 
-        if (criteria === 'name') {
-            sortedCards = cardArray.sort((a, b) => {
-                const nameA = a.querySelector('.criminal-name').innerText.toLowerCase();
-                const nameB = b.querySelector('.criminal-name').innerText.toLowerCase();
-                return currentSortOrder.name === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
-            });
-            currentSortOrder.name = currentSortOrder.name === 'asc' ? 'desc' : 'asc';
-        } else if (criteria === 'crimes') {
-            sortedCards = cardArray.sort((a, b) => {
-                const crimesA = parseInt(a.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
-                const crimesB = parseInt(b.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
-                return currentSortOrder.crimes === 'asc' ? crimesA - crimesB : crimesB - crimesA;
-            });
-            currentSortOrder.crimes = currentSortOrder.crimes === 'asc' ? 'desc' : 'asc';
-        } else if (criteria === 'distance') {
-            sortedCards = cardArray.sort((a, b) => {
-                const distanceA = parseFloat(a.getAttribute('data-distance'));
-                const distanceB = parseFloat(b.getAttribute('data-distance'));
-                return currentSortOrder.distance === 'asc' ? distanceA - distanceB : distanceB - distanceA;
-            });
-            currentSortOrder.distance = currentSortOrder.distance === 'asc' ? 'desc' : 'asc';
-        }
-
-        const container = document.querySelector('.container');
-        sortedCards.forEach(card => container.appendChild(card));
+    if (criteria === 'name') {
+        sortedCards = cardArray.sort((a, b) => {
+            const nameA = a.querySelector('.criminal-name').innerText.toLowerCase();
+            const nameB = b.querySelector('.criminal-name').innerText.toLowerCase();
+            return currentSortOrder.name === 'asc' ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+        });
+        currentSortOrder.name = currentSortOrder.name === 'asc' ? 'desc' : 'asc';
+    } else if (criteria === 'crimes') {
+        sortedCards = cardArray.sort((a, b) => {
+            const crimesA = parseInt(a.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
+            const crimesB = parseInt(b.querySelector('.criminal-crimes').innerText.replace(/\D/g, ''), 10);
+            return currentSortOrder.crimes === 'asc' ? crimesA - crimesB : crimesB - crimesA;
+        });
+        currentSortOrder.crimes = currentSortOrder.crimes === 'asc' ? 'desc' : 'asc';
+    } else if (criteria === 'distance') {
+        sortedCards = cardArray.sort((a, b) => {
+            const distanceA = parseFloat(a.getAttribute('data-distance'));
+            const distanceB = parseFloat(b.getAttribute('data-distance'));
+            return currentSortOrder.distance === 'asc' ? distanceA - distanceB : distanceB - distanceA;
+        });
+        currentSortOrder.distance = currentSortOrder.distance === 'asc' ? 'desc' : 'asc';
     }
+
+    const container = document.querySelector('.container');
+    sortedCards.forEach(card => container.appendChild(card));
+}
+
 
     function haversineDistance(lat1, lon1, lat2, lon2) {
         var R = 6371; // Radius of the earth in km
@@ -353,7 +355,7 @@
         return degrees * (Math.PI / 180);
     }
 
-    async function initMap(criminals) {
+    async function initMap(criminals, user) {
         navigator.geolocation.getCurrentPosition(async function(position) {
             const userLocation = {
                 lat: position.coords.latitude,
@@ -398,7 +400,16 @@
             // Sort by distance initially
             sortList('distance');
         }, async function() {
-            const bcit = { lat: 49.28341676133127, lng: -123.11536009794918 };
+            try {
+                const userText =  await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(user.address)}&key=<%= apiKey %>`);
+                const userJson = await userText.json();
+                var userAddress = userJson.results[0].geometry.location ;
+            } catch(error) {
+                var userAddress = { lat: 49.28341676133127, lng: -123.11536009794918 };
+            }
+        
+            console.log(userAddress)
+            console.log(user)
             const geocodedLocations = await Promise.all(criminals.map(async (criminal) => {
                 const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(criminal.address)}&key=<%= apiKey %>`);
                 const data = await response.json();
@@ -406,7 +417,7 @@
             }));
 
             geocodedLocations.forEach((location, index) => {
-                const distance = haversineDistance(bcit.lat, bcit.lng, location.lat, location.lng);
+                const distance = haversineDistance(userAddress.lat, userAddress.lng, location.lat, location.lng);
                 criminals[index].distance = distance;
                 criminals[index].distanceText = `${distance.toFixed(2)} km`;
 
@@ -437,13 +448,71 @@
             sortList('distance');
         });
     }
+ 
+function search() {
+    document.getElementById('searchBar').addEventListener("keydown", async function (e) { 
+        if (e.key === 'Enter') { 
+            const search = document.getElementById('searchBar').value.toLowerCase();
+            const criminals = <%- JSON.stringify(criminals) %>;
+
+            try {
+                const searchAddress = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(search)}&key=<%= apiKey %>`);
+                const searchJson = await searchAddress.json();
+                var searchCoordinate = searchJson.results[0].geometry.location; 
+            } catch (error) {
+                var searchCoordinate = { lat: 49.28341676133127, lng: -123.11536009794918 };
+            }
+
+            const geocodedLocations = await Promise.all(criminals.map(async (criminal) => {
+                const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(criminal.address)}&key=<%= apiKey %>`);
+                const data = await response.json();
+                return data.results[0].geometry.location;
+            }));
+
+            geocodedLocations.forEach((location, index) => {
+                const distance = haversineDistance(searchCoordinate.lat, searchCoordinate.lng, location.lat, location.lng);
+                criminals[index].distance = distance;
+                criminals[index].distanceText = `${distance.toFixed(2)} km`;
+
+                // Update the data-distance attribute and content
+                const card = document.querySelectorAll('.criminal-card')[index];
+                card.setAttribute('data-distance', distance);
+
+                // Add distance to card only if it's not already present
+                const cardContent = card.querySelector('.flex-col');
+                if (!cardContent.querySelector('.criminal-distance')) {
+                    const distanceElement = document.createElement('p');
+                    distanceElement.classList.add('criminal-distance');
+                    distanceElement.innerText = `Distance: ${distance.toFixed(2)} km`;
+                    cardContent.appendChild(distanceElement); // Insert after Number of offenses
+                }
+
+                // For expanded view, add distance only if it's not already present
+                const expandedContent = document.querySelector(`#details-${index} .overflow-y-scroll`);
+                if (!expandedContent.querySelector('.criminal-distance')) {
+                    const expandedDistanceElement = document.createElement('p');
+                    expandedDistanceElement.classList.add('criminal-distance');
+                    expandedDistanceElement.innerText = `Distance: ${distance.toFixed(2)} km`;
+                    expandedContent.insertBefore(expandedDistanceElement, expandedContent.querySelector('.pb-8')); // Insert after gender
+                }
+            });
+
+            // Sort by distance initially
+            sortList('distance');
+        }
+    });
+}
 
     // Fetching the criminals data from the server
     document.addEventListener("DOMContentLoaded", function() {
         const criminals = <%- JSON.stringify(criminals) %>;
-        initMap(criminals);
+        const user = <%- JSON.stringify(user) %>;
+        initMap(criminals, user);
+        search();
+       
     });
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>"></script>
+
 </body>
 </html>
