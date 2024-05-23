@@ -1,6 +1,6 @@
 <%- include("templates/header") %>
 <style>
-    #filter {
+    #filter, #sortButton {
         display: flex;
         flex-direction: column;
         position: absolute;
@@ -20,6 +20,13 @@
         border-radius: 10px !important;
         width: 400px !important;
         height: 300px !important;
+        overflow: auto !important;
+    }
+
+    .expand-sort{
+        border-radius: 10px !important;
+        width: 400px !important;
+        height: 150px !important;
         overflow: auto !important;
     }
 
@@ -46,6 +53,12 @@
                 <button class="" id="filter">
                     <span class="material-symbols-outlined text-base">filter_alt</span>
                 </button>
+                <button class="bg-white text-black rounded-full ml-10 p-1 px-3" id="sortButton">
+                    <span class="material-symbols-outlined text-base">sort</span>
+                </button>
+                <div id="sortContainer" class="invisible bg-white text-black rounded-full p-1 px-3">
+                    <span class="material-symbols-outlined text-base">sort</span>
+                </div>
                 <script>
                     function expandFilter() {
                         const btn = document.getElementById('filter');
@@ -71,8 +84,8 @@
                                         <label><input type="checkbox" value="cyberattack" onchange="filterByCrimeType()"> Cyberattack</label>
                                     </div>
                                     <label>Sentence Range (years)</label>
-                                    <input type="range" id="sentenceRange" min="0" max="25" value="10" oninput="updateSentenceRange()">
-                                    <div id="sentenceValue" class="w-full text-center">10 years</div>
+                                    <input type="range" id="sentenceRange" min="0" max="50" value="25" oninput="updateSentenceRange()">
+                                    <div id="sentenceValue" class="w-full text-center">25 years</div>
                                     <label>Name</label>
                                     <input type="text" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
                                     <button onclick="clearFilters()" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Filters</button>
@@ -109,6 +122,54 @@
                         expandFilter();
                     });
 
+                    function expandSort() {
+                        const btn = document.getElementById('sortButton');
+                        btn.classList.toggle("expand-sort");
+                        if (btn.classList.contains("expand-sort")) {
+                            document.addEventListener('click', closeSortOnClickOutside);
+                            btn.innerHTML = `
+                                <div class="w-full flex justify-start">
+                                    <button id="closeSortButton">
+                                        <span class="material-symbols-outlined">close</span>
+                                    </button>
+                                </div>
+                                <div class="w-full flex flex-col items-start gap-2" id="sortOptions">
+                                    <button id="sortName" onclick="sortList('name')">Name</button>
+                                    <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
+                                    <button id="sortDistance" onclick="sortList('distance')">Distance</button>
+                                </div>
+                            `;
+
+                            const closeBtn = btn.querySelector('#closeSortButton');
+                            closeBtn.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                                expandSort();
+                            });
+
+                            const sortOptions = document.getElementById('sortOptions');
+                            sortOptions.addEventListener('click', function(event) {
+                                event.stopPropagation();
+                            });
+                        } else {
+                            document.removeEventListener('click', closeSortOnClickOutside);
+                            btn.innerHTML = `<span class="material-symbols-outlined text-base">sort</span>`;
+                        }
+                    }
+
+                    function closeSortOnClickOutside(event) {
+                        const btn = document.getElementById('sortButton');
+                        if (!btn.contains(event.target)) {
+                            btn.classList.remove("expand-sort");
+                            document.removeEventListener('click', closeSortOnClickOutside);
+                            btn.innerHTML = `<span class="material-symbols-outlined text-base">sort</span>`;
+                        }
+                    }
+
+                    document.getElementById('sortButton').addEventListener("click", function(event) {
+                        event.stopPropagation();
+                        expandSort();
+                    });
+
                     function updateSentenceRange() {
                         const sentenceRange = document.getElementById('sentenceRange').value;
                         document.getElementById('sentenceValue').innerText = `${sentenceRange} years`;
@@ -129,7 +190,7 @@
                         const cards = document.querySelectorAll('.criminal-card');
                         cards.forEach(card => {
                             const totalPrisonYears = parseInt(card.getAttribute('data-total-prison-years'), 10);
-                            card.style.display = totalPrisonYears >= sentenceRange ? 'block' : 'none';
+                            card.style.display = totalPrisonYears <= sentenceRange ? 'block' : 'none';
                         });
                     }
 
@@ -146,28 +207,15 @@
 
                     function clearFilters() {
                         document.getElementById('crimeTypeContainer').querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
-                        document.getElementById('sentenceRange').value = 10;
-                        document.getElementById('sentenceValue').innerText = '10 years';
+                        document.getElementById('sentenceRange').value = 25;
+                        document.getElementById('sentenceValue').innerText = '25 years';
                         document.getElementById('nameFilter').value = '';
                         const cards = document.querySelectorAll('.criminal-card');
                         cards.forEach(card => card.style.display = 'block');
                     }
                 </script>
-                <button class="invisible bg-white text-black rounded-full p-1 px-3" id="">
-                    <span class="material-symbols-outlined text-base">filter_alt</span>
-                </button>
-                <button class="bg-white text-black rounded-full p-1 px-3" onclick="sort()">
-                    <span class="material-symbols-outlined text-base">sort</span>
-                </button>
             </div>
             <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
-        </div>
-        <div id="sort" style="display: none;" class="pb-5">
-            <div class="flex justify-start gap-8">
-                <button id="sortName" onclick="sortList('name')">Name</button>
-                <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
-                <button id="sortDistance" onclick="sortList('distance')">Distance</button>
-            </div>
         </div>
         <% criminals.forEach(function(criminal, index) { %>
             <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>" data-crime-types="<%= criminal.convictions.map(conviction => conviction.crime ? conviction.crime.replace(' ', '').toLowerCase() : '').join(',') %>">
@@ -247,11 +295,6 @@
             details.style.display = 'none';
             sCard.style.display = 'flex';
         }
-    }
-
-    function sort() {
-        const sort = document.getElementById('sort');
-        sort.style.display = sort.style.display === 'none' ? 'block' : 'none';
     }
 
     function sortList(criteria) {
