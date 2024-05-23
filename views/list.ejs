@@ -446,14 +446,69 @@
             sortList('distance');
         });
     }
+    function search(){
+        document.getElementById('searchBar').addEventListener("keydown", async function (e) { if (13 == e.keyCode) { 
+            const search = document.getElementById('searchBar').value.toLowerCase();
+            const criminals = <%- JSON.stringify(criminals) %>;
+            
+            try{
+               const searchAddress = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(search)}&key=<%= apiKey %>`);
+            const searchJson = await searchAddress.json();
+            var searchCoordinate = searchJson.results[0].geometry.location; 
+            } catch(error){
+                var searchCoordinate = { lat: 49.28341676133127, lng: -123.11536009794918 };
+            }
+            
+
+            const geocodedLocations = await Promise.all(criminals.map(async (criminal) => {
+            const response = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(criminal.address)}&key=<%= apiKey %>`);
+            const data = await response.json();
+            return data.results[0].geometry.location;
+            }));
+            geocodedLocations.forEach((location, index) => {
+                const distance = haversineDistance(searchCoordinate.lat, searchCoordinate.lng, location.lat, location.lng);
+                criminals[index].distance = distance;
+                criminals[index].distanceText = `${distance.toFixed(2)} km`;
+
+                // Update the data-distance attribute and content
+                const card = document.querySelectorAll('.criminal-card')[index];
+                card.setAttribute('data-distance', distance);
+
+                // Add distance to card only if it's not already present
+                const cardContent = card.querySelector('.flex-col');
+                if (!cardContent.querySelector('.criminal-distance')) {
+                    const distanceElement = document.createElement('p');
+                    distanceElement.classList.add('criminal-distance');
+                    distanceElement.innerText = `Distance: ${distance.toFixed(2)} km`;
+                    cardContent.appendChild(distanceElement); // Insert after Number of offenses
+                }
+
+                // For expanded view, add distance only if it's not already present
+                const expandedContent = document.querySelector(`#details-${index} .overflow-y-scroll`);
+                if (!expandedContent.querySelector('.criminal-distance')) {
+                    const expandedDistanceElement = document.createElement('p');
+                    expandedDistanceElement.classList.add('criminal-distance');
+                    expandedDistanceElement.innerText = `Distance: ${distance.toFixed(2)} km`;
+                    expandedContent.insertBefore(expandedDistanceElement, expandedContent.querySelector('.pb-8')); // Insert after gender
+                }
+                
+            });
+
+            // Sort by distance initially
+            sortList('distance');
+        } });
+    }
 
     // Fetching the criminals data from the server
     document.addEventListener("DOMContentLoaded", function() {
         const criminals = <%- JSON.stringify(criminals) %>;
         const user = <%- JSON.stringify(user) %>;
         initMap(criminals, user);
+        search();
+       
     });
 </script>
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>"></script>
+
 </body>
 </html>
