@@ -61,52 +61,56 @@
                 </div>
                 <script>
                     function expandFilter() {
-                        const btn = document.getElementById('filter');
-                        btn.classList.toggle("expand");
-                        if (btn.classList.contains("expand")) {
-                            document.addEventListener('click', closeFilterOnClickOutside);
-                            btn.innerHTML = `
-                                <div class="w-full flex justify-start">
-                                    <button id="closeButton">
-                                        <span class="material-symbols-outlined">close</span>
-                                    </button>
-                                </div>
-                                <div class="w-full flex flex-col items-start gap-2" id="filterOptions">
-                                    <label>Crime Type</label>
-                                    <div class="checkbox-container" id="crimeTypeContainer">
-                                        <label><input type="checkbox" value="aggravatedassault" onchange="filterByCrimeType()"> Aggravated assault</label>
-                                        <label><input type="checkbox" value="murder" onchange="filterByCrimeType()"> Murder</label>
-                                        <label><input type="checkbox" value="sexualassault" onchange="filterByCrimeType()"> Sexual assault</label>
-                                        <label><input type="checkbox" value="robbery" onchange="filterByCrimeType()"> Robbery</label>
-                                        <label><input type="checkbox" value="vandalism" onchange="filterByCrimeType()"> Vandalism</label>
-                                        <label><input type="checkbox" value="drugtrafficking" onchange="filterByCrimeType()"> Drug trafficking</label>
-                                        <label><input type="checkbox" value="identitytheft" onchange="filterByCrimeType()"> Identity theft</label>
-                                        <label><input type="checkbox" value="cyberattack" onchange="filterByCrimeType()"> Cyberattack</label>
-                                    </div>
-                                    <label>Sentence Range (years)</label>
-                                    <input type="range" id="sentenceRange" min="0" max="50" value="25" oninput="updateSentenceRange()">
-                                    <div id="sentenceValue" class="w-full text-center">25 years</div>
-                                    <label>Name</label>
-                                    <input type="text" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
-                                    <button onclick="clearFilters()" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Filters</button>
-                                </div>
-                            `;
+    const filterBtn = document.getElementById('filter');
+    const sortBtn = document.getElementById('sortButton');
+    filterBtn.classList.toggle("expand");
+    if (filterBtn.classList.contains("expand")) {
+        sortBtn.style.display = 'none';
+        document.addEventListener('click', closeFilterOnClickOutside);
+        filterBtn.innerHTML = `
+            <div class="w-full flex justify-start">
+                <button id="closeButton">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+            </div>
+            <div class="w-full flex flex-col items-start gap-2" id="filterOptions">
+                <label>Crime Type</label>
+                <div class="checkbox-container" id="crimeTypeContainer">
+                    <label><input type="checkbox" value="aggravatedassault" onchange="filterByCrimeType()"> Aggravated assault</label>
+                    <label><input type="checkbox" value="murder" onchange="filterByCrimeType()"> Murder</label>
+                    <label><input type="checkbox" value="sexualassault" onchange="filterByCrimeType()"> Sexual assault</label>
+                    <label><input type="checkbox" value="robbery" onchange="filterByCrimeType()"> Robbery</label>
+                    <label><input type="checkbox" value="vandalism" onchange="filterByCrimeType()"> Vandalism</label>
+                    <label><input type="checkbox" value="drugtrafficking" onchange="filterByCrimeType()"> Drug trafficking</label>
+                    <label><input type="checkbox" value="identitytheft" onchange="filterByCrimeType()"> Identity theft</label>
+                    <label><input type="checkbox" value="cyberattack" onchange="filterByCrimeType()"> Cyberattack</label>
+                </div>
+                <label>Sentence Range (years)</label>
+                <input type="range" id="sentenceRange" min="0" max="50" value="25" oninput="updateSentenceRange()">
+                <div id="sentenceValue" class="w-full text-center">25 years</div>
+                <label>Name</label>
+                <input type="text" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
+                <button onclick="clearFilters()" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Filters</button>
+            </div>
+        `;
 
-                            const closeBtn = btn.querySelector('#closeButton');
-                            closeBtn.addEventListener('click', function(event) {
-                                event.stopPropagation();
-                                expandFilter();
-                            });
+        const closeBtn = filterBtn.querySelector('#closeButton');
+        closeBtn.addEventListener('click', function(event) {
+            event.stopPropagation();
+            expandFilter();
+        });
 
-                            const filterOptions = document.getElementById('filterOptions');
-                            filterOptions.addEventListener('click', function(event) {
-                                event.stopPropagation();
-                            });
-                        } else {
-                            document.removeEventListener('click', closeFilterOnClickOutside);
-                            btn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
-                        }
-                    }
+        const filterOptions = document.getElementById('filterOptions');
+        filterOptions.addEventListener('click', function(event) {
+            event.stopPropagation();
+        });
+    } else {
+        sortBtn.style.display = 'flex';
+        document.removeEventListener('click', closeFilterOnClickOutside);
+        filterBtn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
+    }
+}
+
 
                     function closeFilterOnClickOutside(event) {
                         const btn = document.getElementById('filter');
