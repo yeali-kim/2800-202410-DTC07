@@ -175,7 +175,7 @@
                         center: bcit,
                     });
                     // Add blue marker at BCIT
-                    const marker = new google.maps.Marker({
+                    marker = new google.maps.Marker({
                         position: bcit,
                         map: map,
                         icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker
@@ -206,11 +206,11 @@
 
                                 // Info bubble for each criminal
                                 const generateInfoWindowContent = (criminal) => `
-                                    <div style="font-size: 16px;">
-                                        <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
-                                        <p># convictions: ${criminal.convictions.length}</p>
-                                        <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
-                                            <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                    <div style="font-family: 'Arial', sans-serif; font-size: 16px; color: #333; line-height: 1.6; background-color: #f8f9fa; padding: 16px; border-radius: 8px;">
+                                        <h2 style="margin-bottom: 8px; font-weight: bold">${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                        <p style="margin-bottom: 16px;"><span style="font-weight: bold;"># of Convictions</span>: ${criminal.convictions.length}</p>
+                                        <div style="display: flex; justify-content: flex-end;">
+                                            <a style="font-size: 14px; color: #007bff; text-decoration: none; border-bottom: 1px solid #007bff; transition: border-bottom 0.3s ease;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
                                         </div>
                                     </div>
                                 `;
@@ -234,38 +234,38 @@
                         });
                     });
                 });
-
-                // Show criminal detail modal
-                function showCriminalModal(criminal) {
-                    document.getElementById('criminalImage').src = criminal.image;
-                    document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
-                    document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
-                    document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
-                    document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.description}`;
-
-                    // calculate current age based on dob and device current date
-                    const dob = new Date(criminal.dob);
-                    const diff_ms = Date.now() - dob.getTime();
-                    const age_dt = new Date(diff_ms);
-                    const age = Math.abs(age_dt.getUTCFullYear() - 1970);
-                    document.getElementById('criminalAge').innerText = `Age: ${age}`;
-
-                    const convictionsList = document.getElementById('criminalConvictions');
-                    convictionsList.innerHTML = '';
-                    criminal.convictions.forEach(conviction => {
-                        const listItem = document.createElement('li');
-                        listItem.innerText = `Crime: ${conviction.crime}, Date: ${conviction.date}, Sentence: ${conviction.sentence}`;
-                        convictionsList.appendChild(listItem);
-                    });
-
-                    document.getElementById('criminalModal').classList.remove('hidden');
-                    document.getElementById('map').classList.add('blur');
-                    document.getElementById('filterBtn').classList.add('blur');
-                    document.getElementById('listBtn').classList.add('blur');
-                }
-
-                // close criminal detail modal
             }
+
+            // Show criminal detail modal
+            function showCriminalModal(criminal) {
+                document.getElementById('criminalImage').src = criminal.image;
+                document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
+                document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
+                document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
+                document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.description}`;
+
+                // calculate current age based on dob and device current date
+                const dob = new Date(criminal.dob);
+                const diff_ms = Date.now() - dob.getTime();
+                const age_dt = new Date(diff_ms);
+                const age = Math.abs(age_dt.getUTCFullYear() - 1970);
+                document.getElementById('criminalAge').innerText = `Age: ${age}`;
+
+                const convictionsList = document.getElementById('criminalConvictions');
+                convictionsList.innerHTML = '';
+                criminal.convictions.forEach(conviction => {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = `Crime: ${conviction.crime}, Date: ${conviction.date}, Sentence: ${conviction.sentence}`;
+                    convictionsList.appendChild(listItem);
+                });
+
+                document.getElementById('criminalModal').classList.remove('hidden');
+                document.getElementById('map').classList.add('blur');
+                document.getElementById('filterBtn').classList.add('blur');
+                document.getElementById('listBtn').classList.add('blur');
+            }
+
+            // close criminal detail modal
             function closeCriminalModal() {
                 document.getElementById('criminalModal').classList.add('hidden');
                 document.getElementById('map').classList.remove('blur');
@@ -334,14 +334,14 @@
                             criminalMarkers.push(criminalMarker);
 
                             const generateInfoWindowContent = (criminal) => `
-                        <div style="font-size: 16px;">
-                            <h2 style="font-weight: bold;">Name: ${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
-                            <p># convictions: ${criminal.convictions.length}</p>
-                            <div style="display: flex; justify-content: right; align-items: center; margin-top: 5px;">
-                                <a style="font-size: 12px; color: grey;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
-                            </div>
-                        </div>
-                    `;
+                                <div style="font-family: 'Arial', sans-serif; font-size: 16px; color: #333; line-height: 1.6; background-color: #f8f9fa; padding: 16px; border-radius: 8px;">
+                                    <h2 style="margin-bottom: 8px; font-weight: bold">${criminal.firstName} ${criminal.middleName} ${criminal.lastName}</h2>
+                                    <p style="margin-bottom: 16px;"><span style="font-weight: bold;"># of Convictions</span>: ${criminal.convictions.length}</p>
+                                    <div style="display: flex; justify-content: flex-end;">
+                                        <a style="font-size: 14px; color: #007bff; text-decoration: none; border-bottom: 1px solid #007bff; transition: border-bottom 0.3s ease;" href="#" class="details-link" data-criminal='${JSON.stringify(criminal)}'>Details</a>
+                                    </div>
+                                </div>
+                            `;
 
                             criminalMarker.addListener('click', () => {
                                 const content = generateInfoWindowContent(criminal);
@@ -360,7 +360,6 @@
                     });
                 });
             }
-            // David's test branch
 
             function search(){
                 document.getElementById('searchBar').addEventListener("keydown", async function (e) { 
