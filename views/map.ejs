@@ -175,7 +175,7 @@
                         center: bcit,
                     });
                     // Add blue marker at BCIT
-                    const marker = new google.maps.Marker({
+                    marker = new google.maps.Marker({
                         position: bcit,
                         map: map,
                         icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker
@@ -360,7 +360,6 @@
                     });
                 });
             }
-            // David's test branch
 
             function search(){
                 document.getElementById('searchBar').addEventListener("keydown", async function (e) { 
