@@ -234,38 +234,38 @@
                         });
                     });
                 });
-
-                // Show criminal detail modal
-                function showCriminalModal(criminal) {
-                    document.getElementById('criminalImage').src = criminal.image;
-                    document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
-                    document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
-                    document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
-                    document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.description}`;
-
-                    // calculate current age based on dob and device current date
-                    const dob = new Date(criminal.dob);
-                    const diff_ms = Date.now() - dob.getTime();
-                    const age_dt = new Date(diff_ms);
-                    const age = Math.abs(age_dt.getUTCFullYear() - 1970);
-                    document.getElementById('criminalAge').innerText = `Age: ${age}`;
-
-                    const convictionsList = document.getElementById('criminalConvictions');
-                    convictionsList.innerHTML = '';
-                    criminal.convictions.forEach(conviction => {
-                        const listItem = document.createElement('li');
-                        listItem.innerText = `Crime: ${conviction.crime}, Date: ${conviction.date}, Sentence: ${conviction.sentence}`;
-                        convictionsList.appendChild(listItem);
-                    });
-
-                    document.getElementById('criminalModal').classList.remove('hidden');
-                    document.getElementById('map').classList.add('blur');
-                    document.getElementById('filterBtn').classList.add('blur');
-                    document.getElementById('listBtn').classList.add('blur');
-                }
-
-                // close criminal detail modal
             }
+
+            // Show criminal detail modal
+            function showCriminalModal(criminal) {
+                document.getElementById('criminalImage').src = criminal.image;
+                document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
+                document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
+                document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
+                document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.description}`;
+
+                // calculate current age based on dob and device current date
+                const dob = new Date(criminal.dob);
+                const diff_ms = Date.now() - dob.getTime();
+                const age_dt = new Date(diff_ms);
+                const age = Math.abs(age_dt.getUTCFullYear() - 1970);
+                document.getElementById('criminalAge').innerText = `Age: ${age}`;
+
+                const convictionsList = document.getElementById('criminalConvictions');
+                convictionsList.innerHTML = '';
+                criminal.convictions.forEach(conviction => {
+                    const listItem = document.createElement('li');
+                    listItem.innerText = `Crime: ${conviction.crime}, Date: ${conviction.date}, Sentence: ${conviction.sentence}`;
+                    convictionsList.appendChild(listItem);
+                });
+
+                document.getElementById('criminalModal').classList.remove('hidden');
+                document.getElementById('map').classList.add('blur');
+                document.getElementById('filterBtn').classList.add('blur');
+                document.getElementById('listBtn').classList.add('blur');
+            }
+
+            // close criminal detail modal
             function closeCriminalModal() {
                 document.getElementById('criminalModal').classList.add('hidden');
                 document.getElementById('map').classList.remove('blur');
