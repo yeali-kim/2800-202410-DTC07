@@ -84,15 +84,16 @@
                     <p class="leading-relaxed mb-3">
                         <%= robot.type %>
                     </p>
-                    <button type="button" data-modal-toggle="robot-modal"
-                        class="flex bg-cyan-600 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">Place
+                    <button type="button" data-modal-toggle="robot-modal" id="<%=robot.id %>"
+                        class="orderBtn flex bg-cyan-600 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">Place
                         an Order</button>
                 </div>
             </div>
             <% }); %>
     </div>
 
-    <%- include('templates/modal', { modalId: 'robot-modal' , icon: 'robot_2' , description: '(model description)' }) %>
+    <%- include('templates/orderSummary', { user: user, btnClass: "orderBtn" } ) %>
+
         <%- include('templates/footer') %>
 
             <script>
