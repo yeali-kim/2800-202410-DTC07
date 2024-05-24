@@ -51,13 +51,13 @@
     <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
     <div class="flex justify-between mb-5">
       <div>
-        <button class="" id="filter">
+        <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)]" id="filter">
           <span class="material-symbols-outlined text-xl font-bold text-gray-900">filter_alt</span>
         </button>
-        <button class="rounded-full ms-12" id="sortButton">
+        <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-full ms-12" id="sortButton">
           <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
         </button>
-        <div id="sortContainer" class="invisible rounded-full p-1 px-3">
+        <div id="sortContainer" class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] invisible rounded-full p-1 px-3">
           <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
         </div>
         <script>
@@ -222,10 +222,10 @@
           }
         </script>
       </div>
-      <button class="bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900" onclick='location.href="/map"'>Map</button>
+      <button class="bg-white rounded-full shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] py-2 px-4 font-bold text-gray-900" onclick='location.href="/map"'>Map</button>
     </div>
     <% criminals.forEach(function(criminal, index) { %>
-    <div class="criminal-card bg-[#223053] p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>" data-crime-types="<%= criminal.convictions.map(conviction => conviction.crime ? conviction.crime.replace(' ', '').toLowerCase() : '').join(',') %>">
+    <div class="criminal-card bg-[#223053] p-4 rounded-lg shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>" data-crime-types="<%= criminal.convictions.map(conviction => conviction.crime ? conviction.crime.replace(' ', '').toLowerCase() : '').join(',') %>">
       <div class="flex justify-between" id="sCard-<%= index %>">
         <div class="flex justify-start">
           <img style="height: 100px;" src="<%= criminal.image %>">

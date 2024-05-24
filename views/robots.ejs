@@ -91,14 +91,14 @@
     <div class="container flex mb-8">
         <!-- Filter button -->
         <div class="ms-4">
-            <button class="z-10" id="filter">
+            <button class="z-10 shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)]" id="filter">
                 <span class="material-symbols-outlined"> filter_alt </span>
             </button>
         </div>
 
         <!-- Sort button -->
         <div class="ms-12 ps-2">
-            <button class="" id="sort">
+            <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)]" id="sort">
                 <span class="material-symbols-outlined"> Sort </span>
             </button>
         </div>
@@ -107,7 +107,7 @@
     <!-- Robot cards -->
     <div id="robot-container" class="flex flex-wrap items-center" data-robots="<%- JSON.stringify(robots) %>">
         <% robots.forEach(function(robot) { %>
-            <div class="item m-4 w-full bg-white h-full shadow-lg rounded-lg overflow-hidden text-center"
+            <div class="item m-4 w-full bg-white h-full shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-lg overflow-hidden text-center"
                 data-manufacturer="<%= robot.manufacturer %>" data-type="<%= robot.type %>"
                 data-price="<%= robot.price %>">
                 <div class="p-6 flex justify-between flex-col">
