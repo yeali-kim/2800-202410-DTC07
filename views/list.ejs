@@ -539,7 +539,7 @@ const convictionDate = new Date(conviction.date);
 listItem.innerHTML = `
 <p class="font-bold underline underline-offset-4"><strong>Crime:</strong> ${conviction.crime}</p>
 <p><strong>Date:</strong> ${convictionDate.toLocaleDateString()}</p>
-<p><strong>Sentence:</strong> ${conviction.sentence}</p>
+<p class="pb-3"><strong>Sentence:</strong> ${conviction.sentence}</p>
 `;
 
 convictionsList.appendChild(listItem);
