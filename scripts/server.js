@@ -67,7 +67,7 @@ const userSchema = new mongoose.Schema({
 const robotSchema = new mongoose.Schema({
     model: String,
     manufacturer: String,
-    price: Number,
+    price: Decimal128,
     location: String,
     type: String,
 });
@@ -82,7 +82,7 @@ const droneSchema = new mongoose.Schema({
 
 const cyberSchema = new mongoose.Schema({
     type: String,
-    price: Number,
+    price: Decimal128,
     features: Array({ service: String, description: String }),
 });
 
@@ -263,7 +263,7 @@ app.get("/map", validateUser, async (req, res) => {
     });
 });
 
-app.get('/filterCriminals', async (req, res) => {
+app.get("/filterCriminals", validateUser, async (req, res) => {
     const name = req.query.name;
     const crime = req.query.crime;
     const sentenceMin = req.query.sentenceMin;
@@ -274,29 +274,37 @@ app.get('/filterCriminals', async (req, res) => {
 
         if (name) {
             filter.$or = [
-                { firstName: new RegExp(name, 'i') },
-                { middleName: new RegExp(name, 'i') },
-                { lastName: new RegExp(name, 'i') }
+                { firstName: new RegExp(name, "i") },
+                { middleName: new RegExp(name, "i") },
+                { lastName: new RegExp(name, "i") },
             ];
         }
 
         if (crime) {
-            filter['convictions.crime'] = new RegExp(crime, 'i');
+            filter["convictions.crime"] = new RegExp(crime, "i");
         }
 
         if (sentenceMin) {
-            filter['convictions.sentence'] = { $gte: parseInt(sentenceMin, 10) };
+            filter["convictions.sentence"] = {
+                $gte: parseInt(sentenceMin, 10),
+            };
         }
 
         if (sentenceMax) {
-            filter['convictions.sentence'] = { ...filter['convictions.sentence'], $lte: parseInt(sentenceMax, 10) };
+            filter["convictions.sentence"] = {
+                ...filter["convictions.sentence"],
+                $lte: parseInt(sentenceMax, 10),
+            };
         }
 
         const filteredCriminals = await CriminalProfile.find(filter);
         res.json({ success: true, criminals: filteredCriminals });
     } catch (error) {
-        console.error('Error fetching filtered criminals:', error);
-        res.status(500).json({ success: false, message: 'Internal server error' });
+        console.error("Error fetching filtered criminals:", error);
+        res.status(500).json({
+            success: false,
+            message: "Internal server error",
+        });
     }
 });
 
@@ -308,7 +316,7 @@ function calculateTotalPrisonYears(convictions) {
     }, 0);
 }
 
-app.get("/list", async (req, res) => {
+app.get("/list", validateUser, async (req, res) => {
     const criminals = await CriminalProfile.find({});
     criminals.forEach((criminal) => {
         criminal.totalPrisonYears = calculateTotalPrisonYears(
