@@ -20,7 +20,7 @@
     </span>
 </div>
 
-<div class="flex justify-center  text-center">
+<div class="flex justify-center text-center">
     <button
         class="flex justify-center items-center bg-[#EAD797] text-[#515F84] p-1 w-[120px] rounded-xl border-double border-4 border-[#515F84] text-center"
         onclick="showEdit()">
@@ -81,7 +81,9 @@
     <section
         class="container mx-4 flex flex-col items-center bg-slate-200 p-4 rounded-lg gap-2 text-[#515F84] border-double border-4 border-[#515F84]">
         <div class="text-4xl p-4 items-center flex gap-4" id="orderHistoryDiv">
-            <span class="material-symbols-outlined text-6xl"> receipt_long </span>
+            <span class="material-symbols-outlined text-6xl">
+                receipt_long
+            </span>
             <div>Order History</div>
         </div>
         <% user.orderHistory.forEach(async (order) => { %> <%-
@@ -92,7 +94,9 @@
 <script>
     async function displayProductInformation(orderID) {
         const product = await (
-            await fetch(`http://localhost:3000/getProduct?model=${orderID}`)
+            await fetch(
+                `https://two800-202410-dtc07.onrender.com/getProduct?model=${orderID}`
+            )
         ).json();
 
         if (product.manufacturer) {
@@ -115,14 +119,18 @@
     const orderSummaries = document.querySelectorAll(".orderSummaryDiv");
     orderSummaries.forEach(async (summary) => {
         const product = await (
-            await fetch(`http://localhost:3000/getProduct?id=${summary.id}`)
+            await fetch(
+                `https://two800-202410-dtc07.onrender.com/getProduct?id=${summary.id}`
+            )
         ).json();
 
         const productDiv = summary.querySelector("#productDiv");
+        const priceDiv = summary.querySelector("#priceDiv");
 
         if (product.manufacturer) {
             const model = document.createElement("div");
             model.innerText = product.model;
+            model.classList.add("font-bold");
             const manufacturer = document.createElement("div");
             manufacturer.innerText = product.manufacturer;
 
@@ -131,22 +139,22 @@
         } else {
             const cyberDiv = document.createElement("div");
             cyberDiv.innerText = "Cyber Security";
+            cyberDiv.classList.add("font-bold");
             productDiv.appendChild(cyberDiv);
         }
 
         const type = document.createElement("div");
         const price = document.createElement("div");
         type.innerText = product.type;
-        type.classList.add("text-sm");
-        price.innerText = product.price;
+        price.innerText = `$${product.price["$numberDecimal"]}`;
+        price.classList.add("font-bold");
 
         productDiv.appendChild(type);
-        productDiv.appendChild(price);
+        priceDiv.appendChild(price);
     });
 </script>
 
 <script>
-
     document
         .getElementById("profileForm")
         .addEventListener("submit", async (event) => {
