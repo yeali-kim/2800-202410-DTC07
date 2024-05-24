@@ -19,9 +19,15 @@
 
         .expand {
             border-radius: 10px !important;
-            width: 410px !important;
+            width: 380px !important;
             height: 280px !important;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        }
+        .expand-sort {
+        border-radius: 10px !important;
+        width: 260px !important;
+        height: 230px !important;
+        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
         }
 
         .back-button {
@@ -205,8 +211,8 @@
 
                     // Expand sort button and display sort options
                     function expandSort() {
-                        sortBtn.classList.toggle("expand");
-                        if (sortBtn.classList.contains("expand")) {
+                        sortBtn.classList.toggle("expand-sort");
+                        if (sortBtn.classList.contains("expand-sort")) {
                             collapseFilter();
                             sortBtn.removeEventListener("click", expandSort);
                             setTimeout(() => {
@@ -252,8 +258,8 @@
 
                     // Collapse sort button and hide sort options
                     function collapseSort() {
-                        if (sortBtn.classList.contains("expand")) {
-                            sortBtn.classList.remove("expand");
+                        if (sortBtn.classList.contains("expand-sort")) {
+                            sortBtn.classList.remove("expand-sort");
                             sortBtn.innerHTML = initialSortHTML;
                             sortBtn.style.width = initialSortWidth;
                             sortBtn.style.height = initialSortHeight;
