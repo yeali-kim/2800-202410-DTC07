@@ -23,7 +23,7 @@
         .expand {
             border-radius: 10px !important;
             width: 410px !important;
-            height: 200px !important;
+            height: 280px !important;
         }
 
         .back-button {
@@ -37,13 +37,14 @@
             flex-direction: column;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
+            width: 90%;
         }
 
         .noUi-target,
         .noUi-ltr,
         .noUi-horizontal {
-            width: 100%;
+            width: 90%;
+            margin: 0 auto;
         }
 
         .noUi-handle {
@@ -96,14 +97,14 @@
                                                 </button>
                                             </div>
                                             <div class='w-full flex flex-col gap-2'>
-                                                <<div class="range-slider">
-                                                <label for="priceRange">Price: </label>
-                                                <div id="priceRange"></div>
-                                                <div>
-                                                    <span id="minPriceValue">0</span> -
-                                                    <span id="maxPriceValue">5000</span>
+                                                <div class="range-slider">
+                                                    <label for="priceRange">Price: </label>
+                                                    <div id="priceRange"></div>
+                                                    <div>
+                                                        <span id="minPriceValue">0</span> -
+                                                        <span id="maxPriceValue">5000</span>
+                                                    </div>
                                                 </div>
-                                            </div>
                                                 <div>
                                                     <label for='manufacturerFilter'>Manufacturer</label>
                                                     <select id='manufacturerFilter'>
@@ -131,6 +132,32 @@
                                 closeBtn.addEventListener('click', expandFilter);
                                 const filterOkButton = btn.querySelector('#filterOkButton');
                                 filterOkButton.addEventListener('click', filterDrones);
+
+                                // Initialize noUiSlider
+                                var priceSlider = document.getElementById('priceRange');
+                                console.log(priceSlider);
+                                noUiSlider.create(priceSlider, {
+                                    start: [0, 5000],
+                                    connect: true,
+                                    range: {
+                                        'min': 0,
+                                        'max': 5000
+                                    },
+                                    tooltips: [true, true],
+                                    format: {
+                                        to: function (value) {
+                                            return parseInt(value);
+                                        },
+                                        from: function (value) {
+                                            return parseInt(value);
+                                        }
+                                    }
+                                });
+
+                                priceSlider.noUiSlider.on('update', function (values, handle) {
+                                    document.getElementById('minPriceValue').innerText = values[0];
+                                    document.getElementById('maxPriceValue').innerText = values[1];
+                                });
                             }, 500);
                         } else {
                             setTimeout(() => {
@@ -144,13 +171,18 @@
                     function filterDrones() {
                         const selectedType = document.getElementById('typeFilter').value;
                         const selectedManufacturer = document.getElementById('manufacturerFilter').value;
-                        const price = document.getElementById('priceRange').value;
+                        const priceSlider = document.getElementById('priceRange').value;
+                        const minPrice = document.getElementById('minPriceValue').innerText;
+                        const maxPrice = document.getElementById('maxPriceValue').innerText;
 
                         const queryParams = new URLSearchParams({
                             type: selectedType,
                             manufacturer: selectedManufacturer,
-                            price: price
+                            minPrice: minPrice,
+                            maxPrice: maxPrice,
                         }).toString();
+
+                        console.log(queryParams);
 
                         window.location.href = `/drones?${queryParams}`;
                     }
