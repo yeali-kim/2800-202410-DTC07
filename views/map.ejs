@@ -237,34 +237,46 @@
 
             // Show criminal detail modal
             function showCriminalModal(criminal) {
-                document.getElementById('criminalImage').src = criminal.image;
-                document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
-                document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
-                document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
-                document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.PhysicalDescriptions}`;
+            document.getElementById('criminalImage').src = criminal.image;
+            document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
+            document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
+            document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
+            const physicalDescriptions = criminal.physicalDescriptions.join(', ');
+            const physicalDescriptionsContainer = document.getElementById('criminalDescription');
+            physicalDescriptionsContainer.innerHTML = `
+            <div class="mt-3 rounded-lg overflow-y-scroll bg-white text-black p-5">
+              <p class="font-bold">Physical Description:</p>
+              <p>${physicalDescriptions}</p>
+            </div>
+            `;
+            // calculate current age based on dob and device current date
+            const dob = new Date(criminal.dob);
+            const formattedDob = dob.toLocaleDateString('en-US'); // Format the date
+            const diff_ms = Date.now() - dob.getTime();
+            const age_dt = new Date(diff_ms);
+            const age = Math.abs(age_dt.getUTCFullYear() - 1970);
+            document.getElementById('criminalAge').innerText = `Age: ${age}`;
 
-                // calculate current age based on dob and device current date
-                const dob = new Date(criminal.dob);
-                const formattedDob = dob.toLocaleDateString('en-US'); // Format the date
-                const diff_ms = Date.now() - dob.getTime();
-                const age_dt = new Date(diff_ms);
-                const age = Math.abs(age_dt.getUTCFullYear() - 1970);
-                document.getElementById('criminalAge').innerText = `Age: ${age}`;
+            const convictionsList = document.getElementById('criminalConvictions');
+            convictionsList.innerHTML = ''; // Clear previous content
 
-                const convictionsList = document.getElementById('criminalConvictions');
-                convictionsList.innerHTML = ''; // Clear previous content
+            // Iterate through criminal convictions and create list items
+            criminal.convictions.forEach(conviction => {
+            const listItem = document.createElement('div');
+            const convictionDate = new Date(conviction.date);
+            listItem.innerHTML = `
+            <p class="font-bold underline underline-offset-4"><strong>Crime:</strong> ${conviction.crime}</p>
+            <p><strong>Date:</strong> ${convictionDate.toLocaleDateString()}</p>
+            <p class="pb-3"><strong>Sentence:</strong> ${conviction.sentence}</p>
+            `;
 
-                // Iterate through criminal convictions and create list items
-                criminal.convictions.forEach(conviction => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `<span style='font-weight: bold'>Crime: </span>${conviction.crime}, <span style='font-weight: bold'>Date: </span> ${conviction.date}, <span style='font-weight: bold'>Sentence: </span> ${conviction.sentence}<br>`;
-                    convictionsList.appendChild(listItem);
-                });
+            convictionsList.appendChild(listItem);
+            });
 
-                document.getElementById('criminalModal').classList.remove('hidden');
-                document.getElementById('map').classList.add('blur');
-                document.getElementById('filterBtn').classList.add('blur');
-                document.getElementById('listBtn').classList.add('blur');
+            document.getElementById('criminalModal').classList.remove('hidden');
+            document.getElementById('map').classList.add('blur');
+            document.getElementById('filterBtn').classList.add('blur');
+            document.getElementById('listBtn').classList.add('blur');
             }
 
 
