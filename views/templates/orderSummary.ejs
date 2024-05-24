@@ -18,6 +18,7 @@
     }
 
     dialog {
+        min-width: 80%;
         padding: 30px;
     }
 
@@ -165,6 +166,18 @@
         display: flex;
         flex-direction: row;
         justify-content: space-between;
+    }
+
+    @media screen and (max-width: 600px) {
+        form > div {
+            flex-direction: column;
+        }
+
+        #orderSummary {
+            border: none;
+            border-top: 2px solid black;
+            padding: 20px 0px;
+        }
     }
 </style>
 
@@ -343,6 +356,8 @@
                 await fetch(`http://localhost:3000/getProductByID?id=${ID}`)
             ).json();
 
+            console.log(product.price);
+
             if (product.manufacturer) {
                 orderDetails.innerHTML += `<p>
                 <b>Model: </b><span id="model">${product.model}</span>
@@ -361,12 +376,12 @@
                 <p><b>Type: </b><span id="type">${product.type}</span></p>
                 <p>
                     <b>Price: </b>$<span id="price"
-                        >${product.price}</span
+                        >${product.price["$numberDecimal"]}</span
                     >
                 </p>
             `;
 
-            dronePrice.innerText = product.price;
+            dronePrice.innerText = product.price["$numberDecimal"];
 
             orderDialog.showModal();
         });
@@ -424,7 +439,7 @@
             productDetails.innerHTML += `
                 <div class="info"><b>Type:</b><span>${result.drone.type}</span></div>
                 <div class="info">
-                    <b>Price:</b><span>${result.drone.price}</span>
+                    <b>Price:</b><span>$${result.drone.price["$numberDecimal"]}</span>
                 </div>
             `;
 
