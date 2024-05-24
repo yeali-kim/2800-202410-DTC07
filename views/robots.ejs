@@ -19,21 +19,62 @@
 
         .expand {
             border-radius: 10px !important;
-            width: 380px !important;
-            height: 280px !important;
+            width: 305px !important;
+            height: 300px !important;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+            padding-top: 5px;
         }
+
         .expand-sort {
-        border-radius: 10px !important;
-        width: 260px !important;
-        height: 230px !important;
-        box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+            border-radius: 10px !important;
+            width: 260px !important;
+            height: 220px !important;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
         }
 
         .back-button {
             position: absolute;
             top: 60px;
             left: 0px;
+        }
+
+        .noUi-target,
+        .noUi-ltr,
+        .noUi-horizontal {
+            height: 7px;
+            width: 90%;
+
+        }
+
+        .range-slider .noUi-connect,
+        .range-slider .noUi-connects,
+        .range-slider .noUi-base {
+            height: 7px;
+        }
+
+        .range-slider .noUi-handle {
+            height: 18px;
+            width: 18px;
+            top: -5px;
+            right: -9px;
+            border-radius: 9px;
+        }
+
+        .range-slider {
+            height: 10px;
+        }
+
+        .range-slider .noUi-connect {
+            background: #0891b2;
+        }
+
+        .range-slider .noUi-handle {
+            height: 18px;
+            width: 18px;
+            top: -5px;
+            right: -9px;
+            /* half the width */
+            border-radius: 9px;
         }
     </style>
 
@@ -125,14 +166,14 @@
                             filterBtn.removeEventListener("click", expandFilter);
                             setTimeout(() => {
                                 filterBtn.innerHTML = `
-                                    <div class='w-full flex justify-start'>
+                                    <div class='w-full flex justify-start pt-2'>
                                         <button id='closeButton'>
                                             <span class='material-symbols-outlined'>
                                                 close
                                             </span>
                                         </button>
                                     </div>
-                                    <div class='text-start w-full h-full flex flex-col gap-2 p-3'>
+                                    <div class='text-start w-full h-full flex flex-col justify-between gap-5 p-3'>
                                         <div class="range-slider">
                                             <label for="priceRange">Price: </label>
                                             <div id="priceRange"></div>
@@ -141,7 +182,7 @@
                                                 <span id="maxPriceValue">10000</span>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div class="mt-[20px]">
                                             <label for='manufacturerFilter'>Manufacturer: </label>
                                             <select id='manufacturerFilter'>
                                                 <option value=''>All</option>
@@ -183,7 +224,7 @@
                                         'min': 0,
                                         'max': 10000
                                     },
-                                    tooltips: [true, true],
+                                    tooltips: [false, false],
                                     format: {
                                         to: function (value) {
                                             return parseInt(value);
@@ -217,14 +258,14 @@
                             sortBtn.removeEventListener("click", expandSort);
                             setTimeout(() => {
                                 sortBtn.innerHTML = `
-                                    <div class='w-full flex justify-start'>
+                                    <div class='w-full flex justify-start pt-2'>
                                         <button id='closeButton'>
                                             <span class='material-symbols-outlined'>
                                                 close
                                             </span>
                                         </button>
                                     </div>
-                                    <div class='text-start w-full h-full flex flex-col p-3 gap-3'>
+                                    <div class='text-start w-full h-full flex flex-col gap-3'>
                                         <button value="manufacturer" onclick="sortRobots('manufacturer')">Manufacturer</button>
                                         <button value="type" onclick="sortRobots('type')">Type</button>
                                         <button value="price-asc" onclick="sortRobots('price-asc')">Price: Low to High</button>
