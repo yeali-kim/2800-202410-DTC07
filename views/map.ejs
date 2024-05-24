@@ -47,7 +47,7 @@
                 <p id="criminalDescription"></p>
                 <h5 class="mt-4 font-bold">Convictions</h5>
                 <div class="bg-white text-black rounded-md m-1 max-h-48 overflow-y-auto p-3 mt-3">
-                    <ul id="criminalConvictions" class="list-disc list-inside"></ul>
+                    <ol id="criminalConvictions" class="list-disc list-inside"></ol>
                 </div>
                 <div class="mt-2 text-right">
                     <a href="/protection">
@@ -58,7 +58,6 @@
                     </a>
                 </div>
             </div>
-        </div>
         </div>
 
         <script>
@@ -242,20 +241,23 @@
                 document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
                 document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
                 document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
-                document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.description}`;
+                document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.PhysicalDescriptions}`;
 
                 // calculate current age based on dob and device current date
                 const dob = new Date(criminal.dob);
+                const formattedDob = dob.toLocaleDateString('en-US'); // Format the date
                 const diff_ms = Date.now() - dob.getTime();
                 const age_dt = new Date(diff_ms);
                 const age = Math.abs(age_dt.getUTCFullYear() - 1970);
                 document.getElementById('criminalAge').innerText = `Age: ${age}`;
 
                 const convictionsList = document.getElementById('criminalConvictions');
-                convictionsList.innerHTML = '';
+                convictionsList.innerHTML = ''; // Clear previous content
+
+                // Iterate through criminal convictions and create list items
                 criminal.convictions.forEach(conviction => {
                     const listItem = document.createElement('li');
-                    listItem.innerText = `Crime: ${conviction.crime}, Date: ${conviction.date}, Sentence: ${conviction.sentence}`;
+                    listItem.innerHTML = `<span style='font-weight: bold'>Crime: </span>${conviction.crime}, <span style='font-weight: bold'>Date: </span> ${conviction.date}, <span style='font-weight: bold'>Sentence: </span> ${conviction.sentence}<br>`;
                     convictionsList.appendChild(listItem);
                 });
 
@@ -264,6 +266,7 @@
                 document.getElementById('filterBtn').classList.add('blur');
                 document.getElementById('listBtn').classList.add('blur');
             }
+
 
             // close criminal detail modal
             function closeCriminalModal() {
@@ -361,35 +364,36 @@
                 });
             }
 
-            function search(){
-                document.getElementById('searchBar').addEventListener("keydown", async function (e) { 
-        if (e.key === 'Enter') { 
-            const search = document.getElementById('searchBar').value.toLowerCase();
+            function search() {
+                document.getElementById('searchBar').addEventListener("keydown", async function (e) {
+                    if (e.key === 'Enter') {
+                        const search = document.getElementById('searchBar').value.toLowerCase();
 
-            try {
-                const searchAddress = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(search)}&key=<%= apiKey %>`);
-                const searchJson = await searchAddress.json();
-                userLocation = searchJson.results[0].geometry.location; 
-                console.log(userLocation)
-            } catch (error) {
-                var searchCoordinate = { lat: 49.28341676133127, lng: -123.11536009794918 };
-            };
-            marker.setMap(null);
-            marker = new google.maps.Marker({
-                        position: userLocation,
-                        map: map,
-                        icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker 
-                    });
-                    console.log(userLocation)
-        }
-    }
-    )}
+                        try {
+                            const searchAddress = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(search)}&key=<%= apiKey %>`);
+                            const searchJson = await searchAddress.json();
+                            userLocation = searchJson.results[0].geometry.location;
+                            console.log(userLocation)
+                        } catch (error) {
+                            var searchCoordinate = { lat: 49.28341676133127, lng: -123.11536009794918 };
+                        };
+                        marker.setMap(null);
+                        marker = new google.maps.Marker({
+                            position: userLocation,
+                            map: map,
+                            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker 
+                        });
+                        console.log(userLocation)
+                    }
+                }
+                )
+            }
 
-        document.addEventListener("DOMContentLoaded", function() {
-        
-        search();
-       
-    });
+            document.addEventListener("DOMContentLoaded", function () {
+
+                search();
+
+            });
         </script>
 
         <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&callback=initMap">
