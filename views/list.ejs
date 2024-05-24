@@ -8,11 +8,11 @@
     background-color: white;
     color: black;
     border-radius: 100px;
-    padding: 4px;
+    padding: 7px;
     padding-left: 12px;
-    padding-right: 12px;
+    padding-right: 30px;
     width: 40px;
-    height: 34px;
+    height: 40px;
     transition-property: all;
     transition-duration: 0.5s;
   }
@@ -52,13 +52,13 @@
     <div class="flex justify-between mb-5">
       <div>
         <button class="" id="filter">
-          <span class="material-symbols-outlined text-base">filter_alt</span>
+          <span class="material-symbols-outlined text-xl font-bold text-gray-900">filter_alt</span>
         </button>
-        <button class="bg-white text-black rounded-full ml-12 p-1 px-3" id="sortButton">
-          <span class="material-symbols-outlined text-base">sort</span>
+        <button class="rounded-full ms-12" id="sortButton">
+          <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
         </button>
-        <div id="sortContainer" class="invisible bg-white text-black rounded-full p-1 px-3">
-          <span class="material-symbols-outlined text-base">sort</span>
+        <div id="sortContainer" class="invisible rounded-full p-1 px-3">
+          <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
         </div>
         <script>
           function expandFilter() {
@@ -108,7 +108,7 @@
             } else {
               sortBtn.style.display = 'flex';
               document.removeEventListener('click', closeFilterOnClickOutside);
-              filterBtn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
+              filterBtn.innerHTML = `<span class="material-symbols-outlined text-xl font-bold text-gray-900">filter_alt</span>`;
             }
           }
 
@@ -120,7 +120,7 @@
               btn.classList.remove("expand");
               sortBtn.style.display = 'flex';
               document.removeEventListener('click', closeFilterOnClickOutside);
-              btn.innerHTML = `<span class="material-symbols-outlined text-base">filter_alt</span>`;
+              btn.innerHTML = `<span class="material-symbols-outlined text-xl font-bold text-gray-900">filter_alt</span>`;
             }
           }
 
@@ -159,7 +159,7 @@
               });
             } else {
               document.removeEventListener('click', closeSortOnClickOutside);
-              btn.innerHTML = `<span class="material-symbols-outlined text-base">sort</span>`;
+              btn.innerHTML = `<span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>`;
             }
           }
 
@@ -168,7 +168,7 @@
             if (!btn.contains(event.target)) {
               btn.classList.remove("expand-sort");
               document.removeEventListener('click', closeSortOnClickOutside);
-              btn.innerHTML = `<span class="material-symbols-outlined text-base">sort</span>`;
+              btn.innerHTML = `<span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>`;
             }
           }
 
@@ -222,10 +222,10 @@
           }
         </script>
       </div>
-      <button class="bg-white text-black rounded-full px-2 p-1 text-base" onclick='location.href="/map"'>map</button>
+      <button class="bg-white rounded-full shadow-lg py-2 px-4 font-bold text-gray-900" onclick='location.href="/map"'>Map</button>
     </div>
     <% criminals.forEach(function(criminal, index) { %>
-    <div class="criminal-card bg-blue-800 p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>" data-crime-types="<%= criminal.convictions.map(conviction => conviction.crime ? conviction.crime.replace(' ', '').toLowerCase() : '').join(',') %>">
+    <div class="criminal-card bg-[#223053] p-4 rounded-lg shadow-md mb-4" onclick="hide('<%= index %>')" style="cursor: pointer;" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>" data-crime-types="<%= criminal.convictions.map(conviction => conviction.crime ? conviction.crime.replace(' ', '').toLowerCase() : '').join(',') %>">
       <div class="flex justify-between" id="sCard-<%= index %>">
         <div class="flex justify-start">
           <img style="height: 100px;" src="<%= criminal.image %>">
@@ -237,7 +237,7 @@
             <% } %>
           </div>
         </div>
-        <button onclick="toggleDetails(event, '<%= index %>')" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded" id="detailButton-<%= index %>">Details</button>
+        <button onclick="toggleDetails(event, '<%= index %>')" class="bg-cyan-600 hover:bg-cyan-900 text-white font-bold py-2 px-4 my-6 rounded-xl" id="detailButton-<%= index %>">Details</button>
       </div>
       <div id="details-<%= index %>" class="hidden" style="transition: all 2s ease;">
         <div>
@@ -268,7 +268,7 @@
             </div>
           </div>
           <div class="text-right pt-5">
-            <button class="rounded-full bg-cyan-600 p-2 px-3 hover:bg-cyan-700" onclick="location.href='/protection'">Protect Us</button>
+            <button class="rounded-full bg-cyan-600 p-2 px-3 hover:bg-cyan-900" onclick="location.href='/protection'">Protect Us</button>
           </div>
         </div>
       </div>
