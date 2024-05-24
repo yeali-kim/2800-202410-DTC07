@@ -1,0 +1,476 @@
+<!-- In order to use this template, you must provide the following:
+    user: an object containing user information from the database.
+    btnClass: the class of the button to open the modal. Must contain product id as id.
+-->
+
+<!-- Style dialog -->
+<style>
+    #closeModal {
+        background-color: transparent;
+        border: none;
+    }
+
+    input {
+        border: 1px solid gray;
+        border-radius: 5px;
+        padding: 8px;
+        font-size: small;
+    }
+
+    dialog {
+        min-width: 80%;
+        padding: 30px;
+    }
+
+    dialog > div {
+        width: 100%;
+        display: flex;
+        justify-content: end;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 50px;
+    }
+
+    form > button {
+        align-self: center;
+        width: 30%;
+        background-color: rgb(29 78 216);
+        color: white;
+        padding: 12px;
+        border-radius: 999px;
+        border: none;
+    }
+
+    form > button:hover {
+        background-color: rgb(37 99 235);
+    }
+
+    form > div {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 30px;
+    }
+
+    section {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    #input {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        flex-basis: 60%;
+    }
+
+    #orderSummary {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex-basis: 40%;
+        border-left: 2px solid black;
+        padding: 0px 20px;
+    }
+
+    .inputField {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+
+    .rowDiv {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        gap: 15px;
+    }
+
+    .checkbox {
+        font-size: smaller;
+    }
+
+    p {
+        font-size: medium;
+    }
+
+    .orderDetails {
+        width: 100%;
+    }
+
+    .totalCost {
+        color: darkred;
+        padding: 10px;
+        border-top: 1px solid darkred;
+    }
+
+    h3 {
+        color: #515f84;
+    }
+
+    .hide {
+        display: none;
+    }
+
+    main {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    main > section {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .success {
+        color: teal;
+    }
+
+    .error {
+        color: darkred;
+    }
+
+    .icon {
+        width: 24px;
+        height: 24px;
+        transform: scale(4);
+        margin: 4px;
+    }
+
+    #return {
+        align-self: center;
+        width: 50%;
+        background-color: rgb(29 78 216);
+        color: white;
+        padding: 12px;
+        border-radius: 999px;
+        border: none;
+    }
+
+    #return:hover {
+        background-color: rgb(37 99 235);
+    }
+
+    .info {
+        width: 90%;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+
+    @media screen and (max-width: 600px) {
+        form > div {
+            flex-direction: column;
+        }
+
+        #orderSummary {
+            border: none;
+            border-top: 2px solid black;
+            padding: 20px 0px;
+        }
+    }
+</style>
+
+<div class="hide" id="user"><%= user.email %></div>
+<div class="hide" id="userAddress"><%= user.address %></div>
+
+<!-- Order Summary -->
+<dialog id="orderDialog">
+    <div>
+        <button onclick="orderDialog.close()" id="closeModal">
+            <span class="material-symbols-outlined"> close </span>
+        </button>
+    </div>
+    <form id="orderForm">
+        <div>
+            <div id="input">
+                <section id="shippingAddress">
+                    <h3>Shipping Address</h3>
+                    <div class="inputField">
+                        <label for="address">Address</label>
+                        <input
+                            type="text"
+                            name="address"
+                            id="address"
+                            placeholder="Address"
+                            required />
+                    </div>
+                    <% if (user.address == "Add your address") { %>
+                    <div>
+                        <input
+                            type="checkbox"
+                            name="setAddress"
+                            id="setAddress" />
+                        <label for="setAddress" class="checkbox"
+                            >make this my default address</label
+                        >
+                    </div>
+                    <% } else { %>
+                    <div>
+                        <input
+                            type="checkbox"
+                            name="setAddress"
+                            onclick="useDefaultAddress(this)" />
+                        <label for="setAddress" class="checkbox"
+                            >use my default address</label
+                        >
+                    </div>
+                    <% } %>
+                </section>
+                <section id="paymentMethod">
+                    <h3>Payment Method</h3>
+                    <div class="inputField">
+                        <label for="cardNumber">Card Number</label>
+                        <input
+                            type="text"
+                            inputmode="numeric"
+                            pattern="[0-9\s]{13,19}"
+                            autocomplete="cc-number"
+                            maxlength="19"
+                            name="cardNumber"
+                            id="cardNumber"
+                            placeholder="Card Number"
+                            required />
+                    </div>
+                    <div class="rowDiv">
+                        <div class="inputField">
+                            <label for="expiryDate"> Expiry Date </label>
+                            <input
+                                type="text"
+                                inputmode="numeric"
+                                name="expiryDate"
+                                id="expiryDate"
+                                placeholder="MM/YY"
+                                maxlength="5"
+                                required />
+                        </div>
+                        <div class="inputField">
+                            <label for="securityCode">Security Code</label>
+                            <input
+                                type="text"
+                                name="securityCode"
+                                id="securityCode"
+                                inputmode="numeric"
+                                placeholder="CVV 3-4 digits"
+                                minlength="3"
+                                maxlength="4"
+                                required />
+                        </div>
+                    </div>
+                    <div class="inputField">
+                        <label for="cardName">Name on card</label>
+                        <input
+                            type="text"
+                            name="cardName"
+                            id="cardName"
+                            placeholder="First and last name"
+                            required />
+                    </div>
+                </section>
+            </div>
+            <section id="orderSummary">
+                <h3>Order Summary</h3>
+                <div class="orderDetails" id="orderDetails"></div>
+                <h4 class="totalCost">
+                    Order Total: $<span id="dronePrice"></span>
+                </h4>
+            </section>
+        </div>
+        <button type="submit" id="submit">Order</button>
+    </form>
+</dialog>
+
+<!-- Order confirmation -->
+<dialog id="confirmDialog">
+    <div>
+        <button onclick="confirmDialog.close()" id="closeModal">
+            <span class="material-symbols-outlined"> close </span>
+        </button>
+    </div>
+    <main>
+        <div class="icon">
+            <span class="material-symbols-outlined success"> task_alt </span>
+        </div>
+        <h2 class="success">Thank You For Your Order!</h2>
+        <section id="productDetails"></section>
+        <section>
+            <h3>Delivery Address</h3>
+            <div class="info">
+                <b>Address</b><span id="deliveryAddress">address</span>
+            </div>
+        </section>
+        <section>
+            <h3>Payment Information</h3>
+            <div class="info">
+                <b>Card Name</b><span id="paymentname">name</span>
+            </div>
+            <div class="info">
+                <b>Card Number</b><span id="paymentnum">num</span>
+            </div>
+        </section>
+    </main>
+    <form action="/map">
+        <button type="submit" id="return">Return Home</button>
+    </form>
+</dialog>
+
+<!-- Error -->
+<dialog id="errorDialog">
+    <div>
+        <button onclick="errorDialog.close()" id="closeModal">
+            <span class="material-symbols-outlined"> close </span>
+        </button>
+    </div>
+    <main>
+        <div class="icon">
+            <span class="material-symbols-outlined error"> error </span>
+        </div>
+        <h2 class="error">Oops, Something Went Wrong</h2>
+        <h3>Please Try Again.</h3>
+    </main>
+</dialog>
+
+<!-- Javascript for the dialog -->
+<script>
+    const btns = document.querySelectorAll(".<%= btnClass %>");
+    const user = document.getElementById("user").innerText;
+    var drone;
+
+    // show order summary on click
+    btns.forEach((btn) => {
+        btn.addEventListener("click", async function () {
+            orderDetails.innerHTML = "";
+            const ID = btn.id;
+
+            const product = await (
+                await fetch(
+                    `https://two800-202410-dtc07.onrender.com/getProductByID?id=${ID}`
+                )
+            ).json();
+
+            console.log(product.price);
+
+            if (product.manufacturer) {
+                orderDetails.innerHTML += `<p>
+                <b>Model: </b><span id="model">${product.model}</span>
+                </p>
+                <p>
+                    <b>Manufacturer: </b
+                    ><span id="type">${product.manufacturer}</span>
+                </p>`;
+
+                drone = product.model;
+            } else {
+                drone = product.type;
+            }
+
+            orderDetails.innerHTML += `
+                <p><b>Type: </b><span id="type">${product.type}</span></p>
+                <p>
+                    <b>Price: </b>$<span id="price"
+                        >${product.price["$numberDecimal"]}</span
+                    >
+                </p>
+            `;
+
+            dronePrice.innerText = product.price["$numberDecimal"];
+
+            orderDialog.showModal();
+        });
+    });
+
+    // update user database with given information and show order confirmation
+    // may show error dialog instead depending on the result from the backend
+    orderForm.addEventListener("submit", async function () {
+        event.preventDefault();
+
+        const address = document.getElementById("address").value;
+        const cardNumber = document.getElementById("cardNumber").value;
+        const cardName = document.getElementById("cardName").value;
+        const expiryDate = document.getElementById("expiryDate").value;
+        const securityCode = document.getElementById("securityCode").value;
+        const setAddress = document.getElementById("setAddress");
+
+        // send to backend
+        const resultString = await fetch(
+            "https://two800-202410-dtc07.onrender.com/order",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    user: user,
+                    drone: drone,
+                    address: address,
+                    cardNumber: cardNumber,
+                    cardName: cardName,
+                    expiryDate: expiryDate,
+                    securityCode: securityCode,
+                    setAddress: setAddress ? setAddress.checked : false,
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                },
+            }
+        );
+
+        const result = await resultString.json();
+
+        orderDialog.close();
+
+        productDetails.innerHTML = "<h3>Purchased Item</h3>";
+
+        if (result.success) {
+            if (result.drone.manufacturer) {
+                productDetails.innerHTML += `
+                    <div class="info">
+                        <b>Model:</b><span id="droneModel">${result.drone.model}</span>
+                    </div>
+                    <div class="info">
+                        <b>Manufacturer:</b
+                        ><span id="droneManufacturer">${result.drone.manufacturer}</span>
+                    </div>
+                `;
+            }
+
+            productDetails.innerHTML += `
+                <div class="info"><b>Type:</b><span>${result.drone.type}</span></div>
+                <div class="info">
+                    <b>Price:</b><span>$${result.drone.price["$numberDecimal"]}</span>
+                </div>
+            `;
+
+            const deliveryAddress = document.getElementById("deliveryAddress");
+            const paymentname = document.getElementById("paymentname");
+            const paymentnum = document.getElementById("paymentnum");
+
+            deliveryAddress.innerText = address;
+            paymentname.innerText = cardName;
+            paymentnum.innerText = `Card ending in ${cardNumber.slice(-4)}`;
+
+            confirmDialog.showModal();
+        } else {
+            errorDialog.showModal();
+        }
+    });
+
+    // use the address from user object
+    function useDefaultAddress(element) {
+        if (element.checked) {
+            address.value = userAddress.innerText;
+            address.disabled = true;
+            address.style.backgroundColor = "lightgray";
+        } else {
+            address.disabled = false;
+            address.style.backgroundColor = "white";
+        }
+    }
+</script>

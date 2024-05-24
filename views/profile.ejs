@@ -1,9 +1,40 @@
 <%- include('templates/headerHamburgerOnly') %>
-<header class="text-white text-6xl text-center m-10 mt-32">Profile</header>
+<style>
+    .hidden {
+        display: hidden;
+    }
+</style>
+<header class="text-white text-4xl text-center mx-4 mt-32 flex gap-3">
+    <span class="material-symbols-outlined text-7xl"> account_circle </span>
+    <span class="flex text-center items-center"><%= user.username %></span>
+</header>
+
+<div class="flex mx-5 my-6 gap-3 text-slate-300 flex-col">
+    <span class="flex items-center text-center">
+        <span class="material-symbols-outlined"> home </span>
+        <span><%= user.address %></span>
+    </span>
+    <span class="flex items-center text-center">
+        <span class="material-symbols-outlined"> mail </span>
+        <span> <%= user.email %> </span>
+    </span>
+</div>
+
+<div class="flex justify-center text-center">
+    <button
+        class="flex justify-center items-center bg-[#EAD797] text-[#515F84] p-1 w-[120px] rounded-xl border-double border-4 border-[#515F84] text-center"
+        onclick="showEdit()">
+        <span class="material-symbols-outlined"> edit </span>
+        Edit
+    </button>
+</div>
 
 <form
-    action=""
-    class="w-[70%] mx-auto bg-[#EAD797] flex flex-col justify-center p-10 text-[#515F84] rounded-xl gap-5">
+    class="w-[70%] mx-auto bg-[#EAD797] flex flex-col justify-center p-10 text-[#515F84] rounded-xl gap-5 mt-3 hidden"
+    id="profileForm"
+    method="POST"
+    action="/updateProfile">
+    <input type="hidden" name="_method" value="PUT" />
     <div>
         <label for="username" class="text-xl">Username</label>
         <input
@@ -11,54 +42,167 @@
             type="text"
             name="username"
             value="<%= user.username %>"
-            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            disabled />
+            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
     </div>
     <div>
         <label for="email" class="text-xl">Email</label>
         <input
             id="email"
-            type="text"
+            type="email"
             name="email"
             value="<%= user.email %>"
-            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            disabled />
+            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
     </div>
     <div>
-        <label for="location" class="text-xl">Default Location</label>
+        <label for="address" class="text-xl">Address</label>
         <input
-            id="location"
+            id="address"
             type="text"
-            name="location"
-            value="<%= user.defaultLocation %>"
-            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            disabled />
+            name="address"
+            value="<%= user.address %>"
+            class="block w-full rounded-md border-0 py-1.5 px-2 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6" />
     </div>
-    <div class="w-full flex flex-row justify-between align-center text-white">
-        <button
-            type="button"
-            id="editBtn"
-            onclick="toggleEdit()"
-            class="bg-indigo-500 rounded-xl px-4 py-2">
-            Edit
-        </button>
+    <div class="w-full flex flex-row justify-start align-center text-white">
+        <a href="/resetPasswordProfile" class="text-[#515F84] underline"
+            >Change Password</a
+        >
+    </div>
+    <div class="w-full flex flex-row justify-center align-center text-white">
         <button
             type="submit"
             id="saveBtn"
             class="bg-[#515F84] rounded-xl px-4 py-2"
-            disabled>
+            onclick="saveEdit()">
             Save
         </button>
     </div>
 </form>
+<br />
+
+<!-- Order History -->
+<div class="flex justify-center">
+    <section
+        class="container mx-4 flex flex-col items-center bg-slate-200 p-4 rounded-lg gap-2 text-[#515F84] border-double border-4 border-[#515F84]">
+        <div class="text-4xl p-4 items-center flex gap-4" id="orderHistoryDiv">
+            <span class="material-symbols-outlined text-6xl">
+                receipt_long
+            </span>
+            <div>Order History</div>
+        </div>
+        <% user.orderHistory.forEach(async (order) => { %> <%-
+        include("templates/orderHistory", {order: order}) %> <% }); %>
+    </section>
+</div>
 
 <script>
-    function toggleEdit() {
-        editBtn.innerText = editBtn.innerText == "Edit" ? "Cancel" : "Edit";
-        username.disabled = !username.disabled;
-        email.disabled = !email.disabled;
-        location.disabled = !location.disabled;
-        saveBtn.disabled = !saveBtn.disabled;
+    async function displayProductInformation(orderID) {
+        const product = await (
+            await fetch(
+                `https://two800-202410-dtc07.onrender.com/getProduct?model=${orderID}`
+            )
+        ).json();
+
+        if (product.manufacturer) {
+            const model = document.createElement("div");
+            model.innerText = product.model;
+            const manufacturer = document.createElement("div");
+            manufacturer.innerText = product.manufacturer;
+
+            productDiv.appendChild(model);
+            productDiv.appendChild(manufacturer);
+        } else {
+            const cyberDiv = document.createElement("div");
+            cyberDiv.innerText = "Cyber Security";
+            productDiv.appendChild(cyberDiv);
+        }
+        const type = document.createElement("div");
+        const price = document.createElement("div");
+    }
+
+    const orderSummaries = document.querySelectorAll(".orderSummaryDiv");
+    orderSummaries.forEach(async (summary) => {
+        const product = await (
+            await fetch(
+                `https://two800-202410-dtc07.onrender.com/getProduct?id=${summary.id}`
+            )
+        ).json();
+
+        const productDiv = summary.querySelector("#productDiv");
+        const priceDiv = summary.querySelector("#priceDiv");
+
+        if (product.manufacturer) {
+            const model = document.createElement("div");
+            model.innerText = product.model;
+            model.classList.add("font-bold");
+            const manufacturer = document.createElement("div");
+            manufacturer.innerText = product.manufacturer;
+
+            productDiv.appendChild(model);
+            productDiv.appendChild(manufacturer);
+        } else {
+            const cyberDiv = document.createElement("div");
+            cyberDiv.innerText = "Cyber Security";
+            cyberDiv.classList.add("font-bold");
+            productDiv.appendChild(cyberDiv);
+        }
+
+        const type = document.createElement("div");
+        const price = document.createElement("div");
+        type.innerText = product.type;
+        price.innerText = `$${product.price["$numberDecimal"]}`;
+        price.classList.add("font-bold");
+
+        productDiv.appendChild(type);
+        priceDiv.appendChild(price);
+    });
+</script>
+
+<script>
+    document
+        .getElementById("profileForm")
+        .addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+            const usernameField = document.getElementById("username");
+            const emailField = document.getElementById("email");
+            const addressField = document.getElementById("address");
+
+            const updatedUser = {
+                username: usernameField.value,
+                email: emailField.value,
+                address: addressField.value,
+            };
+
+            try {
+                const response = await fetch("/updateProfile", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(updatedUser),
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    console.log("Success:", data);
+                    // Optionally update the UI or notify the user of success
+                    location.reload(); // Reload the page to reflect the updated data
+                } else {
+                    console.error("Error:", response.statusText);
+                    // Optionally notify the user of an error
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+
+    function showEdit() {
+        menu = document.getElementById("profileForm");
+        menu.classList.toggle("hidden");
+    }
+    function saveEdit() {
+        menu = document.getElementById("profileForm");
+        menu.classList.toggle("hidden");
     }
 </script>
 <%- include('templates/footer') %>

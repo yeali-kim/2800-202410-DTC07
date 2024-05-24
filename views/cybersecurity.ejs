@@ -1,122 +1,124 @@
-<%- include('templates/header') %>
-    <div class="flex justify-center mt-32 mb-28">
-        <h1 class="font-bold text-white text-4xl">Cybersecurity Package</h1>
-    </div>
-    <div class="container mx-auto">
-        <div class="flex justify-end mb-6 gap-4 w-[95%]">
-            <button class="bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    filter_alt
-                </span>
-            </button>
-            <button class="bg-white rounded-full pt-2 px-3">
-                <span class="material-symbols-outlined">
-                    sort
-                </span>
-            </button>
-        </div>
-        <div class="flex flex-col items-center gap-14 font-bold text-3xl">
-            <div class="flex bg-gray-300 text-center w-[90%] rounded-lg py-5">
-                <span class="material-symbols-outlined text-[70px]">
-                    security
-                </span>
-                <div class="flex justify-between">
-                    <div class="flex flex-col text-left pt-2">
-                        <h2 class="text-lg">Model:</h2>
-                        <p class="text-lg">Suitable for:</p>
-                    </div>
-                    <button data-modal-target="security-modal" data-modal-toggle="security-modal" class="text-lg ml-36"
-                        type="button">
-                        Details
-                    </button>
+<%- include("templates/header") %>
+
+    <style>
+        .back-button {
+            position: absolute;
+            top: 60px;
+            left: 0px;
+        }
+    </style>
+    <a href="/protection" class="back-button">
+        <span
+            class="material-symbols-outlined absolute top-0 left-0 mt-4 ml-4 inline-block px-3 py-1 bg-[#515F84] rounded-lg text-[#EAD797]">
+            arrow_back_ios
+        </span>
+    </a>
+    <link href="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.4/dist/css/splide.min.css" rel="stylesheet">
+
+    <body class="bg-gray-100 text-gray-900">
+        <div class="container mx-auto">
+            <h1 class="text-4xl font-bold text-white text-center mt-32 mb-12">Cybersecurity Packages</h1>
+            <div id="carousel" class="splide mx-auto">
+                <div class="splide__track">
+                    <ul class="splide__list">
+                        <% cybersecurities.forEach(function(cybersecurity, index){%>
+                            <li class="splide__slide p-3">
+                                <div class="max-w-sm rounded-xl overflow-hidden shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] bg-white mb-10 mx-auto">
+                                    <!-- Center the card -->
+                                    <div class="px-6 pt-4 pb-2 text-center border-b-4 border-double">
+                                        <div class="font-bold text-3xl mb-2">
+                                            <%= cybersecurity.type %>
+                                        </div>
+                                        <p class="text-gray-700 text-lg">
+                                            Price: $<%= cybersecurity.price %>
+                                        </p>
+                                    </div>
+                                    <!-- Display service and description of each feature -->
+                                    <div class="px-6 pt-6 pb-2">
+                                        <div class="font-bold text-2xl justify-center flex mb-6 border-2"> Features
+                                        </div>
+                                        <% if (cybersecurity.type=="STANDARD-PLUS" ) { %>
+                                            <div class="text-lg text-center mb-4"> All features from
+                                                <span class="text-purple-700 font-bold">Standard Package</span> <br>
+                                                <span class="text-3xl font-bold">+</span>
+                                            </div>
+                                            <% } %>
+                                                <% if (cybersecurity.type=="PREMIUM" ) { %>
+                                                    <div class="text-lg text-center mb-4"> All features from<br>
+                                                        <span class="text-purple-700 font-bold">Standard-Plus
+                                                            Package</span> <br>
+                                                        <span class="text-3xl font-bold">+</span>
+                                                    </div>
+                                                    <% } %>
+
+                                                        <% cybersecurity.features.forEach(function(feature,
+                                                            featureIndex) { %>
+                                                            <div class="flex flex-col mb-6">
+                                                                <div class="flex justify-between">
+                                                                    <div class="h-12">
+                                                                        <span class="font-bold">
+                                                                            <%= feature.service %>:
+                                                                        </span>
+                                                                    </div>
+
+                                                                    <div class="inline-block float-right">
+                                                                        <button
+                                                                            onclick="expandDesc('<%= index %>_<%= featureIndex %>')"
+                                                                            id="expandDesc<%= index %>_<%= featureIndex %>"
+                                                                            class="bg-[#223053] text-white text-xl font-bold w-8 h-8 pb-2 rounded-md">
+                                                                            +
+                                                                        </button>
+                                                                    </div>
+                                                                </div>
+
+                                                                <div id="desc<%= index %>_<%= featureIndex %>"
+                                                                    class="hidden">
+                                                                    <span class="text-gray-600">
+                                                                        <%= feature.description %>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                            <% }); %>
+                                                                <div class="flex justify-center mb-4">
+                                                                    <button type="button" id="<%= cybersecurity.id %>"
+                                                                        class="orderBtn flex bg-cyan-600 hover:bg-cyan-900 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">Place
+                                                                        an Order</button>
+                                                                </div>
+                                    </div>
+                            </li>
+                            <% }); %>
+                    </ul>
                 </div>
             </div>
         </div>
-    </div>
-    <%- include('templates/modal', { modalId: 'security-modal' , icon: 'security' , description: '(model description)'
-        }) %>
-        <%- include('templates/footer') %>
+        <%- include('templates/orderSummary', { user: user , btnClass: 'orderBtn' }) %>
+
+            <!-- Splide.js JavaScript -->
+            <script src="https://cdn.jsdelivr.net/npm/@splidejs/splide@3.6.4/dist/js/splide.min.js"></script>
 
             <script>
-                // Custom JavaScript to handle modal toggle
+                // Initialize Splide carousel
                 document.addEventListener('DOMContentLoaded', function () {
-                    const modalToggleButtons = document.querySelectorAll('[data-modal-toggle]');
-                    const modalHideButtons = document.querySelectorAll('[data-modal-hide]');
-                    const modals = document.querySelectorAll('.hidden');
-                    const modalBody = document.getElementById('modal-body');
-                    const modalFooter = document.getElementById('modal-footer');
-                    const bookNowButton = document.getElementById('book-now-button');
-                    const orderButton = document.getElementById('order-button');
-                    const homeButton = document.getElementById('home-button');
-
-                    const initialModalBodyContent = modalBody.innerHTML;
-                    const initialModalFooterContent = modalFooter.innerHTML;
-
-                    function reassignEventListeners() {
-                        bookNowButton.addEventListener('click', function () {
-                            modalBody.innerHTML = `
-                    <div class="flex justify-center mb-4">
-                        <span class="material-symbols-outlined text-[70px]">
-                        security
-                    </span>
-                    </div>
-                    <div class="bg-gray-200 text-center py-10 rounded-lg">
-                        <p class="text-lg">Order Template</p>
-                    </div>
-                `;
-                            bookNowButton.style.display = 'none';
-                            orderButton.style.display = 'block';
-                            homeButton.style.display = 'none';
-                        });
-
-                        orderButton.addEventListener('click', function () {
-                            modalBody.innerHTML = `
-                    <div class="flex justify-center mb-4">
-                        <span class="material-symbols-outlined text-[70px]">
-                        security
-                    </span>
-                    </div>
-                    <div class="bg-gray-200 text-center py-10 rounded-lg">
-                        <p class="text-lg">Order Confirmation</p>
-                    </div>
-                `;
-                            orderButton.style.display = 'none';
-                            homeButton.style.display = 'block';
-                        });
-
-                        homeButton.addEventListener('click', function () {
-                            window.location.href = '/map';
-                        });
-                    }
-
-                    modalToggleButtons.forEach(button => {
-                        button.addEventListener('click', function () {
-                            const targetModalId = button.getAttribute('data-modal-target');
-                            const targetModal = document.getElementById(targetModalId);
-                            if (targetModal) {
-                                targetModal.classList.remove('hidden');
-                                targetModal.classList.add('flex');
-                            }
-                        });
-                    });
-
-                    modalHideButtons.forEach(button => {
-                        button.addEventListener('click', function () {
-                            const targetModalId = button.getAttribute('data-modal-hide');
-                            const targetModal = document.getElementById(targetModalId);
-                            if (targetModal) {
-                                targetModal.classList.add('hidden');
-                                targetModal.classList.remove('flex');
-                                // Reset modal content to initial state
-                                modalBody.innerHTML = initialModalBodyContent;
-                                modalFooter.innerHTML = initialModalFooterContent;
-                                // Reassign event listeners after resetting content
-                                reassignEventListeners();
-                            }
-                        });
-                    });
-
-                    // Initial assignment of event listeners
-                    reassignEventListeners();
+                    var splide = new Splide('#carousel', {
+                        type: 'loop',
+                        perPage: 1,
+                        perMove: 1,
+                        autoplay: false,
+                        padding: '7%',
+                        drag: 'true',
+                    }).mount();
                 });
+
+                // Add event listener to expandDesc button
+                function expandDesc(id) {
+                    console.log(id)
+                    const carousel = document.getElementById(`carousel-slide0${Number(id.slice(0, 1)) + 1}`);
+                    const desc = carousel.querySelector(`#desc${id}`);
+                    // Toggle the visibility of the description element
+                    desc.classList.toggle('hidden');
+                    // Change the button text based on the description visibility
+                    const button = document.getElementById('expandDesc' + id);
+                    button.innerHTML = desc.classList.contains('hidden') ? '+' : '-';
+                }
             </script>
+    </body>
