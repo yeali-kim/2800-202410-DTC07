@@ -24,29 +24,56 @@
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
         }
 
+        .expand-sort {
+            border-radius: 10px !important;
+            width: 260px !important;
+            height: 220px !important;
+            box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
+        }
+
         .back-button {
             position: absolute;
             top: 60px;
             left: 0px;
         }
 
-        .range-slider {
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            align-items: center;
-            width: 90%;
-        }
-
         .noUi-target,
         .noUi-ltr,
         .noUi-horizontal {
+            height: 7px;
             width: 90%;
-            margin: 0 auto;
+
         }
 
-        .noUi-handle {
-            background: #2c3e50 !important;
+        .range-slider .noUi-connect,
+        .range-slider .noUi-connects,
+        .range-slider .noUi-base {
+            height: 7px;
+        }
+
+        .range-slider .noUi-handle {
+            height: 18px;
+            width: 18px;
+            top: -5px;
+            right: -9px;
+            border-radius: 9px;
+        }
+
+        .range-slider {
+            height: 10px;
+        }
+
+        .range-slider .noUi-connect {
+            background: #0891b2;
+        }
+
+        .range-slider .noUi-handle {
+            height: 18px;
+            width: 18px;
+            top: -5px;
+            right: -9px;
+            /* half the width */
+            border-radius: 9px;
         }
     </style>
 
@@ -138,14 +165,14 @@
                             filterBtn.removeEventListener("click", expandFilter);
                             setTimeout(() => {
                                 filterBtn.innerHTML = `
-                                    <div class='w-full flex justify-start'>
+                                    <div class='w-full flex justify-start pt-2'>
                                         <button id='closeButton'>
                                             <span class='material-symbols-outlined'>
                                                 close
                                             </span>
                                         </button>
                                     </div>
-                                    <div class='text-start w-full h-full flex flex-col gap-2 p-3'>
+                                    <div class='text-start w-full h-full flex flex-col justify-between gap-5 p-3'>
                                         <div class="range-slider">
                                             <label for="priceRange">Price: </label>
                                             <div id="priceRange"></div>
@@ -153,7 +180,8 @@
                                                 <span id="minPriceValue">0</span> -
                                                 <span id="maxPriceValue">5000</span>
                                             </div>
-                                        <div>
+                                        </div>
+                                        <div class="mt-[20px]">
                                             <label for='manufacturerFilter'>Manufacturer: </label>
                                             <select id='manufacturerFilter'>
                                                 <option value=''>All</option>
@@ -196,7 +224,7 @@
                                         'min': 0,
                                         'max': 5000
                                     },
-                                    tooltips: [true, true],
+                                    tooltips: [false, false],
                                     format: {
                                         to: function (value) {
                                             return parseInt(value);
@@ -224,20 +252,20 @@
 
                     // Expand sort button and display sort options
                     function expandSort() {
-                        sortBtn.classList.toggle("expand");
-                        if (sortBtn.classList.contains("expand")) {
+                        sortBtn.classList.toggle("expand-sort");
+                        if (sortBtn.classList.contains("expand-sort")) {
                             collapseFilter();
                             sortBtn.removeEventListener("click", expandSort);
                             setTimeout(() => {
                                 sortBtn.innerHTML = `
-                                    <div class='w-full flex justify-start'>
+                                    <div class='w-full flex justify-start pt-2'>
                                         <button id='closeButton'>
                                             <span class='material-symbols-outlined'>
                                                 close
                                             </span>
                                         </button>
                                     </div>
-                                    <div class='text-start w-full h-full flex flex-col p-3 gap-3'>
+                                    <div class='text-start w-full h-full flex flex-col gap-3'>
                                         <button value="manufacturer" onclick="sortdrones('manufacturer')">Manufacturer</button>
                                         <button value="type" onclick="sortdrones('type')">Type</button>
                                         <button value="price-asc" onclick="sortdrones('price-asc')">Price: Low to High</button>
@@ -260,8 +288,8 @@
 
                     // Collapse filter button and hide filter options
                     function collapseFilter() {
-                        if (filterBtn.classList.contains("expand")) {
-                            filterBtn.classList.remove("expand");
+                        if (filterBtn.classList.contains("expand-sort")) {
+                            filterBtn.classList.remove("expand-sort");
                             filterBtn.innerHTML = initialFilterHTML;
                             filterBtn.style.width = initialFilterWidth;
                             filterBtn.style.height = initialFilterHeight;
