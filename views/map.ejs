@@ -241,8 +241,14 @@
                 document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
                 document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
                 document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
-                document.getElementById('criminalDescription').innerText = `Physical Description: ${criminal.PhysicalDescriptions}`;
-
+                       const physicalDescriptions = criminal.physicalDescriptions.join(', ');
+                       const physicalDescriptionsContainer = document.getElementById('criminalDescription');
+                       physicalDescriptionsContainer.innerHTML = `
+                       <div class="mt-3 rounded-lg overflow-y-scroll bg-white text-black p-5">
+                         <p class="font-bold">Physical Description:</p>
+                         <p>${physicalDescriptions}</p>
+                       </div>
+                       `;
                 // calculate current age based on dob and device current date
                 const dob = new Date(criminal.dob);
                 const formattedDob = dob.toLocaleDateString('en-US'); // Format the date
@@ -256,9 +262,15 @@
 
                 // Iterate through criminal convictions and create list items
                 criminal.convictions.forEach(conviction => {
-                    const listItem = document.createElement('li');
-                    listItem.innerHTML = `<span style='font-weight: bold'>Crime: </span>${conviction.crime}, <span style='font-weight: bold'>Date: </span> ${conviction.date}, <span style='font-weight: bold'>Sentence: </span> ${conviction.sentence}<br>`;
-                    convictionsList.appendChild(listItem);
+                const listItem = document.createElement('div');
+                const convictionDate = new Date(conviction.date);
+                listItem.innerHTML = `
+                <p class="font-bold underline underline-offset-4"><strong>Crime:</strong> ${conviction.crime}</p>
+                <p><strong>Date:</strong> ${convictionDate.toLocaleDateString()}</p>
+                <p class="pb-3"><strong>Sentence:</strong> ${conviction.sentence}</p>
+                `;
+
+                convictionsList.appendChild(listItem);
                 });
 
                 document.getElementById('criminalModal').classList.remove('hidden');
