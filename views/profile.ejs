@@ -94,7 +94,9 @@
 <script>
     async function displayProductInformation(orderID) {
         const product = await (
-            await fetch(`http://localhost:3000/getProduct?model=${orderID}`)
+            await fetch(
+                `https://two800-202410-dtc07.onrender.com/getProduct?model=${orderID}`
+            )
         ).json();
 
         if (product.manufacturer) {
@@ -117,7 +119,9 @@
     const orderSummaries = document.querySelectorAll(".orderSummaryDiv");
     orderSummaries.forEach(async (summary) => {
         const product = await (
-            await fetch(`http://localhost:3000/getProduct?id=${summary.id}`)
+            await fetch(
+                `https://two800-202410-dtc07.onrender.com/getProduct?id=${summary.id}`
+            )
         ).json();
 
         const productDiv = summary.querySelector("#productDiv");

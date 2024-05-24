@@ -353,7 +353,9 @@
             const ID = btn.id;
 
             const product = await (
-                await fetch(`http://localhost:3000/getProductByID?id=${ID}`)
+                await fetch(
+                    `https://two800-202410-dtc07.onrender.com/getProductByID?id=${ID}`
+                )
             ).json();
 
             console.log(product.price);
@@ -400,22 +402,25 @@
         const setAddress = document.getElementById("setAddress");
 
         // send to backend
-        const resultString = await fetch("http://localhost:3000/order", {
-            method: "POST",
-            body: JSON.stringify({
-                user: user,
-                drone: drone,
-                address: address,
-                cardNumber: cardNumber,
-                cardName: cardName,
-                expiryDate: expiryDate,
-                securityCode: securityCode,
-                setAddress: setAddress ? setAddress.checked : false,
-            }),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-            },
-        });
+        const resultString = await fetch(
+            "https://two800-202410-dtc07.onrender.com/order",
+            {
+                method: "POST",
+                body: JSON.stringify({
+                    user: user,
+                    drone: drone,
+                    address: address,
+                    cardNumber: cardNumber,
+                    cardName: cardName,
+                    expiryDate: expiryDate,
+                    securityCode: securityCode,
+                    setAddress: setAddress ? setAddress.checked : false,
+                }),
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                },
+            }
+        );
 
         const result = await resultString.json();
 
