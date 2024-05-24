@@ -335,7 +335,10 @@ app.get("/protection", validateUser, (req, res) => {
 
 app.get("/robots", validateUser, async (req, res) => {
     try {
-        const { type, manufacturer, maxPrice } = req.query;
+        const type = req.query.type;
+        const manufacturer = req.query.manufacturer;
+        const minPrice = req.query.minPrice;
+        const maxPrice = req.query.maxPrice;
 
         let filter = {};
         if (type) {
@@ -344,8 +347,10 @@ app.get("/robots", validateUser, async (req, res) => {
         if (manufacturer) {
             filter.manufacturer = manufacturer;
         }
-        if (maxPrice) {
-            filter.price = { $lte: maxPrice };
+        if (minPrice && maxPrice) {
+            filter.price = { 
+                $gte: minPrice,
+                $lte: maxPrice };
         }
 
         const robots = await Robots.find(filter);

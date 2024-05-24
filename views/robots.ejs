@@ -19,8 +19,8 @@
 
         .expand {
             border-radius: 10px !important;
-            width: 295px !important;
-            height: 200px !important;
+            width: 410px !important;
+            height: 280px !important;
             box-shadow: 0 0 10px 0 rgba(0, 0, 0, 0.2);
         }
 
@@ -126,10 +126,13 @@
                                         </button>
                                     </div>
                                     <div class='text-start w-full h-full flex flex-col gap-2 p-3'>
-                                        <div>
-                                            <label for='priceRange'>Price: </label>
-                                            <input type='range' id='priceRange' name='priceRange' min='0' max='10000' value='0' oninput='this.nextElementSibling.value = this.value'>
-                                            <output>0</output>
+                                        <div class="range-slider">
+                                            <label for="priceRange">Price: </label>
+                                            <div id="priceRange"></div>
+                                            <div>
+                                                <span id="minPriceValue">0</span> -
+                                                <span id="maxPriceValue">10000</span>
+                                            </div>
                                         </div>
                                         <div>
                                             <label for='manufacturerFilter'>Manufacturer: </label>
@@ -158,6 +161,32 @@
                                 closeBtn.addEventListener('click', expandFilter);
                                 const filterOkButton = filterBtn.querySelector('#filterOkButton');
                                 filterOkButton.addEventListener('click', filterRobots);
+
+                                // Initialize noUiSlider
+                                var priceSlider = document.getElementById('priceRange');
+                                console.log(priceSlider);
+                                noUiSlider.create(priceSlider, {
+                                    start: [0, 10000],
+                                    connect: true,
+                                    range: {
+                                        'min': 0,
+                                        'max': 10000
+                                    },
+                                    tooltips: [true, true],
+                                    format: {
+                                        to: function (value) {
+                                            return parseInt(value);
+                                        },
+                                        from: function (value) {
+                                            return parseInt(value);
+                                        }
+                                    }
+                                });
+
+                                priceSlider.noUiSlider.on('update', function (values, handle) {
+                                    document.getElementById('minPriceValue').innerText = values[0];
+                                    document.getElementById('maxPriceValue').innerText = values[1];
+                                });
                             }, 500);
                         } else {
                             setTimeout(() => {
@@ -234,17 +263,21 @@
                     function filterRobots() {
                         const selectedType = document.getElementById('typeFilter').value;
                         const selectedManufacturer = document.getElementById('manufacturerFilter').value;
-                        const maxPrice = document.getElementById('priceRange').value;
+                        const priceSlider = document.getElementById('priceRange').value;
+                        const minPrice = document.getElementById('minPriceValue').innerText;
+                        const maxPrice = document.getElementById('maxPriceValue').innerText;
 
                         const queryParams = new URLSearchParams({
                             type: selectedType,
                             manufacturer: selectedManufacturer,
-                            price: maxPrice
+                            minPrice: minPrice,
+                            maxPrice: maxPrice
                         }).toString();
 
                         window.location.href = `/robots?${queryParams}`;
                     }
 
+                    btn.addEventListener('click', expandFilter);
                 });
 
                 // Sorting robots based on selected criteria
