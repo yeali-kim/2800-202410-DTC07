@@ -343,7 +343,10 @@ app.get("/protection", validateUser, (req, res) => {
 
 app.get("/robots", validateUser, async (req, res) => {
     try {
-        const { type, manufacturer, maxPrice } = req.query;
+        const type = req.query.type;
+        const manufacturer = req.query.manufacturer;
+        const minPrice = req.query.minPrice;
+        const maxPrice = req.query.maxPrice;
 
         let filter = {};
         if (type) {
@@ -352,8 +355,10 @@ app.get("/robots", validateUser, async (req, res) => {
         if (manufacturer) {
             filter.manufacturer = manufacturer;
         }
-        if (maxPrice) {
-            filter.price = { $lte: maxPrice };
+        if (minPrice && maxPrice) {
+            filter.price = { 
+                $gte: minPrice,
+                $lte: maxPrice };
         }
 
         const robots = await Robots.find(filter);
@@ -372,8 +377,13 @@ app.get("/robots", validateUser, async (req, res) => {
 
 app.get("/drones", validateUser, async (req, res) => {
     try {
-        const { type, manufacturer, price } = req.query;
+        const type = req.query.type;
+        const manufacturer = req.query.manufacturer;
+        const minPrice = req.query.minPrice;
+        const maxPrice = req.query.maxPrice;
 
+        console.log(type, manufacturer, minPrice, maxPrice);
+ 
         let filter = {};
         if (type) {
             filter.type = type;
@@ -381,13 +391,18 @@ app.get("/drones", validateUser, async (req, res) => {
         if (manufacturer) {
             filter.manufacturer = manufacturer;
         }
-        if (price) {
+        if (minPrice && maxPrice) {
             filter.price = {
-                $lte: mongoose.Types.Decimal128.fromString(price),
+                $gte: mongoose.Types.Decimal128.fromString(minPrice),
+                $lte: mongoose.Types.Decimal128.fromString(maxPrice),
             };
+            // filter.price = { $lte: mongoose.Types.Decimal128.fromString(minPrice) }
         }
 
+        console.log(filter);
+
         const drones = await Drones.find(filter);
+        console.log(drones);
         const uniqueTypes = await Drones.distinct("type");
         const uniqueManufacturers = await Drones.distinct("manufacturer");
         res.render("drones", {
