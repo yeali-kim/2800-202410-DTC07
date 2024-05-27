@@ -5,7 +5,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="shortcut icon" type="image/png" href="/logo.png">
-
   <title>ProtectUs</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet"
@@ -13,19 +12,22 @@
   <link rel="stylesheet" href="././styles/navbar.css">
 </head>
 
-<body>
-  <div class="flex flex-col justify-center items-center text-center bg-[#515F84] py-5 px-5  box-content ">
-    <img src="logo.png" alt="" class="text-center mt-20 w-[300px] h-[300px] bg-slate-100">
-    <h3 class="text-white text-8xl">ProtectUs</h3>
-    <br><br><br><br><br>
-    <div class="bg-[#EAD797] flex flex-col  justify-center items-center w-screen py-8 pb-28 rounded-t-[50%] h-[400px]">
-      <a href="/login" id="loginBtn"
-        class="bg-[#515F84] px-20 py-3 rounded-full  text-center flex w60 text-white mt-10">Login</a>
-      <br>
-      <a href="/signup" id="signupBtn"
-        class="bg-[#515F84] px-20 py-3 rounded-full  text-center flex w60 text-white">Signup</a>
-    </div>
+<body class="h-screen flex flex-col relative">
+  <div
+    class="flex flex-col justify-center items-center text-center bg-[#515F84] py-5 px-5 box-content flex-grow relative">
+    <img src="logo.png" alt="" class="text-center  w-[300px] h-[300px] bg-slate-100">
+    <h3 class="text-white text-8xl mb-44">ProtectUs</h3>
+    
+  </div>
+  <div
+    class="bg-[#EAD797] flex flex-col justify-center items-center w-screen py-8 pb-28 rounded-t-[50%] absolute bottom-0 left-0 right-0 ">
+    <br>
+    <a href="/login" id="loginBtn"
+      class="bg-[#515F84] px-20 py-3 rounded-full text-center flex w60 text-white mt-10">Login</a>
+    <br>
+    <a href="/signup" id="signupBtn"
+      class="bg-[#515F84] px-20 py-3 rounded-full text-center flex w60 text-white">Signup</a>
   </div>
 </body>
 
-</html>`
+</html>
