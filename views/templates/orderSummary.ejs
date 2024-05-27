@@ -367,8 +367,6 @@
                 await fetch(`/getProductByID?id=${ID}`)
             ).json();
 
-            console.log(product.price);
-
             if (product.manufacturer) {
                 orderDetails.innerHTML += `<p>
                 <b>Model: </b><span id="model">${product.model}</span>
