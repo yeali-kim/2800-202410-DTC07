@@ -89,7 +89,7 @@
             </span>
             <div>Order History</div>
         </div>
-        <% user.orderHistory.forEach(async (order) => { %> <%-
+        <% user.orderHistory.slice().reverse().forEach((order) => { %> <%- 
         include("templates/orderHistory", {order: order}) %> <% }); %>
     </section>
 </div>
