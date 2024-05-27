@@ -117,7 +117,7 @@
                     // Toggle the visibility of the description element
                     desc.classList.toggle('hidden');
                     // Change the button text based on the description visibility
-                    const button = document.getElementById('expandDesc' + id);
+                    const button = carousel.querySelector('#expandDesc' + id);
                     button.innerHTML = desc.classList.contains('hidden') ? '+' : '-';
                 }
             </script>
