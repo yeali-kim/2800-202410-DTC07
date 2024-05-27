@@ -13,7 +13,8 @@
 
     <!-- List view button on top right corner of map-->
     <div class="absolute top-20 right-3 m-3">
-        <button id="listBtn" class="list-button bg-white rounded-full shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] py-2 px-4 font-bold text-gray-900">
+        <button id="listBtn"
+            class="list-button bg-white rounded-full shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] py-2 px-4 font-bold text-gray-900">
             List
         </button>
     </div>
@@ -21,7 +22,8 @@
     <!-- filter button -->
     <div class="absolute top-20 left-3 m-3">
         <button id="filterBtn" class="filter-button">
-            <span class="material-symbols-outlined text-xl font-bold bg-white p-2 shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-full text-gray-900">filter_alt</span>
+            <span
+                class="material-symbols-outlined text-xl font-bold bg-white p-2 shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-full text-gray-900">filter_alt</span>
         </button>
     </div>
 
@@ -29,7 +31,8 @@
 
         <!-- criminal modal -->
         <div id="criminalModal" class="fixed inset-0 flex items-center justify-center hidden bg-gray-800 bg-opacity-75">
-            <div class="text-white bg-[#223053] p-4 rounded-lg overflow-hidden shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] transform transition-all mx-5">
+            <div
+                class="text-white bg-[#223053] p-4 rounded-lg overflow-hidden shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] transform transition-all mx-5">
                 <div class="flex justify-between items-start">
                     <h5 class="text-xl font-bold" id="criminalModalLabel">Criminal Details</h5>
                     <button type="button" class="text-gray-400 text-xl" onclick="closeCriminalModal()">
@@ -51,7 +54,8 @@
                 </div>
                 <div class="mt-2 text-right">
                     <a href="/protection">
-                        <button type="button" class="bg-cyan-600 hover:bg-cyan-900 font-bold text-white px-4 py-2 rounded-full"
+                        <button type="button"
+                            class="bg-cyan-600 hover:bg-cyan-900 font-bold text-white px-4 py-2 rounded-full"
                             onclick="closeCriminalModal()">
                             ProtectUs
                         </button>
@@ -237,46 +241,46 @@
 
             // Show criminal detail modal
             function showCriminalModal(criminal) {
-            document.getElementById('criminalImage').src = criminal.image;
-            document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
-            document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
-            document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
-            const physicalDescriptions = criminal.physicalDescriptions.join(', ');
-            const physicalDescriptionsContainer = document.getElementById('criminalDescription');
-            physicalDescriptionsContainer.innerHTML = `
+                document.getElementById('criminalImage').src = criminal.image;
+                document.getElementById('criminalName').innerText = `${criminal.firstName} ${criminal.middleName} ${criminal.lastName}`;
+                document.getElementById('criminalAddress').innerText = `Address: ${criminal.address}`;
+                document.getElementById('criminalGender').innerText = `Gender: ${criminal.gender}`;
+                const physicalDescriptions = criminal.physicalDescriptions.join(', ');
+                const physicalDescriptionsContainer = document.getElementById('criminalDescription');
+                physicalDescriptionsContainer.innerHTML = `
             <div class="mt-3 rounded-lg overflow-y-scroll bg-white text-black p-5">
               <p class="font-bold">Physical Description:</p>
               <p>${physicalDescriptions}</p>
             </div>
             `;
-            // calculate current age based on dob and device current date
-            const dob = new Date(criminal.dob);
-            const formattedDob = dob.toLocaleDateString('en-US'); // Format the date
-            const diff_ms = Date.now() - dob.getTime();
-            const age_dt = new Date(diff_ms);
-            const age = Math.abs(age_dt.getUTCFullYear() - 1970);
-            document.getElementById('criminalAge').innerText = `Age: ${age}`;
+                // calculate current age based on dob and device current date
+                const dob = new Date(criminal.dob);
+                const formattedDob = dob.toLocaleDateString('en-US'); // Format the date
+                const diff_ms = Date.now() - dob.getTime();
+                const age_dt = new Date(diff_ms);
+                const age = Math.abs(age_dt.getUTCFullYear() - 1970);
+                document.getElementById('criminalAge').innerText = `Age: ${age}`;
 
-            const convictionsList = document.getElementById('criminalConvictions');
-            convictionsList.innerHTML = ''; // Clear previous content
+                const convictionsList = document.getElementById('criminalConvictions');
+                convictionsList.innerHTML = ''; // Clear previous content
 
-            // Iterate through criminal convictions and create list items
-            criminal.convictions.forEach(conviction => {
-            const listItem = document.createElement('div');
-            const convictionDate = new Date(conviction.date);
-            listItem.innerHTML = `
+                // Iterate through criminal convictions and create list items
+                criminal.convictions.forEach(conviction => {
+                    const listItem = document.createElement('div');
+                    const convictionDate = new Date(conviction.date);
+                    listItem.innerHTML = `
             <p class="font-bold underline underline-offset-4"><strong>Crime:</strong> ${conviction.crime}</p>
             <p><strong>Date:</strong> ${convictionDate.toLocaleDateString()}</p>
             <p class="pb-3"><strong>Sentence:</strong> ${conviction.sentence}</p>
             `;
 
-            convictionsList.appendChild(listItem);
-            });
+                    convictionsList.appendChild(listItem);
+                });
 
-            document.getElementById('criminalModal').classList.remove('hidden');
-            document.getElementById('map').classList.add('blur');
-            document.getElementById('filterBtn').classList.add('blur');
-            document.getElementById('listBtn').classList.add('blur');
+                document.getElementById('criminalModal').classList.remove('hidden');
+                document.getElementById('map').classList.add('blur');
+                document.getElementById('filterBtn').classList.add('blur');
+                document.getElementById('listBtn').classList.add('blur');
             }
 
 
@@ -388,18 +392,15 @@
                             console.log(userLocation)
                         } catch (error) {
                             var searchCoordinate = { lat: 49.28341676133127, lng: -123.11536009794918 };
+                            userLocation = searchCoordinate; // Assign the default location to userLocation
                         };
-                        marker.setMap(null);
-                        marker = new google.maps.Marker({
-                            position: userLocation,
-                            map: map,
-                            icon: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' // Blue marker 
-                        });
-                        console.log(userLocation)
+
+                        // Center the map to the searched location while keeping user location marker
+                        map.setCenter(userLocation);
                     }
-                }
-                )
+                });
             }
+
 
             document.addEventListener("DOMContentLoaded", function () {
 
