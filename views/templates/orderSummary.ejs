@@ -88,6 +88,11 @@
         flex-direction: row;
         justify-content: space-between;
         gap: 15px;
+        width: 100%;
+    }
+
+    .rowDiv > div {
+        width: 42%;
     }
 
     .checkbox {
@@ -168,6 +173,10 @@
         justify-content: space-between;
     }
 
+    label {
+        font-size: small;
+    }
+
     @media screen and (max-width: 600px) {
         form > div {
             flex-direction: column;
@@ -239,7 +248,7 @@
                             maxlength="19"
                             name="cardNumber"
                             id="cardNumber"
-                            placeholder="Card Number"
+                            placeholder="Ex) 1234 1234 1234 1234"
                             required />
                     </div>
                     <div class="rowDiv">
@@ -301,6 +310,7 @@
         <div class="icon">
             <span class="material-symbols-outlined success"> task_alt </span>
         </div>
+        <br />
         <h2 class="success">Thank You For Your Order!</h2>
         <section id="productDetails"></section>
         <section>
@@ -335,8 +345,9 @@
         <div class="icon">
             <span class="material-symbols-outlined error"> error </span>
         </div>
+        <br />
         <h2 class="error">Oops, Something Went Wrong</h2>
-        <h3>Please Try Again.</h3>
+        <h3>Please try again.</h3>
     </main>
 </dialog>
 
@@ -353,12 +364,8 @@
             const ID = btn.id;
 
             const product = await (
-                await fetch(
-                    `https://two800-202410-dtc07.onrender.com/getProductByID?id=${ID}`
-                )
+                await fetch(`/getProductByID?id=${ID}`)
             ).json();
-
-            console.log(product.price);
 
             if (product.manufacturer) {
                 orderDetails.innerHTML += `<p>
@@ -402,25 +409,22 @@
         const setAddress = document.getElementById("setAddress");
 
         // send to backend
-        const resultString = await fetch(
-            "https://two800-202410-dtc07.onrender.com/order",
-            {
-                method: "POST",
-                body: JSON.stringify({
-                    user: user,
-                    drone: drone,
-                    address: address,
-                    cardNumber: cardNumber,
-                    cardName: cardName,
-                    expiryDate: expiryDate,
-                    securityCode: securityCode,
-                    setAddress: setAddress ? setAddress.checked : false,
-                }),
-                headers: {
-                    "Content-type": "application/json; charset=UTF-8",
-                },
-            }
-        );
+        const resultString = await fetch("/order", {
+            method: "POST",
+            body: JSON.stringify({
+                user: user,
+                drone: drone,
+                address: address,
+                cardNumber: cardNumber,
+                cardName: cardName,
+                expiryDate: expiryDate,
+                securityCode: securityCode,
+                setAddress: setAddress ? setAddress.checked : false,
+            }),
+            headers: {
+                "Content-type": "application/json; charset=UTF-8",
+            },
+        });
 
         const result = await resultString.json();
 
