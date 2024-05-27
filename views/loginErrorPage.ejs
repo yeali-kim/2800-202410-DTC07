@@ -29,23 +29,25 @@
     <!-- Login form -->
     <h2 class="text-2xl mb-4 text-[#223053]">Login</h2>
 
-        <form action="/login" method="post">
-          <div class="mb-4">
-            <label for="email" class="block mb-2 text-[#223053]">Email</label>
-            <input type="email" id="email" name="email" class="w-full px-4 py-2 rounded-lg bg-white text-zinc-950"
-              placeholder="email@email.com" required>
-          </div>
-          <div class="mb-4">
-            <label for="password" class="block mb-2 text-[#223053]">Password</label>
-            <input type="password" id="password" name="password"
-              class="w-full px-4 py-2 rounded-lg bg-white text-zinc-950 <%= typeof error !== 'undefined' ? 'border-red-500' : '' %>"
-              placeholder="*****" required>
-          </div>
-          <button type="submit" class="w-full bg-[#515F84] text-white py-2 rounded-lg">Login</button>
-        </form>
-        <div class="mt-4">
-          <a href="/resetPassword" class="text-[#515F84]">Forgot Password?</a>
-        </div>
+    <form action="/login" method="post">
+      <div class="mb-4">
+        <label for="email" class="block mb-2 text-[#223053]">Email</label>
+        <input type="email" id="email" name="email" class="w-full px-4 py-2 rounded-lg bg-white text-zinc-950"
+          placeholder="email@email.com" required>
+      </div>
+      <div class="mb-4">
+        <label for="password" class="block mb-2 text-[#223053]">Password</label>
+        <fieldset><legend class="text-red-500">Wrong Password</legend>
+          <input type="password" id="password" name="password"
+            class="w-full px-4 py-2 rounded-lg bg-white text-zinc-950 border border-red-500"
+            placeholder="*****" required>
+        </fieldset>
+      </div>
+      <button type="submit" class="w-full bg-[#515F84] text-white py-2 rounded-lg">Login</button>
+    </form>
+    <div class="mt-4">
+      <a href="/resetPassword" class="text-[#515F84]">Forgot Password?</a>
+    </div>
   </div>
 </body>
 
