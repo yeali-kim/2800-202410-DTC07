@@ -6,6 +6,17 @@
             top: 60px;
             left: 0px;
         }
+
+        .descriptionDiv {
+            overflow: hidden;
+            height: 150px;
+            transition-property: all;
+            transition-duration: 1s;
+        }
+
+        .shrink {
+            height: 0px;
+        }
     </style>
     <a href="/protection" class="back-button">
         <span
@@ -72,7 +83,7 @@
                                                                 </div>
 
                                                                 <div id="desc<%= index %>_<%= featureIndex %>"
-                                                                    class="hidden">
+                                                                    class="descriptionDiv shrink">
                                                                     <span class="text-gray-600">
                                                                         <%= feature.description %>
                                                                     </span>
@@ -111,14 +122,13 @@
 
                 // Add event listener to expandDesc button
                 function expandDesc(id) {
-                    console.log(id)
                     const carousel = document.getElementById(`carousel-slide0${Number(id.slice(0, 1)) + 1}`);
                     const desc = carousel.querySelector(`#desc${id}`);
                     // Toggle the visibility of the description element
-                    desc.classList.toggle('hidden');
+                    desc.classList.toggle('shrink');
                     // Change the button text based on the description visibility
                     const button = carousel.querySelector('#expandDesc' + id);
-                    button.innerHTML = desc.classList.contains('hidden') ? '+' : '-';
+                    button.innerHTML = desc.classList.contains('shrink') ? '+' : '-';
                 }
             </script>
     </body>
