@@ -172,6 +172,7 @@ app.post("/signup", async (req, res) => {
     const username = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
+    console.log(email)
 
     const schema = Joi.object({
         username: Joi.string().alphanum().max(20).required(),
@@ -188,19 +189,29 @@ app.post("/signup", async (req, res) => {
         res.redirect("/signup");
         return;
     }
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    await Users.create({
-        username: username,
-        email: email,
-        password: hashedPassword,
-        address: "Add your address",
-    });
+    const existingUser = await Users.findOne({ email: email});
+    console.log(existingUser)
+    if (existingUser) {
+        res.render("signup", { error: "An account with this email already exists. Please login." });
+        return;
+    } else{
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    
+        await Users.create({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            address: "Add your address",
+        });
+    
+        req.session.email = email;
+        req.session.password = password;
+    
+        res.redirect("/map");
 
-    req.session.email = email;
-    req.session.password = password;
-
-    res.redirect("/map");
+    }
 });
 
 app.get("/resetPassword", (req, res) => {
