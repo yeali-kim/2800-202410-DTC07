@@ -10,7 +10,7 @@
     border-radius: 100px;
     padding: 7px;
     padding-left: 12px;
-    padding-right: 30px;
+    padding-right: 12px;
     width: 40px;
     height: 40px;
     transition-property: all;
@@ -19,14 +19,14 @@
 
   .expand {
     border-radius: 10px !important;
-    width: 400px !important;
+    width: 300px !important;
     height: 300px !important;
     overflow: auto !important;
   }
 
   .expand-sort {
     border-radius: 10px !important;
-    width: 350px !important;
+    width: 200px !important;
     height: 150px !important;
     overflow: auto !important;
   }
@@ -54,12 +54,14 @@
         <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)]" id="filter">
           <span class="material-symbols-outlined text-xl font-bold text-gray-900">filter_alt</span>
         </button>
-        <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-full ms-12" id="sortButton">
+        <div class="ms-12">
+        <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-full" id="sortButton">
           <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
         </button>
-        <div id="sortContainer" class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] invisible rounded-full p-1 px-3">
-          <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
         </div>
+        <!-- <div id="sortContainer" class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] invisible rounded-full p-1 px-3">
+          <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
+        </div> -->
         <script>
           function expandFilter() {
             const filterBtn = document.getElementById('filter');
@@ -75,7 +77,7 @@
                 </button>
             </div>
             <div class="w-full flex flex-col items-start gap-2" id="filterOptions">
-                <label>Crime Type</label>
+                <label class="font-bold">Crime Type</label>
                 <div class="checkbox-container" id="crimeTypeContainer">
                     <label><input type="checkbox" value="aggravatedassault" onchange="filterByCrimeType()"> Aggravated assault</label>
                     <label><input type="checkbox" value="murder" onchange="filterByCrimeType()"> Murder</label>
@@ -86,11 +88,11 @@
                     <label><input type="checkbox" value="identitytheft" onchange="filterByCrimeType()"> Identity theft</label>
                     <label><input type="checkbox" value="cyberattack" onchange="filterByCrimeType()"> Cyberattack</label>
                 </div>
-                <label>Sentence Range (years)</label>
-                <input type="range" id="sentenceRange" min="0" max="25" value="10" oninput="updateSentenceRange()">
-                <div id="sentenceValue" class="w-full text-center">10 years</div>
-                <label>Name</label>
-                <input type="text" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
+                <label class="font-bold">Imprisonment Duration (years)</label>
+                <input type="range" id="sentenceRange" min="0" max="25" value="0" oninput="updateSentenceRange()">
+                <div id="sentenceValue" class="w-1/2 text-center">0 years</div>
+                <label class="font-bold">Name</label>
+                <input type="text" id="nameFilter" class="border-2 p-2" placeholder="Enter name" oninput="filterByName()">
                 <button onclick="clearFilters()" class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear Filters</button>
             </div>
         `;
@@ -140,7 +142,7 @@
                                         <span class="material-symbols-outlined">close</span>
                                     </button>
                                 </div>
-                                <div class="w-full flex flex-col items-start gap-2" id="sortOptions">
+                                <div class="text-center w-full h-full flex flex-col gap-3" id="sortOptions">
                                     <button id="sortName" onclick="sortList('name')">Name</button>
                                     <button id="sortCrimes" onclick="sortList('crimes')">Crimes</button>
                                     <button id="sortDistance" onclick="sortList('distance')">Distance</button>
@@ -214,8 +216,8 @@
 
           function clearFilters() {
             document.getElementById('crimeTypeContainer').querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
-            document.getElementById('sentenceRange').value = 10;
-            document.getElementById('sentenceValue').innerText = '10 years';
+            document.getElementById('sentenceRange').value = 0;
+            document.getElementById('sentenceValue').innerText = '0 years';
             document.getElementById('nameFilter').value = '';
             const cards = document.querySelectorAll('.criminal-card');
             cards.forEach(card => card.style.display = 'block');
