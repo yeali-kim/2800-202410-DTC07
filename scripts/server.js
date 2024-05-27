@@ -139,7 +139,7 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -157,11 +157,21 @@ app.post("/login", (req, res) => {
         res.redirect("/login");
         return;
     }
+    const existingUser = await Users.findOne({ email: email });
+    console.log(existingUser)
+    if (!existingUser) {
+        res.render("loginErrorPage", { email, error: "Email not found. Please sign up." });
+        return;
+    }
 
-    req.session.email = email;
-    req.session.password = password;
-
-    res.redirect("/map");
+    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+    if (!isPasswordValid) {
+        res.render("loginErrorPage", { email: email, error: "Wrong Password. Try Again." });
+    } else {
+        req.session.email = email;
+        req.session.password = password;
+        res.redirect("/map");
+    }
 });
 
 app.get("/signup", (req, res) => {
