@@ -45,6 +45,16 @@
   .checkbox-container input[type="checkbox"] {
     margin-right: 8px;
   }
+  .detail-button {
+  height: 50px; /* Set the desired height */
+  }
+
+  /* Ensure the text is vertically centered */
+  .detail-button span {
+  display: inline-block;
+  vertical-align: middle;
+  line-height: normal;
+  }
 </style>
 <main class="bg-[#515F84] text-white p-4 mt-8">
   <div class="container mx-auto">
@@ -239,7 +249,10 @@
             <% } %>
           </div>
         </div>
-        <button onclick="toggleDetails(event, '<%= index %>'); showCriminalDetail(<%= JSON.stringify(criminal) %>, '<%= index %>')" class="bg-cyan-600 hover:bg-cyan-900 text-white font-bold py-2 px-4 my-6 rounded-xl" id="detailButton-<%= index %>">Details</button>
+       <button onclick="toggleDetails(event, '<%= index %>'); showCriminalDetail(<%= JSON.stringify(criminal) %>, '<%= index %>')" class="bg-cyan-600 hover:bg-cyan-900 text-white font-bold py-2 px-4 my-6 rounded-xl detail-button" id="detailButton-<%= index %>">
+         <span>Details</span>
+       </button>
+
       </div>
       <div id="details-<%= index %>" class="hidden" style="transition: all 2s ease;">
         <div>
