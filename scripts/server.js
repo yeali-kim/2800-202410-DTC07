@@ -182,10 +182,9 @@ app.post("/signup", async (req, res) => {
     const username = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
-    console.log(email)
 
     const schema = Joi.object({
-        username: Joi.string().alphanum().max(20).required(),
+        username: Joi.string().max(20).required(),
         password: Joi.string().max(20).required(),
         email: Joi.string().email({
             minDomainSegments: 2,
@@ -201,7 +200,6 @@ app.post("/signup", async (req, res) => {
     }
 
     const existingUser = await Users.findOne({ email: email});
-    console.log(existingUser)
     if (existingUser) {
         res.render("signup", { error: "An account with this email already exists. Please login." });
         return;
