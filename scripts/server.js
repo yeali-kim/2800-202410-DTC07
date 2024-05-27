@@ -284,9 +284,8 @@ app.get("/map", validateUser, async (req, res) => {
 
 app.get("/filterCriminals", validateUser, async (req, res) => {
     const name = req.query.name;
-    const crime = req.query.crime;
-    const sentenceMin = req.query.sentenceMin;
-    const sentenceMax = req.query.sentenceMax;
+    const crimeTypes = req.query.crimeTypes ? req.query.crimeTypes.split(',') : [];
+    const sentenceRange = req.query.sentenceRange;
 
     try {
         let filter = {};
@@ -299,21 +298,12 @@ app.get("/filterCriminals", validateUser, async (req, res) => {
             ];
         }
 
-        if (crime) {
-            filter["convictions.crime"] = new RegExp(crime, "i");
+        if (crimeTypes.length > 0) {
+            filter["convictions.crime"] = { $in: crimeTypes.map(crime => new RegExp(crime, "i")) };
         }
 
-        if (sentenceMin) {
-            filter["convictions.sentence"] = {
-                $gte: parseInt(sentenceMin, 10),
-            };
-        }
-
-        if (sentenceMax) {
-            filter["convictions.sentence"] = {
-                ...filter["convictions.sentence"],
-                $lte: parseInt(sentenceMax, 10),
-            };
+        if (sentenceRange) {
+            filter["convictions.sentence"] = { $gte: parseInt(sentenceRange, 10) };
         }
 
         const filteredCriminals = await CriminalProfile.find(filter);

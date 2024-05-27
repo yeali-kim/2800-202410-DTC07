@@ -146,25 +146,25 @@
 
             <script>
                 document.addEventListener("DOMContentLoaded", function () {
-    const filterBtn = document.getElementById("filter");
-    const sortBtn = document.getElementById("sort");
+                    const filterBtn = document.getElementById("filter");
+                    const sortBtn = document.getElementById("sort");
 
-    const initialFilterHTML = filterBtn.innerHTML;
-    const initialFilterWidth = filterBtn.style.width;
-    const initialFilterHeight = filterBtn.style.height;
+                    const initialFilterHTML = filterBtn.innerHTML;
+                    const initialFilterWidth = filterBtn.style.width;
+                    const initialFilterHeight = filterBtn.style.height;
 
-    const initialSortHTML = sortBtn.innerHTML;
-    const initialSortWidth = sortBtn.style.width;
-    const initialSortHeight = sortBtn.style.height;
+                    const initialSortHTML = sortBtn.innerHTML;
+                    const initialSortWidth = sortBtn.style.width;
+                    const initialSortHeight = sortBtn.style.height;
 
-    // Expand filter button and display filter options
-    function expandFilter() {
-        filterBtn.classList.toggle("expand");
-        if (filterBtn.classList.contains("expand")) {
-            collapseSort();
-            filterBtn.removeEventListener("click", expandFilter);
-            setTimeout(() => {
-                filterBtn.innerHTML = `
+                    // Expand filter button and display filter options
+                    function expandFilter() {
+                        filterBtn.classList.toggle("expand");
+                        if (filterBtn.classList.contains("expand")) {
+                            collapseSort();
+                            filterBtn.removeEventListener("click", expandFilter);
+                            setTimeout(() => {
+                                filterBtn.innerHTML = `
                     <div class='w-full flex justify-start pt-2'>
                         <button id='closeButton'>
                             <span class='material-symbols-outlined'>
@@ -204,55 +204,57 @@
                         </div>
                     </div>
                 `;
-                const closeBtn = filterBtn.querySelector("#closeButton");
-                closeBtn.addEventListener("click", expandFilter);
-                const filterOkButton = filterBtn.querySelector("#filterOkButton");
-                filterOkButton.addEventListener("click", filterdrones);
-                document.addEventListener("click", closeFilterOnClickOutside);
+                                const closeBtn = filterBtn.querySelector("#closeButton");
+                                closeBtn.addEventListener("click", expandFilter);
+                                const filterOkButton = filterBtn.querySelector("#filterOkButton");
+                                filterOkButton.addEventListener("click", filterdrones);
+                                document.addEventListener("click", closeFilterOnClickOutside);
 
-                // Initialize noUiSlider
-                var priceSlider = document.getElementById('priceRange');
-                noUiSlider.create(priceSlider, {
-                    start: [0, 5000],
-                    connect: true,
-                    range: {
-                        'min': 0,
-                        'max': 5000
-                    },
-                    tooltips: [false, false],
-                    format: {
-                        to: function (value) {
-                            return parseInt(value);
-                        },
-                        from: function (value) {
-                            return parseInt(value);
+                                // Initialize noUiSlider
+                                var priceSlider = document.getElementById('priceRange');
+                                console.log(priceSlider);
+                                noUiSlider.create(priceSlider, {
+                                    start: [0, 5000],
+                                    connect: true,
+                                    range: {
+                                        'min': 0,
+                                        'max': 5000
+                                    },
+                                    step: 100,
+                                    tooltips: [false, false],
+                                    format: {
+                                        to: function (value) {
+                                            return parseInt(value);
+                                        },
+                                        from: function (value) {
+                                            return parseInt(value);
+                                        }
+                                    }
+                                });
+
+                                priceSlider.noUiSlider.on('update', function (values, handle) {
+                                    document.getElementById('minPriceValue').innerText = values[0];
+                                    document.getElementById('maxPriceValue').innerText = values[1];
+                                });
+                            }, 500);
+                        } else {
+                            setTimeout(() => {
+                                filterBtn.addEventListener("click", expandFilter);
+                            }, 500);
+                            filterBtn.innerHTML = initialFilterHTML;
+                            filterBtn.style.width = initialFilterWidth;
+                            filterBtn.style.height = initialFilterHeight;
                         }
                     }
-                });
 
-                priceSlider.noUiSlider.on('update', function (values, handle) {
-                    document.getElementById('minPriceValue').innerText = values[0];
-                    document.getElementById('maxPriceValue').innerText = values[1];
-                });
-            }, 500);
-        } else {
-            setTimeout(() => {
-                filterBtn.addEventListener("click", expandFilter);
-            }, 500);
-            filterBtn.innerHTML = initialFilterHTML;
-            filterBtn.style.width = initialFilterWidth;
-            filterBtn.style.height = initialFilterHeight;
-        }
-    }
-
-    // Expand sort button and display sort options
-    function expandSort() {
-        sortBtn.classList.toggle("expand-sort");
-        if (sortBtn.classList.contains("expand-sort")) {
-            collapseFilter();
-            sortBtn.removeEventListener("click", expandSort);
-            setTimeout(() => {
-                sortBtn.innerHTML = `
+                    // Expand sort button and display sort options
+                    function expandSort() {
+                        sortBtn.classList.toggle("expand-sort");
+                        if (sortBtn.classList.contains("expand-sort")) {
+                            collapseFilter();
+                            sortBtn.removeEventListener("click", expandSort);
+                            setTimeout(() => {
+                                sortBtn.innerHTML = `
                     <div class='w-full flex justify-start pt-2'>
                         <button id='closeButton'>
                             <span class='material-symbols-outlined'>
@@ -267,77 +269,77 @@
                         <button value="price-desc" onclick="sortdrones('price-desc')">Price: High to Low</button>
                     </div>
                 `;
-                const closeBtn = sortBtn.querySelector("#closeButton");
-                closeBtn.addEventListener("click", expandSort);
-                document.addEventListener("click", closeSortOnClickOutside);
-            }, 500);
-        } else {
-            setTimeout(() => {
-                sortBtn.addEventListener("click", expandSort);
-            }, 500);
-            sortBtn.innerHTML = initialSortHTML;
-            sortBtn.style.width = initialSortWidth;
-            sortBtn.style.height = initialSortHeight;
-        }
-    }
+                                const closeBtn = sortBtn.querySelector("#closeButton");
+                                closeBtn.addEventListener("click", expandSort);
+                                document.addEventListener("click", closeSortOnClickOutside);
+                            }, 500);
+                        } else {
+                            setTimeout(() => {
+                                sortBtn.addEventListener("click", expandSort);
+                            }, 500);
+                            sortBtn.innerHTML = initialSortHTML;
+                            sortBtn.style.width = initialSortWidth;
+                            sortBtn.style.height = initialSortHeight;
+                        }
+                    }
 
-    // Collapse filter button and hide filter options
-    function collapseFilter() {
-        if (filterBtn.classList.contains("expand")) {
-            filterBtn.classList.remove("expand");
-            filterBtn.innerHTML = initialFilterHTML;
-            filterBtn.style.width = initialFilterWidth;
-            filterBtn.style.height = initialFilterHeight;
-            filterBtn.addEventListener("click", expandFilter);
-        }
-    }
+                    // Collapse filter button and hide filter options
+                    function collapseFilter() {
+                        if (filterBtn.classList.contains("expand")) {
+                            filterBtn.classList.remove("expand");
+                            filterBtn.innerHTML = initialFilterHTML;
+                            filterBtn.style.width = initialFilterWidth;
+                            filterBtn.style.height = initialFilterHeight;
+                            filterBtn.addEventListener("click", expandFilter);
+                        }
+                    }
 
-    // Collapse sort button and hide sort options
-    function collapseSort() {
-        if (sortBtn.classList.contains("expand-sort")) {
-            sortBtn.classList.remove("expand-sort");
-            sortBtn.innerHTML = initialSortHTML;
-            sortBtn.style.width = initialSortWidth;
-            sortBtn.style.height = initialSortHeight;
-            sortBtn.addEventListener("click", expandSort);
-        }
-    }
+                    // Collapse sort button and hide sort options
+                    function collapseSort() {
+                        if (sortBtn.classList.contains("expand-sort")) {
+                            sortBtn.classList.remove("expand-sort");
+                            sortBtn.innerHTML = initialSortHTML;
+                            sortBtn.style.width = initialSortWidth;
+                            sortBtn.style.height = initialSortHeight;
+                            sortBtn.addEventListener("click", expandSort);
+                        }
+                    }
 
-    function closeFilterOnClickOutside(event) {
-        if (!filterBtn.contains(event.target) && !filterBtn.classList.contains("expand")) {
-            collapseFilter();
-            document.removeEventListener("click", closeFilterOnClickOutside);
-        }
-    }
+                    function closeFilterOnClickOutside(event) {
+                        if (!filterBtn.contains(event.target) && !filterBtn.classList.contains("expand")) {
+                            collapseFilter();
+                            document.removeEventListener("click", closeFilterOnClickOutside);
+                        }
+                    }
 
-    function closeSortOnClickOutside(event) {
-        if (!sortBtn.contains(event.target) && !sortBtn.classList.contains("expand-sort")) {
-            collapseSort();
-            document.removeEventListener("click", closeSortOnClickOutside);
-        }
-    }
+                    function closeSortOnClickOutside(event) {
+                        if (!sortBtn.contains(event.target) && !sortBtn.classList.contains("expand-sort")) {
+                            collapseSort();
+                            document.removeEventListener("click", closeSortOnClickOutside);
+                        }
+                    }
 
-    // When filter and sort buttons are clicked, they expand and display options
-    filterBtn.addEventListener("click", expandFilter);
-    sortBtn.addEventListener("click", expandSort);
+                    // When filter and sort buttons are clicked, they expand and display options
+                    filterBtn.addEventListener("click", expandFilter);
+                    sortBtn.addEventListener("click", expandSort);
 
-    // Filtering drones based on selected options
-    function filterdrones() {
-        const selectedType = document.getElementById("typeFilter").value;
-        const selectedManufacturer = document.getElementById("manufacturerFilter").value;
-        const minPrice = document.getElementById('minPriceValue').innerText;
-        const maxPrice = document.getElementById('maxPriceValue').innerText;
+                    // Filtering drones based on selected options
+                    function filterdrones() {
+                        const selectedType = document.getElementById("typeFilter").value;
+                        const selectedManufacturer = document.getElementById("manufacturerFilter").value;
+                        const minPrice = document.getElementById('minPriceValue').innerText;
+                        const maxPrice = document.getElementById('maxPriceValue').innerText;
 
-        const queryParams = new URLSearchParams({
-            type: selectedType,
-            manufacturer: selectedManufacturer,
-            minPrice: minPrice,
-            maxPrice: maxPrice,
-        }).toString();
+                        const queryParams = new URLSearchParams({
+                            type: selectedType,
+                            manufacturer: selectedManufacturer,
+                            minPrice: minPrice,
+                            maxPrice: maxPrice,
+                        }).toString();
 
-        window.location.href = `/drones?${queryParams}`;
-    }
-});
+                        window.location.href = `/drones?${queryParams}`;
+                    }
+                });
 
                 // Sorting drones based on selected criteria
                 let sortOrder = {
