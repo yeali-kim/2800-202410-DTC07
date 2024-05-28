@@ -86,8 +86,8 @@
 
     function clearFilters() {
         document.getElementById('crimeTypeContainer').querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
-        document.getElementById('sentenceRange').value = 10;
-        document.getElementById('sentenceValue').innerText = '10 years';
+        document.getElementById('sentenceRange').value = 0;
+        document.getElementById('sentenceValue').innerText = '0 years';
         document.getElementById('nameFilter').value = '';
         const cards = document.querySelectorAll('.criminal-card');
         cards.forEach(card => card.style.display = 'block');
