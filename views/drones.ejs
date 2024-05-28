@@ -165,54 +165,50 @@
                             filterBtn.removeEventListener("click", expandFilter);
                             setTimeout(() => {
                                 filterBtn.innerHTML = `
-                                    <div class='w-full flex justify-start pt-2'>
-                                        <button id='closeButton'>
-                                            <span class='material-symbols-outlined'>
-                                                close
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div class='text-start w-full h-full flex flex-col justify-between gap-5 p-3'>
-                                        <div class="range-slider">
-                                            <label for="priceRange">Price: </label>
-                                            <div id="priceRange"></div>
-                                            <div>
-                                                <span id="minPriceValue">0</span> -
-                                                <span id="maxPriceValue">5000</span>
-                                            </div>
-                                        </div>
-                                        <div class="mt-[20px]">
-                                            <label for='manufacturerFilter'>Manufacturer: </label>
-                                            <select id='manufacturerFilter'>
-                                                <option value=''>All</option>
-                                                <% uniqueManufacturers.forEach(manufacturer => { %>
-                                                    <option value='<%= manufacturer %>'><%= manufacturer %></option>
-                                                <% }); %>
-                                            </select>
-                                        </div>
-                                        <div>
-                                            <label for='typeFilter'>Type: </label>
-                                            <select id='typeFilter'>
-                                                <option value=''>All</option>
-                                                <% uniqueTypes.forEach(type => { %>
-                                                    <option value='<%= type %>'><%= type %></option>
-                                                <% }); %>
-                                            </select>
-                                        </div>
-                                        <div class="flex justify-end">
-                                            <button id="filterOkButton" class="flex justify-center items-center w-10 bg-blue-500 text-white rounded px-4 py-2 mt-2">OK</button>
-                                        </div>
-                                    </div>
-                                `;
+                    <div class='w-full flex justify-start pt-2'>
+                        <button id='closeButton'>
+                            <span class='material-symbols-outlined'>
+                                close
+                            </span>
+                        </button>
+                    </div>
+                    <div class='text-start w-full h-full flex flex-col justify-between gap-5 p-3'>
+                        <div class="range-slider">
+                            <label for="priceRange">Price: </label>
+                            <div id="priceRange"></div>
+                            <div>
+                                <span id="minPriceValue">0</span> -
+                                <span id="maxPriceValue">5000</span>
+                            </div>
+                        </div>
+                        <div class="mt-[20px]">
+                            <label for='manufacturerFilter'>Manufacturer: </label>
+                            <select id='manufacturerFilter'>
+                                <option value=''>All</option>
+                                <% uniqueManufacturers.forEach(manufacturer => { %>
+                                    <option value='<%= manufacturer %>'><%= manufacturer %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div>
+                            <label for='typeFilter'>Type: </label>
+                            <select id='typeFilter'>
+                                <option value=''>All</option>
+                                <% uniqueTypes.forEach(type => { %>
+                                    <option value='<%= type %>'><%= type %></option>
+                                <% }); %>
+                            </select>
+                        </div>
+                        <div class="flex justify-end">
+                            <button id="filterOkButton" class="flex justify-center items-center w-10 bg-blue-500 text-white rounded px-4 py-2 mt-2">OK</button>
+                        </div>
+                    </div>
+                `;
                                 const closeBtn = filterBtn.querySelector("#closeButton");
                                 closeBtn.addEventListener("click", expandFilter);
-                                const filterOkButton =
-                                    filterBtn.querySelector("#filterOkButton");
+                                const filterOkButton = filterBtn.querySelector("#filterOkButton");
                                 filterOkButton.addEventListener("click", filterdrones);
-                                document.addEventListener(
-                                    "click",
-                                    closeFilterOnClickOutside
-                                );
+                                document.addEventListener("click", closeFilterOnClickOutside);
 
                                 // Initialize noUiSlider
                                 var priceSlider = document.getElementById('priceRange');
@@ -224,6 +220,7 @@
                                         'min': 0,
                                         'max': 5000
                                     },
+                                    step: 100,
                                     tooltips: [false, false],
                                     format: {
                                         to: function (value) {
@@ -258,20 +255,20 @@
                             sortBtn.removeEventListener("click", expandSort);
                             setTimeout(() => {
                                 sortBtn.innerHTML = `
-                                    <div class='w-full flex justify-start pt-2'>
-                                        <button id='closeButton'>
-                                            <span class='material-symbols-outlined'>
-                                                close
-                                            </span>
-                                        </button>
-                                    </div>
-                                    <div class='text-start w-full h-full flex flex-col gap-3'>
-                                        <button value="manufacturer" onclick="sortdrones('manufacturer')">Manufacturer</button>
-                                        <button value="type" onclick="sortdrones('type')">Type</button>
-                                        <button value="price-asc" onclick="sortdrones('price-asc')">Price: Low to High</button>
-                                        <button value="price-desc" onclick="sortdrones('price-desc')">Price: High to Low</button>
-                                    </div>
-                                `;
+                    <div class='w-full flex justify-start pt-2'>
+                        <button id='closeButton'>
+                            <span class='material-symbols-outlined'>
+                                close
+                            </span>
+                        </button>
+                    </div>
+                    <div class='text-start w-full h-full flex flex-col gap-3'>
+                        <button value="manufacturer" onclick="sortdrones('manufacturer')">Manufacturer</button>
+                        <button value="type" onclick="sortdrones('type')">Type</button>
+                        <button value="price-asc" onclick="sortdrones('price-asc')">Price: Low to High</button>
+                        <button value="price-desc" onclick="sortdrones('price-desc')">Price: High to Low</button>
+                    </div>
+                `;
                                 const closeBtn = sortBtn.querySelector("#closeButton");
                                 closeBtn.addEventListener("click", expandSort);
                                 document.addEventListener("click", closeSortOnClickOutside);
@@ -288,8 +285,8 @@
 
                     // Collapse filter button and hide filter options
                     function collapseFilter() {
-                        if (filterBtn.classList.contains("expand-sort")) {
-                            filterBtn.classList.remove("expand-sort");
+                        if (filterBtn.classList.contains("expand")) {
+                            filterBtn.classList.remove("expand");
                             filterBtn.innerHTML = initialFilterHTML;
                             filterBtn.style.width = initialFilterWidth;
                             filterBtn.style.height = initialFilterHeight;
@@ -299,8 +296,8 @@
 
                     // Collapse sort button and hide sort options
                     function collapseSort() {
-                        if (sortBtn.classList.contains("expand")) {
-                            sortBtn.classList.remove("expand");
+                        if (sortBtn.classList.contains("expand-sort")) {
+                            sortBtn.classList.remove("expand-sort");
                             sortBtn.innerHTML = initialSortHTML;
                             sortBtn.style.width = initialSortWidth;
                             sortBtn.style.height = initialSortHeight;
@@ -309,17 +306,14 @@
                     }
 
                     function closeFilterOnClickOutside(event) {
-                        if (!filterBtn.contains(event.target)) {
+                        if (!filterBtn.contains(event.target) && !filterBtn.classList.contains("expand")) {
                             collapseFilter();
-                            document.removeEventListener(
-                                "click",
-                                closeFilterOnClickOutside
-                            );
+                            document.removeEventListener("click", closeFilterOnClickOutside);
                         }
                     }
 
                     function closeSortOnClickOutside(event) {
-                        if (!sortBtn.contains(event.target)) {
+                        if (!sortBtn.contains(event.target) && !sortBtn.classList.contains("expand-sort")) {
                             collapseSort();
                             document.removeEventListener("click", closeSortOnClickOutside);
                         }
@@ -332,8 +326,7 @@
                     // Filtering drones based on selected options
                     function filterdrones() {
                         const selectedType = document.getElementById("typeFilter").value;
-                        const selectedManufacturer =
-                            document.getElementById("manufacturerFilter").value;
+                        const selectedManufacturer = document.getElementById("manufacturerFilter").value;
                         const minPrice = document.getElementById('minPriceValue').innerText;
                         const maxPrice = document.getElementById('maxPriceValue').innerText;
 

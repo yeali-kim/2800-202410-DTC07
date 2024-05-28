@@ -1,37 +1,113 @@
 <div id="filter-form" class="modal hidden fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
-    <div class="bg-white rounded-lg overflow-hidden shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] transform transition-all">
-        <div class="bg-white p-4">
-            <div class="flex justify-between items-start">
-                <h3 class="text-xl font-semibold">Filter Options</h3>
-                <button onclick="closeFilters()" class="text-gray-400 hover:text-gray-500">
-                    <span class="sr-only">Close</span>
-                    &times;
-                </button>
+    <div class="bg-white rounded-lg overflow-hidden shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] transform transition-all p-4"
+        style="max-width: 300px; width: 90%;">
+        <div class="flex justify-between items-start mb-4">
+            <h3 class="text-xl font-semibold">Filter Options</h3>
+            <button onclick="closeFilters()" class="text-gray-400 hover:text-gray-500 text-3xl">
+                <span class="sr-only">Close</span>
+                &times;
+            </button>
+        </div>
+        <div class="w-full flex flex-col items-start gap-2" id="filterOptions">
+            <label class="font-bold">Crime Type</label>
+            <div class="checkbox-container flex flex-col" id="crimeTypeContainer">
+                <label><input type="checkbox" value="aggravatedassault" onchange="filterByCrimeType()"> Aggravated
+                    assault</label>
+                <label><input type="checkbox" value="murder" onchange="filterByCrimeType()"> Murder</label>
+                <label><input type="checkbox" value="sexualassault" onchange="filterByCrimeType()"> Sexual
+                    assault</label>
+                <label><input type="checkbox" value="robbery" onchange="filterByCrimeType()"> Robbery</label>
+                <label><input type="checkbox" value="vandalism" onchange="filterByCrimeType()"> Vandalism</label>
+                <label><input type="checkbox" value="drugtrafficking" onchange="filterByCrimeType()"> Drug
+                    trafficking</label>
+                <label><input type="checkbox" value="identitytheft" onchange="filterByCrimeType()"> Identity
+                    theft</label>
+                <label><input type="checkbox" value="cyberattack" onchange="filterByCrimeType()"> Cyberattack</label>
             </div>
-            <form id="filters">
-                <div class="mb-4">
-                    <label for="name" class="block text-sm font-medium text-gray-700">Name includes:</label>
-                    <input type="text" id="name" name="name"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
-                <div class="mb-4">
-                    <label for="crime" class="block text-sm font-medium text-gray-700">Crime:</label>
-                    <input type="text" id="crime" name="crime"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
-                <div class="mb-4">
-                    <label for="sentence-min" class="block text-sm font-medium text-gray-700">Sentence Min
-                        (years):</label>
-                    <input type="number" id="sentence-min" name="sentence-min"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                    <label for="sentence-max" class="block text-sm font-medium text-gray-700 mt-2">Sentence Max
-                        (years):</label>
-                    <input type="number" id="sentence-max" name="sentence-max"
-                        class="mt-1 block w-full border border-gray-300 rounded-md shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] focus:border-indigo-500 focus:ring focus:ring-indigo-200 focus:ring-opacity-50">
-                </div>
+            <label class="font-bold">Imprisonment Duration (years)</label>
+            <input type="range" id="sentenceRange" min="0" max="25" value="0" oninput="updateSentenceRange()">
+            <div id="sentenceValue" class="w-1/2 text-center">0 years</div>
+            <label class="font-bold">Name</label>
+            <input type="text" class="border-2 p-2" id="nameFilter" placeholder="Enter name" oninput="filterByName()">
+            <div class="flex flex-row justify-between w-full">
                 <button type="button" onclick="applyFilters()"
-                    class="bg-gray-500 text-white py-2 px-4 rounded hover:bg-green-700">Apply Filters</button>
-            </form>
+                    class="mt-4 bg-gray-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Apply
+                    Filters</button>
+                <button onclick="clearFilters()"
+                    class="mt-4 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Clear
+                    Filters</button>
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    function closeFilters() {
+        document.getElementById('filter-form').classList.add('hidden');
+        document.getElementById('map').classList.remove('blur');
+        document.getElementById('filterBtn').classList.remove('blur');
+        document.getElementById('listBtn').classList.remove('blur');
+    }
+
+    function updateSentenceRange() {
+        const sentenceRange = document.getElementById('sentenceRange').value;
+        document.getElementById('sentenceValue').innerText = `${sentenceRange} years`;
+        filterBySentenceRange();
+    }
+
+    function filterByName() {
+        const nameFilter = document.getElementById('nameFilter').value.toLowerCase();
+        const cards = document.querySelectorAll('.criminal-card');
+        cards.forEach(card => {
+            const name = card.querySelector('.criminal-name').innerText.toLowerCase();
+            card.style.display = name.includes(nameFilter) ? 'block' : 'none';
+        });
+    }
+
+    function filterBySentenceRange() {
+        const sentenceRange = document.getElementById('sentenceRange').value;
+        const cards = document.querySelectorAll('.criminal-card');
+        cards.forEach(card => {
+            const totalPrisonYears = parseInt(card.getAttribute('data-total-prison-years'), 10);
+            card.style.display = totalPrisonYears >= sentenceRange ? 'block' : 'none';
+        });
+    }
+
+    function filterByCrimeType() {
+        const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]:checked');
+        const selectedCrimeTypes = Array.from(checkboxes).map(checkbox => checkbox.value);
+        const cards = document.querySelectorAll('.criminal-card');
+        cards.forEach(card => {
+            const crimes = card.getAttribute('data-crime-types').split(',');
+            const match = selectedCrimeTypes.every(crimeType => crimes.includes(crimeType));
+            card.style.display = selectedCrimeTypes.length === 0 || match ? 'block' : 'none';
+        });
+    }
+
+    function clearFilters() {
+        document.getElementById('crimeTypeContainer').querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
+        document.getElementById('sentenceRange').value = 10;
+        document.getElementById('sentenceValue').innerText = '10 years';
+        document.getElementById('nameFilter').value = '';
+        const cards = document.querySelectorAll('.criminal-card');
+        cards.forEach(card => card.style.display = 'block');
+    }
+
+    function applyFilters() {
+        const name = document.getElementById('nameFilter').value.toLowerCase();
+        const crimeTypes = Array.from(document.querySelectorAll('.checkbox-container input[type="checkbox"]:checked')).map(cb => cb.value);
+        const sentenceRange = document.getElementById('sentenceRange').value;
+
+        fetch(`/filterCriminals?name=${name}&crimeTypes=${crimeTypes.join(',')}&sentenceRange=${sentenceRange}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    updateMapMarkers(data.criminals);
+                    closeFilters(); // Close the filter modal
+                } else {
+                    console.error(data.message);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    }
+</script>

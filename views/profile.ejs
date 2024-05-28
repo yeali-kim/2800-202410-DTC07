@@ -11,11 +11,11 @@
 
 <div class="flex mx-5 my-6 gap-3 text-slate-300 flex-col">
     <span class="flex items-center text-center">
-        <span class="material-symbols-outlined"> home </span>
+        <span class="material-symbols-outlined me-3"> home </span>
         <span><%= user.address %></span>
     </span>
     <span class="flex items-center text-center">
-        <span class="material-symbols-outlined"> mail </span>
+        <span class="material-symbols-outlined me-3"> mail </span>
         <span> <%= user.email %> </span>
     </span>
 </div>
@@ -82,14 +82,14 @@
 <!-- Order History -->
 <div class="flex justify-center">
     <section
-        class="container mx-4 flex flex-col items-center bg-slate-200 p-4 rounded-lg gap-2 text-[#515F84] border-double border-4 border-[#515F84]">
+        class="container mx-4 mb-4 flex flex-col items-center bg-slate-200 p-4 rounded-lg gap-2 text-[#515F84] border-double border-4 border-[#515F84]">
         <div class="text-4xl p-4 items-center flex gap-4" id="orderHistoryDiv">
             <span class="material-symbols-outlined text-6xl">
                 receipt_long
             </span>
             <div>Order History</div>
         </div>
-        <% user.orderHistory.forEach(async (order) => { %> <%-
+        <% user.orderHistory.slice().reverse().forEach((order) => { %> <%- 
         include("templates/orderHistory", {order: order}) %> <% }); %>
     </section>
 </div>
@@ -98,7 +98,7 @@
     async function displayProductInformation(orderID) {
         const product = await (
             await fetch(
-                `https://two800-202410-dtc07.onrender.com/getProduct?model=${orderID}`
+                `/getProduct?model=${orderID}`
             )
         ).json();
 
@@ -112,7 +112,7 @@
             productDiv.appendChild(manufacturer);
         } else {
             const cyberDiv = document.createElement("div");
-            cyberDiv.innerText = "Cyber Security";
+            cyberDiv.innerText = "Cybersecurity";
             productDiv.appendChild(cyberDiv);
         }
         const type = document.createElement("div");
@@ -123,7 +123,7 @@
     orderSummaries.forEach(async (summary) => {
         const product = await (
             await fetch(
-                `https://two800-202410-dtc07.onrender.com/getProduct?id=${summary.id}`
+                `/getProduct?id=${summary.id}`
             )
         ).json();
 
@@ -141,7 +141,7 @@
             productDiv.appendChild(manufacturer);
         } else {
             const cyberDiv = document.createElement("div");
-            cyberDiv.innerText = "Cyber Security";
+            cyberDiv.innerText = "Cybersecurity";
             cyberDiv.classList.add("font-bold");
             productDiv.appendChild(cyberDiv);
         }

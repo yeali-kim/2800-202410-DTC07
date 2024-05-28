@@ -139,7 +139,7 @@ app.get("/login", (req, res) => {
     res.render("login");
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
 
@@ -157,11 +157,21 @@ app.post("/login", (req, res) => {
         res.redirect("/login");
         return;
     }
+    const existingUser = await Users.findOne({ email: email });
+    console.log(existingUser)
+    if (!existingUser) {
+        res.render("loginErrorPage", { email, error: "Email not found. Please sign up." });
+        return;
+    }
 
-    req.session.email = email;
-    req.session.password = password;
-
-    res.redirect("/map");
+    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+    if (!isPasswordValid) {
+        res.render("loginErrorPage", { email: email, error: "Wrong Password. Try Again." });
+    } else {
+        req.session.email = email;
+        req.session.password = password;
+        res.redirect("/map");
+    }
 });
 
 app.get("/signup", (req, res) => {
@@ -174,7 +184,7 @@ app.post("/signup", async (req, res) => {
     const password = req.body.password;
 
     const schema = Joi.object({
-        username: Joi.string().alphanum().max(20).required(),
+        username: Joi.string().max(20).required(),
         password: Joi.string().max(20).required(),
         email: Joi.string().email({
             minDomainSegments: 2,
@@ -188,19 +198,28 @@ app.post("/signup", async (req, res) => {
         res.redirect("/signup");
         return;
     }
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
 
-    await Users.create({
-        username: username,
-        email: email,
-        password: hashedPassword,
-        address: "Add your address",
-    });
+    const existingUser = await Users.findOne({ email: email});
+    if (existingUser) {
+        res.render("signup", { error: "An account with this email already exists. Please login." });
+        return;
+    } else{
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
+    
+        await Users.create({
+            username: username,
+            email: email,
+            password: hashedPassword,
+            address: "Add your address",
+        });
+    
+        req.session.email = email;
+        req.session.password = password;
+    
+        res.redirect("/map");
 
-    req.session.email = email;
-    req.session.password = password;
-
-    res.redirect("/map");
+    }
 });
 
 app.get("/resetPassword", (req, res) => {
@@ -265,9 +284,8 @@ app.get("/map", validateUser, async (req, res) => {
 
 app.get("/filterCriminals", validateUser, async (req, res) => {
     const name = req.query.name;
-    const crime = req.query.crime;
-    const sentenceMin = req.query.sentenceMin;
-    const sentenceMax = req.query.sentenceMax;
+    const crimeTypes = req.query.crimeTypes ? req.query.crimeTypes.split(',') : [];
+    const sentenceRange = req.query.sentenceRange;
 
     try {
         let filter = {};
@@ -280,21 +298,12 @@ app.get("/filterCriminals", validateUser, async (req, res) => {
             ];
         }
 
-        if (crime) {
-            filter["convictions.crime"] = new RegExp(crime, "i");
+        if (crimeTypes.length > 0) {
+            filter["convictions.crime"] = { $in: crimeTypes.map(crime => new RegExp(crime, "i")) };
         }
 
-        if (sentenceMin) {
-            filter["convictions.sentence"] = {
-                $gte: parseInt(sentenceMin, 10),
-            };
-        }
-
-        if (sentenceMax) {
-            filter["convictions.sentence"] = {
-                ...filter["convictions.sentence"],
-                $lte: parseInt(sentenceMax, 10),
-            };
+        if (sentenceRange) {
+            filter["convictions.sentence"] = { $gte: parseInt(sentenceRange, 10) };
         }
 
         const filteredCriminals = await CriminalProfile.find(filter);
