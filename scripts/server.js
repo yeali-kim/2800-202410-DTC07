@@ -1,3 +1,4 @@
+// Import dependencies.
 require(`dotenv`).config();
 const express = require(`express`);
 const session = require(`express-session`);
@@ -5,7 +6,9 @@ const mongoose = require(`mongoose`);
 const bcrypt = require(`bcrypt`);
 const Joi = require(`joi`);
 const cors = require("cors");
+const methodOverride = require("method-override");
 
+// Variables from dotenv file.
 const mongo_user = process.env.MONGODB_USER;
 const mongo_password = process.env.MONGODB_PASSWORD;
 const mongo_host = process.env.MONGODB_HOST;
@@ -13,6 +16,7 @@ const mongo_db = process.env.MONGODB_DATABASE;
 const node_session_secret = process.env.NODE_SESSION_SECRET;
 const APIKEY = process.env.GOOGLE_MAPS_API_KEY;
 
+// Setup.
 const app = express();
 const PORT = process.env.PORT || 3000;
 const saltRounds = Number(process.env.SALT_ROUNDS);
@@ -37,6 +41,7 @@ async function main() {
     });
 }
 
+// Schemas.
 const criminalSchema = new mongoose.Schema({
     firstName: String,
     middleName: String,
@@ -86,17 +91,18 @@ const cyberSchema = new mongoose.Schema({
     features: Array({ service: String, description: String }),
 });
 
-// Ensure that the model name matches the actual collection name
+// Model from the database.
 const CriminalProfile = mongoose.model("criminalProfile", criminalSchema);
 const Users = mongoose.model("users", userSchema);
 const Robots = mongoose.model("robotprofiles", robotSchema);
 const Drones = mongoose.model("droneprofiles", droneSchema);
 const CyberSecurities = mongoose.model("cybersecurityprofiles", cyberSchema);
 
+// Use ejs view engine.
 app.set("view engine", "ejs");
 
+// Middlewares.
 app.use(express.static(__dirname + "/../public"));
-
 app.use(
     session({
         secret: node_session_secret,
@@ -105,40 +111,47 @@ app.use(
         // cookie: { secure: true },
     })
 );
-
 app.use(cors());
-
 app.use(express.urlencoded({ extended: false }));
+app.use(methodOverride("_method"));
+app.use(express.json()); // To parse JSON bodies
 
-app.get("/crimes", async (req, res) => {
-    try {
-        const allCriminals = await CriminalProfile.find();
-        console.log(allCriminals);
-        res.json(allCriminals);
-    } catch (error) {
-        console.error("Error fetching criminal data:", error);
-        res.status(500).json({ error: "Internal server error" });
+// Validate user by email and password.
+async function validateUser(req, res, next) {
+    if (req.session.email && req.session.password) {
+        const user = await Users.findOne({ email: req.session.email });
+
+        if (user && bcrypt.compareSync(req.session.password, user.password)) {
+            req.session.user = user;
+            req.session.cookie.maxAge = expireTime;
+            return next();
+        }
     }
-});
 
-app.get("/createCrimes", async (req, res) => {
-    await CriminalProfile.create();
-    res.send("Completed");
-});
+    res.redirect("/login");
+}
 
-app.get("/users", async (req, res) => {
-    const users = await Users.find();
-    res.json(users);
-});
+// Calculate total prison years a criminal has.
+function calculateTotalPrisonYears(convictions) {
+    return convictions.reduce((total, conviction) => {
+        const yearsMatch = conviction.sentence.match(/(\d+)\s*years?/i);
+        const years = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
 
+        return total + years;
+    }, 0);
+}
+
+// Render index.ejs. Home page.
 app.get("/", (req, res) => {
     res.render("index");
 });
 
+// Render login.ejs.
 app.get("/login", (req, res) => {
     res.render("login");
 });
 
+// Read from database.
 app.post("/login", async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -157,16 +170,25 @@ app.post("/login", async (req, res) => {
         res.redirect("/login");
         return;
     }
+
     const existingUser = await Users.findOne({ email: email });
-    console.log(existingUser)
     if (!existingUser) {
-        res.render("loginErrorPage", { email, error: "Email not found. Please sign up." });
+        res.render("loginErrorPage", {
+            email,
+            error: "Email not found. Please sign up.",
+        });
         return;
     }
 
-    const isPasswordValid = await bcrypt.compare(password, existingUser.password);
+    const isPasswordValid = await bcrypt.compare(
+        password,
+        existingUser.password
+    );
     if (!isPasswordValid) {
-        res.render("loginErrorPage", { email: email, error: "Wrong Password. Try Again." });
+        res.render("loginErrorPage", {
+            email: email,
+            error: "Wrong Password. Try Again.",
+        });
     } else {
         req.session.email = email;
         req.session.password = password;
@@ -174,10 +196,12 @@ app.post("/login", async (req, res) => {
     }
 });
 
+// Render signup.ejs.
 app.get("/signup", (req, res) => {
     res.render("signup");
 });
 
+// Write to database.
 app.post("/signup", async (req, res) => {
     const username = req.body.name;
     const email = req.body.email;
@@ -199,33 +223,35 @@ app.post("/signup", async (req, res) => {
         return;
     }
 
-    const existingUser = await Users.findOne({ email: email});
+    const existingUser = await Users.findOne({ email: email });
     if (existingUser) {
-        res.render("signup", { error: "An account with this email already exists. Please login." });
+        res.render("signup", {
+            error: "An account with this email already exists. Please login.",
+        });
         return;
-    } else{
+    } else {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
-    
-    
+
         await Users.create({
             username: username,
             email: email,
             password: hashedPassword,
             address: "Add your address",
         });
-    
+
         req.session.email = email;
         req.session.password = password;
-    
-        res.redirect("/map");
 
+        res.redirect("/map");
     }
 });
 
+// Render resetPassword.ejs.
 app.get("/resetPassword", (req, res) => {
     res.render("resetPassword");
 });
 
+// Write to database.
 app.post("/resetPassword", async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -255,26 +281,15 @@ app.post("/resetPassword", async (req, res) => {
     res.redirect("/login");
 });
 
-async function validateUser(req, res, next) {
-    if (req.session.email && req.session.password) {
-        const user = await Users.findOne({ email: req.session.email });
-
-        if (user && bcrypt.compareSync(req.session.password, user.password)) {
-            req.session.user = user;
-            req.session.cookie.maxAge = expireTime;
-            return next();
-        }
-    }
-
-    res.redirect("/login");
-}
-
+// Render filter.ejs.
 app.get("/filter", validateUser, (req, res) => {
     res.render("filter");
 });
 
+// Render map.ejs. Pass criminals from the database, user, and api key.
 app.get("/map", validateUser, async (req, res) => {
     const criminals = await CriminalProfile.find();
+
     res.render("map", {
         criminals: criminals,
         user: req.session.user,
@@ -282,9 +297,12 @@ app.get("/map", validateUser, async (req, res) => {
     });
 });
 
+// Filter criminals by name, crime types, and/or sentence duration.
 app.get("/filterCriminals", validateUser, async (req, res) => {
     const name = req.query.name;
-    const crimeTypes = req.query.crimeTypes ? req.query.crimeTypes.split(',') : [];
+    const crimeTypes = req.query.crimeTypes
+        ? req.query.crimeTypes.split(",")
+        : [];
     const sentenceRange = req.query.sentenceRange;
 
     try {
@@ -297,16 +315,19 @@ app.get("/filterCriminals", validateUser, async (req, res) => {
                 { lastName: new RegExp(name, "i") },
             ];
         }
-
         if (crimeTypes.length > 0) {
-            filter["convictions.crime"] = { $in: crimeTypes.map(crime => new RegExp(crime, "i")) };
+            filter["convictions.crime"] = {
+                $in: crimeTypes.map((crime) => new RegExp(crime, "i")),
+            };
         }
-
         if (sentenceRange) {
-            filter["convictions.sentence"] = { $gte: parseInt(sentenceRange, 10) };
+            filter["convictions.sentence"] = {
+                $gte: parseInt(sentenceRange, 10),
+            };
         }
 
         const filteredCriminals = await CriminalProfile.find(filter);
+
         res.json({ success: true, criminals: filteredCriminals });
     } catch (error) {
         console.error("Error fetching filtered criminals:", error);
@@ -317,20 +338,15 @@ app.get("/filterCriminals", validateUser, async (req, res) => {
     }
 });
 
-function calculateTotalPrisonYears(convictions) {
-    return convictions.reduce((total, conviction) => {
-        const yearsMatch = conviction.sentence.match(/(\d+)\s*years?/i);
-        const years = yearsMatch ? parseInt(yearsMatch[1], 10) : 0;
-        return total + years;
-    }, 0);
-}
-
+// Render list.ejs. Pass criminals from the database, user, and api key.
 app.get("/list", validateUser, async (req, res) => {
     const criminals = await CriminalProfile.find({});
+
     criminals.forEach((criminal) => {
         criminal.totalPrisonYears = calculateTotalPrisonYears(
             criminal.convictions
         );
+
         criminal.convictions.forEach((conviction) => {
             if (conviction && conviction.crime) {
                 conviction.crime = conviction.crime
@@ -339,6 +355,7 @@ app.get("/list", validateUser, async (req, res) => {
             }
         });
     });
+
     res.render("list", {
         criminals: criminals,
         user: req.session.user,
@@ -346,10 +363,12 @@ app.get("/list", validateUser, async (req, res) => {
     });
 });
 
+// Render protection.ejs.
 app.get("/protection", validateUser, (req, res) => {
     res.render("protection");
 });
 
+// Render robots.ejs. Apply filters passed by queries.
 app.get("/robots", validateUser, async (req, res) => {
     try {
         const type = req.query.type;
@@ -365,14 +384,16 @@ app.get("/robots", validateUser, async (req, res) => {
             filter.manufacturer = manufacturer;
         }
         if (minPrice && maxPrice) {
-            filter.price = { 
+            filter.price = {
                 $gte: minPrice,
-                $lte: maxPrice };
+                $lte: maxPrice,
+            };
         }
 
         const robots = await Robots.find(filter);
         const uniqueTypes = await Robots.distinct("type");
         const uniqueManufacturers = await Robots.distinct("manufacturer");
+
         res.render("robots", {
             robots: robots,
             uniqueTypes: uniqueTypes,
@@ -384,6 +405,7 @@ app.get("/robots", validateUser, async (req, res) => {
     }
 });
 
+// Render drones.ejs. Apply filters passed by queries.
 app.get("/drones", validateUser, async (req, res) => {
     try {
         const type = req.query.type;
@@ -391,8 +413,6 @@ app.get("/drones", validateUser, async (req, res) => {
         const minPrice = req.query.minPrice;
         const maxPrice = req.query.maxPrice;
 
-        console.log(type, manufacturer, minPrice, maxPrice);
- 
         let filter = {};
         if (type) {
             filter.type = type;
@@ -405,15 +425,12 @@ app.get("/drones", validateUser, async (req, res) => {
                 $gte: mongoose.Types.Decimal128.fromString(minPrice),
                 $lte: mongoose.Types.Decimal128.fromString(maxPrice),
             };
-            // filter.price = { $lte: mongoose.Types.Decimal128.fromString(minPrice) }
         }
 
-        console.log(filter);
-
         const drones = await Drones.find(filter);
-        console.log(drones);
         const uniqueTypes = await Drones.distinct("type");
         const uniqueManufacturers = await Drones.distinct("manufacturer");
+
         res.render("drones", {
             drones: drones,
             uniqueTypes: uniqueTypes,
@@ -425,14 +442,17 @@ app.get("/drones", validateUser, async (req, res) => {
     }
 });
 
+// Render cybersecurity.ejs. Pass cybersecurity data from the database and user.
 app.get("/cybersecurity", validateUser, async (req, res) => {
     const cybersecurities = await CyberSecurities.find();
+
     res.render("cybersecurity", {
         cybersecurities: cybersecurities,
         user: req.session.user,
     });
 });
 
+// Send json response of a product by product id.
 app.get("/getProductByID/", validateUser, async (req, res) => {
     const ID = req.query.id;
 
@@ -447,10 +467,12 @@ app.get("/getProductByID/", validateUser, async (req, res) => {
     res.json(product);
 });
 
+// Render profile.ejs. Pass user information.
 app.get("/profile", validateUser, async (req, res) => {
     res.render("profile", { user: req.session.user });
 });
 
+// Send json response of a product by order id.
 app.get("/getProduct", validateUser, async (req, res) => {
     const id = req.query.id;
 
@@ -472,22 +494,7 @@ app.get("/getProduct", validateUser, async (req, res) => {
     res.json(product);
 });
 
-app.get("/createOrder", async (req, res) => {
-    const order = {
-        cardname: "TestUser",
-        cardnum: "1234123412341234",
-        address: "myAddress",
-        model: "Mini 2 SE",
-        date: new Date(),
-        status: true,
-    };
-    await Users.updateOne(
-        { email: "test@user.ca" },
-        { $push: { orderHistory: order } }
-    );
-    res.send("Complete");
-});
-
+// Update user's order history status to false.
 app.post("/cancelSubscription", validateUser, async (req, res) => {
     const id = req.body.orderid;
     const email = req.session.user.email;
@@ -508,11 +515,7 @@ app.post("/cancelSubscription", validateUser, async (req, res) => {
     res.redirect("/profile");
 });
 
-const methodOverride = require("method-override");
-app.use(methodOverride("_method"));
-
-app.use(express.json()); // To parse JSON bodies
-
+// Update user information in database.
 app.put("/updateProfile", validateUser, async (req, res) => {
     const { username, email, address } = req.body;
     const sessionUsername = req.session.user.username; // Use session to identify the user
@@ -540,10 +543,12 @@ app.put("/updateProfile", validateUser, async (req, res) => {
     }
 });
 
+// Render resetPasswordProfile.ejs. Pass email address.
 app.get("/resetPasswordProfile", validateUser, (req, res) => {
     res.render("resetPasswordProfile", { email: req.session.user.email });
 });
 
+// Update user's password.
 app.post("/resetPasswordProfile", validateUser, async (req, res) => {
     const email = req.body.email;
     const password = req.body.password;
@@ -573,6 +578,7 @@ app.post("/resetPasswordProfile", validateUser, async (req, res) => {
     res.redirect("/profile");
 });
 
+// Append an order to user's order history.
 app.post("/order", validateUser, async (req, res) => {
     const email = req.body.user;
     const model = req.body.drone;
@@ -599,6 +605,7 @@ app.post("/order", validateUser, async (req, res) => {
         cardname,
         address,
     });
+
     if (validationResult.error != null) {
         console.log(validationResult.error);
         res.json({ success: false });
@@ -613,6 +620,7 @@ app.post("/order", validateUser, async (req, res) => {
         date: new Date(),
         status: true,
     };
+
     await Users.updateOne({ email: email }, { $push: { orderHistory: order } });
 
     if (setAddress) {
@@ -635,11 +643,13 @@ app.post("/order", validateUser, async (req, res) => {
     res.json({ success: true, user: user, drone: drone });
 });
 
+// Destory session.
 app.get("/logout", validateUser, (req, res) => {
     req.session.destroy();
     res.redirect("/login");
 });
 
+// URL not found error.
 app.get("/*", (req, res) => {
     res.status(404);
     res.send("404: Page Not Found");
