@@ -98,7 +98,7 @@
     async function displayProductInformation(orderID) {
         const product = await (
             await fetch(
-                `https://two800-202410-dtc07.onrender.com/getProduct?model=${orderID}`
+                `/getProduct?model=${orderID}`
             )
         ).json();
 
@@ -123,7 +123,7 @@
     orderSummaries.forEach(async (summary) => {
         const product = await (
             await fetch(
-                `https://two800-202410-dtc07.onrender.com/getProduct?id=${summary.id}`
+                `/getProduct?id=${summary.id}`
             )
         ).json();
 
