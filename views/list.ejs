@@ -1,5 +1,8 @@
 <%- include("templates/header") %>
+
+<!-- CSS styles for filter and sort buttons, including expanded state styles -->
 <style>
+  /* Base styles for filter and sort buttons */
   #filter,
   #sortButton {
     display: flex;
@@ -17,6 +20,7 @@
     transition-duration: 0.5s;
   }
 
+  /* Expanded state styles for filter button */
   .expand {
     border-radius: 10px !important;
     width: 300px !important;
@@ -24,6 +28,7 @@
     overflow: auto !important;
   }
 
+  /* Expanded state styles for sort button */
   .expand-sort {
     border-radius: 10px !important;
     width: 200px !important;
@@ -31,6 +36,7 @@
     overflow: auto !important;
   }
 
+  /* Styles for checkbox container and items */
   .checkbox-container {
     display: flex;
     flex-direction: column;
@@ -46,6 +52,7 @@
     margin-right: 8px;
   }
 
+  /* Styles for detail button */
   .detail-button {
     height: 50px;
   }
@@ -56,20 +63,28 @@
     line-height: normal;
   }
 </style>
+
+<!-- Main content area -->
 <main class="bg-[#515F84] text-white p-4 mt-8">
   <div class="container mx-auto">
+    <!-- Title of the page -->
     <h1 class="text-3xl font-bold mb-4 flex justify-center py-8">Criminals Near You</h1>
     <div class="flex justify-between mb-5">
+      <!-- Filter button -->
       <div>
         <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)]" id="filter">
           <span class="material-symbols-outlined text-xl font-bold text-gray-900">filter_alt</span>
         </button>
         <div class="ms-12">
+          <!-- Sort button -->
           <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-full" id="sortButton">
             <span class="material-symbols-outlined text-xl font-bold text-gray-900">sort</span>
           </button>
         </div>
+
+        <!-- Script for filter and sort button functionality -->
         <script>
+          // Function to expand and collapse the filter button
           function expandFilter() {
             const filterBtn = document.getElementById('filter');
             const sortBtn = document.getElementById('sortButton');
@@ -121,6 +136,7 @@
             }
           }
 
+          // Function to close the filter when clicking outside of it
           function closeFilterOnClickOutside(event) {
             const btn = document.getElementById('filter');
             const sortBtn = document.getElementById('sortButton');
@@ -132,11 +148,13 @@
             }
           }
 
+          // Add event listener to filter button
           document.getElementById('filter').addEventListener("click", function(event) {
             event.stopPropagation();
             expandFilter();
           });
 
+          // Function to expand and collapse the sort button
           function expandSort() {
             const btn = document.getElementById('sortButton');
             btn.classList.toggle("expand-sort");
@@ -171,6 +189,7 @@
             }
           }
 
+          // Function to close the sort menu when clicking outside of it
           function closeSortOnClickOutside(event) {
             const btn = document.getElementById('sortButton');
             if (!btn.contains(event.target)) {
@@ -180,17 +199,20 @@
             }
           }
 
+          // Add event listener to sort button
           document.getElementById('sortButton').addEventListener("click", function(event) {
             event.stopPropagation();
             expandSort();
           });
 
+          // Function to update the sentence range display value
           function updateSentenceRange() {
             const sentenceRange = document.getElementById('sentenceRange').value;
             document.getElementById('sentenceValue').innerText = `${sentenceRange} years`;
             filterBySentenceRange();
           }
 
+          // Function to filter criminals by name
           function filterByName() {
             const nameFilter = document.getElementById('nameFilter').value.toLowerCase();
             const cards = document.querySelectorAll('.criminal-card');
@@ -200,6 +222,7 @@
             });
           }
 
+          // Function to filter criminals by imprisonment duration
           function filterBySentenceRange() {
             const sentenceRange = document.getElementById('sentenceRange').value;
             const cards = document.querySelectorAll('.criminal-card');
@@ -209,6 +232,7 @@
             });
           }
 
+          // Function to filter criminals by crime type
           function filterByCrimeType() {
             const checkboxes = document.querySelectorAll('.checkbox-container input[type="checkbox"]:checked');
             const selectedCrimeTypes = Array.from(checkboxes).map(checkbox => checkbox.value);
@@ -220,6 +244,7 @@
             });
           }
 
+          // Function to clear all filters
           function clearFilters() {
             document.getElementById('crimeTypeContainer').querySelectorAll('input[type="checkbox"]').forEach(checkbox => checkbox.checked = false);
             document.getElementById('sentenceRange').value = 0;
@@ -230,14 +255,17 @@
           }
         </script>
       </div>
+      <!-- Button to navigate to the map page -->
       <button class="bg-white rounded-full shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] py-2 px-4 font-bold text-gray-900" onclick='location.href="/map"'>Map</button>
     </div>
+    <!-- Loop through each criminal and display their information in a card -->
     <% criminals.forEach(function(criminal, index) { %>
     <div class="criminal-card bg-[#223053] p-4 rounded-lg shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] mb-4" onclick="hide('<%= criminal._id %>')" style="cursor: pointer;" data-id="<%= criminal._id %>" data-distance="<%= criminal.distance %>" data-total-prison-years="<%= criminal.totalPrisonYears %>" data-crime-types="<%= criminal.convictions.map(conviction => conviction.crime ? conviction.crime.replace(' ', '').toLowerCase() : '').join(',') %>">
       <div class="flex justify-between" id="sCard-<%= criminal._id %>">
         <div class="flex justify-start">
           <img style="height: 100px;" src="<%= criminal.image %>">
           <div class="flex-col mx-3">
+            <!-- Display criminal's name and number of offenses -->
             <h2 class="criminal-name text-xl font-semibold">Name: <%= criminal.firstName %> <%= criminal.middleName %> <%= criminal.lastName %></h2>
             <p class="criminal-crimes">Number of offenses: <%= criminal.convictions.length %></p>
             <% if (criminal.distanceText) { %>
@@ -245,10 +273,12 @@
             <% } %>
           </div>
         </div>
+        <!-- Button to show criminal details -->
         <button onclick="toggleDetails(event, '<%= criminal._id %>'); showCriminalDetail(<%= JSON.stringify(criminal) %>, '<%= criminal._id %>')" class="bg-cyan-600 hover:bg-cyan-900 text-white font-bold py-2 px-4 my-6 rounded-xl detail-button" id="detailButton-<%= criminal._id %>">
           <span>Details</span>
         </button>
       </div>
+      <!-- Section to display detailed criminal information, initially hidden -->
       <div id="details-<%= criminal._id %>" class="hidden" style="transition: all 2s ease;">
         <div>
           <div>
@@ -282,13 +312,17 @@
     <% }); %>
   </div>
 </main>
+
+<!-- Script to handle various functionalities -->
 <script>
+  // Object to keep track of current sort order
   let currentSortOrder = {
     name: 'asc',
     crimes: 'asc',
     distance: 'asc'
   };
 
+  // Function to toggle the display of detailed criminal information
   function toggleDetails(event, id) {
     event.stopPropagation();
     const details = document.getElementById('details-' + id);
@@ -300,6 +334,7 @@
     }
   }
 
+  // Function to hide the details section and show the summary card
   function hide(id) {
     const details = document.getElementById('details-' + id);
     const sCard = document.getElementById('sCard-' + id);
@@ -309,11 +344,13 @@
     }
   }
 
+  // Function to sort the list of criminals by specified criteria
   function sortList(criteria) {
     const cards = document.querySelectorAll('.criminal-card');
     const cardArray = Array.from(cards);
     let sortedCards;
 
+    // Sorting logic based on criteria
     if (criteria === 'name') {
       sortedCards = cardArray.sort((a, b) => {
         const nameA = a.querySelector('.criminal-name')?.innerText.toLowerCase() || '';
@@ -341,6 +378,7 @@
     sortedCards.forEach(card => container.appendChild(card));
   }
 
+  // Function to calculate the distance between two geographic coordinates
   function haversineDistance(lat1, lon1, lat2, lon2) {
     var R = 6371; // Radius of the earth in km
     var dLat = degreesToRadians(lat2 - lat1); // degreesToRadians below
@@ -354,10 +392,12 @@
     return d;
   }
 
+  // Function to convert degrees to radians
   function degreesToRadians(degrees) {
     return degrees * (Math.PI / 180);
   }
 
+  // Function to initialize the map and calculate distances between the user and criminals
   async function initMap(criminals, user) {
     navigator.geolocation.getCurrentPosition(async function(position) {
       const userLocation = {
@@ -460,6 +500,7 @@
     });
   }
 
+  // Function to handle search functionality
   function search(criminals) {
     document.getElementById('searchBar').addEventListener("keydown", async function(e) {
       if (e.key === 'Enter') {
@@ -528,6 +569,7 @@
     });
   }
 
+  // Function to display criminal details
   function showCriminalDetail(criminal, id) {
     const detailSection = document.getElementById('details-' + id);
 
@@ -557,6 +599,7 @@
     });
   }
 
+  // Event listener to initialize map and search functionality after DOM content is loaded
   document.addEventListener("DOMContentLoaded", function() {
     const criminals = <%- JSON.stringify(criminals) %>;
     const user = <%- JSON.stringify(user) %>;
@@ -564,6 +607,7 @@
     search(criminals);
   });
 </script>
+<!-- Google Maps API script -->
 <script async defer src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>"></script>
 </body>
 
