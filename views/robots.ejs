@@ -214,7 +214,7 @@
                                     closeFilterOnClickOutside
                                 );
 
-                                // Initialize noUiSlider
+                                // Initialize noUiSlider for price range filter
                                 var priceSlider = document.getElementById('priceRange');
                                 console.log(priceSlider);
                                 noUiSlider.create(priceSlider, {
@@ -356,29 +356,44 @@
                 };
 
                 function sortRobots(criteria) {
+                    // Log the sorting criteria
                     console.log(`Sorting by: ${criteria}`);
+
+                    // Get all elements with class "item"
                     const items = document.querySelectorAll(".item");
+
+                    // Convert NodeList to Array
                     const itemsArray = Array.from(items);
+
+                    // Sort the array based on the criteria
                     itemsArray.sort((a, b) => {
                         let aValue, bValue;
+
+                        // Determine the values to compare based on the criteria
                         switch (criteria) {
                             case "manufacturer":
+                                // If sorting by manufacturer, use the manufacturer data attribute
                                 aValue = a.dataset.manufacturer.toLowerCase();
                                 bValue = b.dataset.manufacturer.toLowerCase();
                                 break;
                             case "type":
+                                // If sorting by type, use the type data attribute
                                 aValue = a.dataset.type.toLowerCase();
                                 bValue = b.dataset.type.toLowerCase();
                                 break;
                             case "price-asc":
+                                // If sorting by price ascending, use the price data attribute
                                 aValue = parseFloat(a.dataset.price);
                                 bValue = parseFloat(b.dataset.price);
                                 return aValue - bValue;
                             case "price-desc":
+                                // If sorting by price descending, use the price data attribute
                                 aValue = parseFloat(a.dataset.price);
                                 bValue = parseFloat(b.dataset.price);
                                 return bValue - aValue;
                         }
+
+                        // Determine the sort order based on the sortOrder object
                         if (sortOrder[criteria] === "asc") {
                             if (aValue < bValue) return -1;
                             if (aValue > bValue) return 1;
@@ -386,18 +401,21 @@
                             if (aValue < bValue) return 1;
                             if (aValue > bValue) return -1;
                         }
+
+                        // If values are equal, return 0
                         return 0;
                     });
 
+                    // If sorting by manufacturer or type, toggle the sort order for the next sort
                     if (criteria === "manufacturer" || criteria === "type") {
-                        // Toggle sort order for manufacturer and type (asc/desc)
-                        sortOrder[criteria] =
-                            sortOrder[criteria] === "asc" ? "desc" : "asc";
+                        sortOrder[criteria] = sortOrder[criteria] === "asc" ? "desc" : "asc";
                     }
 
-                    // display sorted items
+                    // Clear the container
                     const container = document.getElementById("robot-container");
                     container.innerHTML = "";
+
+                    // Append the sorted items to the container
                     itemsArray.forEach((item) => container.appendChild(item));
 
                     // Re-append sorted elements to the container
