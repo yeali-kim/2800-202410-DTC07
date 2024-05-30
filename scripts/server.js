@@ -532,31 +532,37 @@ app.post("/cancelSubscription", validateUser, async (req, res) => {
 });
 
 // Update user information in database.
-app.put("/updateProfile", validateUser, async (req, res) => {
-    const { username, email, address } = req.body;
-    const sessionUsername = req.session.user.username; // Use session to identify the user
+app.post("/updateProfile", validateUser, async (req, res) => {
+    const username = req.body.username;
+    const email = req.body.email;
+    const address = req.body.address;
 
-    try {
-        const user = await Users.findOneAndUpdate(
-            { username: sessionUsername },
-            { username, email, address: address },
-            { new: true }
-        );
+    const schema = Joi.object({
+        username: Joi.string().max(20).required(),
+        email: Joi.string().email({
+            minDomainSegments: 2,
+            tlds: { allow: ["com", "ca"] },
+        }),
+        address: Joi.string(),
+    });
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Update the session user information
-        req.session.user.username = username;
-        req.session.user.email = email;
-        req.session.user.address = address;
-
-        res.json(user);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server Error" });
+    const validationResult = schema.validate({ username, email, address });
+    if (validationResult.error != null) {
+        console.log(validationResult.error);
+        res.redirect("/profile");
+        return;
     }
+
+    await Users.updateOne(
+        { email: req.session.user.email },
+        { username: username, email: email, address: address }
+    );
+
+    const user = await Users.findOne({ email: email });
+    req.session.user = user;
+    req.session.email = email;
+
+    res.redirect("/profile");
 });
 
 // Render resetPasswordProfile.ejs. Pass email address.
