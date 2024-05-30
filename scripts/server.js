@@ -152,6 +152,7 @@ app.get("/", (req, res) => {
 
 // Render login.ejs.
 app.get("/login", (req, res) => {
+    console.log(req.session.user);
     if (req.session.user) {
         res.redirect("/map");
     } else {
@@ -667,7 +668,12 @@ app.post("/order", validateUser, async (req, res) => {
 
 // Destory session.
 app.get("/logout", validateUser, (req, res) => {
+    console.log("Destory session");
+    req.session.user = undefined;
+    req.session.email = undefined;
+    req.session.password = undefined;
     req.session.destroy();
+
     res.redirect("/login");
 });
 
