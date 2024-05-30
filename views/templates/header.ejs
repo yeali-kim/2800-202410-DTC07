@@ -1,322 +1,355 @@
 <!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="shortcut icon" type="image/png" href="/logo.png" />
+        <title>ProtectUs</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+        <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="shortcut icon" type="image/png" href="/logo.png">
-  <title>ProtectUs</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+            rel="stylesheet" />
+        <link
+            href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css"
+            rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
+        <style>
+            * {
+                font-family: system-ui, -apple-system, BlinkMacSystemFont,
+                    "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+                    "Helvetica Neue", sans-serif;
+            }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Encode+Sans+Expanded:wght@100;200;300;400;500;600;700;800;900&family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-    rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/nouislider/distribute/nouislider.min.js"></script>
-  <style>
-    * {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-    }
+            body {
+                overflow-x: hidden;
+                /* Prevent horizontal scrolling when sidebar is open */
+            }
 
-    body {
-      overflow-x: hidden;
-      /* Prevent horizontal scrolling when sidebar is open */
-    }
+            #navbar {
+                width: 100%;
+                position: fixed;
+                z-index: 20;
+                /* Ensure the navbar is above the overlay */
+                top: 0;
+                background: rgba(81, 95, 132, 0.9);
+                backdrop-filter: blur(10px);
+            }
 
-    #navbar {
-      width: 100%;
-      position: fixed;
-      z-index: 20;
-      /* Ensure the navbar is above the overlay */
-      top: 0;
-      background: rgba(81, 95, 132, 0.9);
-      backdrop-filter: blur(10px);
-    }
+            #overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.5);
+                backdrop-filter: blur(5px);
+                z-index: 15;
+                display: none;
+                /* Initially hidden */
+            }
 
-    #overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(5px);
-      z-index: 15;
-      display: none;
-      /* Initially hidden */
-    }
+            #overlay.show {
+                display: block;
+            }
 
-    #overlay.show {
-      display: block;
-    }
+            #sidebar {
+                top: 69px;
+                right: -75%;
+                width: 75%;
+                height: calc(100% - 72px);
+                transition: right 0.3s ease-in-out;
+                position: fixed;
+                z-index: 20;
+                background: #3e4c6e;
+                color: white;
+                border-top-left-radius: 20px;
+                border-bottom-left-radius: 20px;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+                /* Add shadow here */
+            }
 
-    #sidebar {
-      top: 69px;
-      right: -75%;
-      width: 75%;
-      height: calc(100% - 72px);
-      transition: right 0.3s ease-in-out;
-      position: fixed;
-      z-index: 20;
-      background: #3e4c6e;
-      color: white;
-      border-top-left-radius: 20px;
-      border-bottom-left-radius: 20px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      /* Add shadow here */
-    }
+            #sidebar.show {
+                right: 0;
+                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+                /* Add shadow here */
+            }
 
-    #sidebar.show {
-      right: 0;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      /* Add shadow here */
-    }
+            .menu-btn {
+                position: relative;
+                width: 30px;
+                height: 30px;
+                display: flex;
+                flex-direction: column;
+                justify-content: space-between;
+                cursor: pointer;
+            }
 
-    .menu-btn {
-      position: relative;
-      width: 30px;
-      height: 30px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      cursor: pointer;
-    }
+            .menu-btn span {
+                height: 3px;
+                width: 100%;
+                background: white;
+                border-radius: 5px;
+                transition: transform 0.3s, opacity 0.3s;
+            }
 
-    .menu-btn span {
-      height: 3px;
-      width: 100%;
-      background: white;
-      border-radius: 5px;
-      transition: transform 0.3s, opacity 0.3s;
-    }
+            .menu-btn.open span:nth-child(1) {
+                transform: rotate(45deg) translateY(19.2px);
+            }
 
-    .menu-btn.open span:nth-child(1) {
-      transform: rotate(45deg) translateY(19.2px);
-    }
+            .menu-btn.open span:nth-child(2) {
+                opacity: 0;
+            }
 
-    .menu-btn.open span:nth-child(2) {
-      opacity: 0;
-    }
+            .menu-btn.open span:nth-child(3) {
+                transform: rotate(-45deg) translateY(-19.2px);
+            }
 
-    .menu-btn.open span:nth-child(3) {
-      transform: rotate(-45deg) translateY(-19.2px);
-    }
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+                margin: 0;
+            }
 
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-      margin: 0;
-    }
+            .sidebar ul li {
+                margin: 1rem 0;
+            }
 
-    .sidebar ul li {
-      margin: 1rem 0;
-    }
+            .sidebar ul li a {
+                text-decoration: none;
+                color: white;
+                font-size: 1.25rem;
+                transition: color 0.3s, background 0.3s;
+                display: block;
+                padding: 0.75rem 1rem;
+                border-radius: 10px;
+            }
 
-    .sidebar ul li a {
-      text-decoration: none;
-      color: white;
-      font-size: 1.25rem;
-      transition: color 0.3s, background 0.3s;
-      display: block;
-      padding: 0.75rem 1rem;
-      border-radius: 10px;
-    }
+            .sidebar ul li a:hover {
+                background: #515f84;
+                color: #ead797;
+            }
 
-    .sidebar ul li a:hover {
-      background: #515f84;
-      color: #EAD797;
-    }
+            .sidebar ul li ul {
+                margin-top: 0.5rem;
+                padding-left: 1.5rem;
+            }
 
-    .sidebar ul li ul {
-      margin-top: 0.5rem;
-      padding-left: 1.5rem;
-    }
+            .sidebar ul li ul li a {
+                font-size: 1rem;
+                padding: 0.5rem 1rem;
+            }
 
-    .sidebar ul li ul li a {
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
-    }
+            .sidebar ul li ul li a:hover {
+                background: #636e8b;
+            }
 
-    .sidebar ul li ul li a:hover {
-      background: #636e8b;
-    }
+            .logo-container {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
 
-    .logo-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
+            .logo-container img {
+                width: 120px;
+                height: 120px;
+                border-radius: 50%;
+                border: 3px solid #515f84;
+            }
 
-    .logo-container img {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      border: 3px solid #515f84;
-    }
+            .logo-container h1 {
+                font-size: 2rem;
+                font-weight: bold;
+                margin-top: 1rem;
+                color: #ead797;
+            }
 
-    .logo-container h1 {
-      font-size: 2rem;
-      font-weight: bold;
-      margin-top: 1rem;
-      color: #EAD797;
-    }
+            /* Hide #back at first and show #back with transition if #appName has the class flip */
+            #appName {
+                perspective: 1000px;
+                transform-style: preserve-3d;
+                transition: transform 1s;
+            }
 
-    /* Hide #back at first and show #back with transition if #appName has the class flip */
-    #appName {
-      perspective: 1000px;
-      transform-style: preserve-3d;
-      transition: transform 1s;
-    }
+            #front,
+            #back {
+                position: absolute;
+                backface-visibility: hidden;
+            }
 
-    #front,
-    #back {
-      position: absolute;
-      backface-visibility: hidden;
-    }
+            #back {
+                transform: rotateY(180deg);
+            }
 
-    #back {
-      transform: rotateY(180deg)
-    }
+            .flip {
+                transform: rotateY(180deg);
+            }
+        </style>
+    </head>
 
-    .flip {
-      transform: rotateY(180deg)
-    }
-  </style>
-</head>
+    <body class="bg-[#515F84]">
+        <div
+            class="bg-[#515F84] py-4 px-6 flex justify-between items-center"
+            id="navbar">
+            <input
+                id="searchBar"
+                type="text"
+                class="w-[330px] md:w-[100px] px-4 py-2 rounded-lg bg-[#ffffff] text-gray-500 focus:outline-none focus:bg-gray-900"
+                placeholder="Search..."
+                id="searchBar" />
+            <div class="menu-btn cursor-pointer" id="hamburgerMenu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
 
-<body class="bg-[#515F84]">
-  <div class="bg-[#515F84] py-4 px-6 flex justify-between items-center" id="navbar">
-    <input id="searchBar" type="text"
-      class="w-[330px] md:w-[100px] px-4 py-2 rounded-lg bg-[#ffffff] text-gray-500 focus:outline-none focus:bg-gray-900"
-      placeholder="Search..." id="searchBar">
-    <div class="menu-btn cursor-pointer" id="hamburgerMenu">
-      <span></span>
-      <span></span>
-      <span></span>
-    </div>
-  </div>
+        <div id="overlay"></div>
 
-  <div id="overlay"></div>
+        <div id="sidebar" class="sidebar py-8 px-6 h-full overflow-y-auto">
+            <div class="logo-container">
+                <img src="logo.png" alt="Logo" />
+                <div id="appName">
+                    <h1 id="back">
+                        <a href="https://bright-marshmallow-07dfb8.netlify.app">
+                            <span style="color: #3bb1b3">Camp</span
+                            ><span style="color: #c07272">US</span>
+                        </a>
+                    </h1>
+                    <h1 id="front" style="font-family: ">ProtectUs</h1>
+                    <h1 class="invisible">ProtectUs</h1>
+                </div>
+            </div>
+            <ul class="text-left">
+                <li><a href="/profile">Profile</a></li>
+                <li>
+                    <a href="" id="criminalsNearYou">Criminals near you</a>
+                    <ul class="hidden">
+                        <li><a href="/map">Map</a></li>
+                        <li><a href="/list">List</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="" id="protectionServices">Protection Services</a>
+                    <ul class="hidden">
+                        <li><a href="/robots">Guardian Robot</a></li>
+                        <li><a href="/drones">Security Drone</a></li>
+                        <li><a href="/cybersecurity">Cybersecurity</a></li>
+                    </ul>
+                </li>
+                <br /><br /><br /><br /><br /><br /><br /><br /><br /><br />
+                <li
+                    class="mt-16"
+                    id="logoutBtn"
+                    style="
+                        position: absolute;
+                        bottom: 20px;
+                        right: 190px;
+                        display: none;
+                    ">
+                    <a href="/logout" style="font-size: 15px">Log Out</a>
+                </li>
+            </ul>
+        </div>
 
-  <div id="sidebar" class="sidebar py-8 px-6 h-full overflow-y-auto">
-    <div class="logo-container">
-      <img src="logo.png" alt="Logo">
-      <div id="appName">
-        <h1 id="back"><a href="https://bright-marshmallow-07dfb8.netlify.app">
-            <span style="color: #3BB1B3 ;">Camp</span><span style="color: #C07272;">US</span>
-          </a></h1>
-        <h1 id="front" style="font-family: ">ProtectUs</h1>
-        <h1 class="invisible">ProtectUs</h1>
-      </div>
-    </div>
-    <ul class="text-left">
-      <li><a href="/profile">Profile</a></li>
-      <li>
-        <a href="" id="criminalsNearYou">Criminals near you</a>
-        <ul class="hidden">
-          <li><a href="/map">Map</a></li>
-          <li><a href="/list">List</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="" id="protectionServices">Protection Services</a>
-        <ul class="hidden">
-          <li><a href="/robots">Guardian Robot</a></li>
-          <li><a href="/drones">Security Drone</a></li>
-          <li><a href="/cybersecurity">Cybersecurity</a></li>
-        </ul>
-      </li>
-      <br><br><br><br><br><br><br><br><br><br>
-      <li class="mt-16" id="logoutBtn" style="position: absolute; bottom: 20px; right: 190px; display: none;"><a
-          href="/" style="font-size: 15px;">Log Out</a></li>
-    </ul>
-  </div>
+        <script>
+            document
+                .getElementById("hamburgerMenu")
+                .addEventListener("click", () => {
+                    const sidebar = document.getElementById("sidebar");
+                    const overlay = document.getElementById("overlay");
+                    const menuIcon = document.getElementById("hamburgerMenu");
+                    const logoutBtn = document.getElementById("logoutBtn");
 
+                    sidebar.classList.toggle("show");
+                    overlay.classList.toggle("show");
+                    menuIcon.classList.toggle("open");
+                    logoutBtn.style.display = sidebar.classList.contains("show")
+                        ? "block"
+                        : "none";
 
-  <script>
-    document.getElementById('hamburgerMenu').addEventListener('click', () => {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      const menuIcon = document.getElementById('hamburgerMenu');
-      const logoutBtn = document.getElementById('logoutBtn');
+                    // Disable scrolling when sidebar is open
+                    if (sidebar.classList.contains("show")) {
+                        document.body.style.overflowY = "hidden";
+                    } else {
+                        document.body.style.overflowY = "auto";
+                    }
+                });
 
-      sidebar.classList.toggle('show');
-      overlay.classList.toggle('show');
-      menuIcon.classList.toggle('open');
-      logoutBtn.style.display = sidebar.classList.contains('show') ? 'block' : 'none';
+            // Close the sidebar when clicking outside of it
+            document.getElementById("overlay").addEventListener("click", () => {
+                const sidebar = document.getElementById("sidebar");
+                const overlay = document.getElementById("overlay");
+                const menuIcon = document.getElementById("hamburgerMenu");
+                const logoutBtn = document.getElementById("logoutBtn");
 
-      // Disable scrolling when sidebar is open
-      if (sidebar.classList.contains('show')) {
-        document.body.style.overflowY = 'hidden';
-      } else {
-        document.body.style.overflowY = 'auto';
-      }
-    });
+                sidebar.classList.remove("show");
+                overlay.classList.remove("show");
+                menuIcon.classList.remove("open");
+                logoutBtn.style.display = "none"; // Hide logoutBtn
 
-    // Close the sidebar when clicking outside of it
-    document.getElementById('overlay').addEventListener('click', () => {
-      const sidebar = document.getElementById('sidebar');
-      const overlay = document.getElementById('overlay');
-      const menuIcon = document.getElementById('hamburgerMenu');
-      const logoutBtn = document.getElementById('logoutBtn');
+                document.body.style.overflowY = "auto"; // Re-enable scrolling
+            });
 
-      sidebar.classList.remove('show');
-      overlay.classList.remove('show');
-      menuIcon.classList.remove('open');
-      logoutBtn.style.display = 'none'; // Hide logoutBtn
+            // CampUs EasterEgg
+            var clickCount = 0;
 
-      document.body.style.overflowY = 'auto'; // Re-enable scrolling
-    });
+            appName.addEventListener("click", () => {
+                clickCount++;
+                if (clickCount >= 8) {
+                    appName.classList.add("flip");
+                }
+            });
 
-    // CampUs EasterEgg
-    var clickCount = 0;
+            const protectionServices =
+                document.getElementById("protectionServices");
+            const protectionServicesDropdown =
+                protectionServices.nextElementSibling;
 
-    appName.addEventListener('click', () => {
-      clickCount++;
-      if (clickCount >= 8) {
-        appName.classList.add("flip");
-      }
-    })
+            const criminalsNearYou =
+                document.getElementById("criminalsNearYou");
+            const criminalsNearYouDropdown =
+                criminalsNearYou.nextElementSibling;
 
-    const protectionServices = document.getElementById('protectionServices');
-    const protectionServicesDropdown = protectionServices.nextElementSibling;
+            // Function to toggle visibility of the dropdowns
+            function toggleDropdownVisibility(dropdownToShow, dropdownToHide) {
+                dropdownToShow.classList.remove("hidden");
+                dropdownToHide.classList.add("hidden");
+            }
 
-    const criminalsNearYou = document.getElementById('criminalsNearYou');
-    const criminalsNearYouDropdown = criminalsNearYou.nextElementSibling;
+            // Click event listeners for protectionServices and criminalsNearYou
+            protectionServices.addEventListener("click", function (event) {
+                event.preventDefault();
+                if (protectionServicesDropdown.classList.contains("hidden")) {
+                    toggleDropdownVisibility(
+                        protectionServicesDropdown,
+                        criminalsNearYouDropdown
+                    );
+                } else {
+                    protectionServicesDropdown.classList.add("hidden");
+                }
+            });
 
-    // Function to toggle visibility of the dropdowns
-    function toggleDropdownVisibility(dropdownToShow, dropdownToHide) {
-      dropdownToShow.classList.remove('hidden');
-      dropdownToHide.classList.add('hidden');
-    }
-
-    // Click event listeners for protectionServices and criminalsNearYou
-    protectionServices.addEventListener('click', function (event) {
-      event.preventDefault();
-      if (protectionServicesDropdown.classList.contains('hidden')) {
-        toggleDropdownVisibility(protectionServicesDropdown, criminalsNearYouDropdown);
-      } else {
-        protectionServicesDropdown.classList.add('hidden');
-      }
-    });
-
-    criminalsNearYou.addEventListener('click', function (event) {
-      event.preventDefault();
-      if (criminalsNearYouDropdown.classList.contains('hidden')) {
-        toggleDropdownVisibility(criminalsNearYouDropdown, protectionServicesDropdown);
-      } else {
-        criminalsNearYouDropdown.classList.add('hidden');
-      }
-    });
-  </script>
-
-</body>
-
+            criminalsNearYou.addEventListener("click", function (event) {
+                event.preventDefault();
+                if (criminalsNearYouDropdown.classList.contains("hidden")) {
+                    toggleDropdownVisibility(
+                        criminalsNearYouDropdown,
+                        protectionServicesDropdown
+                    );
+                } else {
+                    criminalsNearYouDropdown.classList.add("hidden");
+                }
+            });
+        </script>
+    </body>
 </html>

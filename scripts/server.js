@@ -143,12 +143,21 @@ function calculateTotalPrisonYears(convictions) {
 
 // Render index.ejs. Home page.
 app.get("/", (req, res) => {
-    res.render("index");
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("index");
+    }
 });
 
 // Render login.ejs.
 app.get("/login", (req, res) => {
-    res.render("login");
+    console.log(req.session.user);
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("login");
+    }
 });
 
 // Read from database.
@@ -167,7 +176,7 @@ app.post("/login", async (req, res) => {
     const validationResult = schema.validate({ password, email });
     if (validationResult.error != null) {
         console.log(validationResult.error);
-        res.redirect("/login");
+        res.render("loginErrorPage");
         return;
     }
 
@@ -198,7 +207,11 @@ app.post("/login", async (req, res) => {
 
 // Render signup.ejs.
 app.get("/signup", (req, res) => {
-    res.render("signup");
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("signup");
+    }
 });
 
 // Write to database.
@@ -248,7 +261,11 @@ app.post("/signup", async (req, res) => {
 
 // Render resetPassword.ejs.
 app.get("/resetPassword", (req, res) => {
-    res.render("resetPassword");
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("resetPassword");
+    }
 });
 
 // Write to database.
@@ -516,31 +533,37 @@ app.post("/cancelSubscription", validateUser, async (req, res) => {
 });
 
 // Update user information in database.
-app.put("/updateProfile", validateUser, async (req, res) => {
-    const { username, email, address } = req.body;
-    const sessionUsername = req.session.user.username; // Use session to identify the user
+app.post("/updateProfile", validateUser, async (req, res) => {
+    const username = req.body.username;
+    const email = req.body.email;
+    const address = req.body.address;
 
-    try {
-        const user = await Users.findOneAndUpdate(
-            { username: sessionUsername },
-            { username, email, address: address },
-            { new: true }
-        );
+    const schema = Joi.object({
+        username: Joi.string().max(20).required(),
+        email: Joi.string().email({
+            minDomainSegments: 2,
+            tlds: { allow: ["com", "ca"] },
+        }),
+        address: Joi.string(),
+    });
 
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-
-        // Update the session user information
-        req.session.user.username = username;
-        req.session.user.email = email;
-        req.session.user.address = address;
-
-        res.json(user);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ message: "Server Error" });
+    const validationResult = schema.validate({ username, email, address });
+    if (validationResult.error != null) {
+        console.log(validationResult.error);
+        res.redirect("/profile");
+        return;
     }
+
+    await Users.updateOne(
+        { email: req.session.user.email },
+        { username: username, email: email, address: address }
+    );
+
+    const user = await Users.findOne({ email: email });
+    req.session.user = user;
+    req.session.email = email;
+
+    res.redirect("/profile");
 });
 
 // Render resetPasswordProfile.ejs. Pass email address.
@@ -645,12 +668,17 @@ app.post("/order", validateUser, async (req, res) => {
 
 // Destory session.
 app.get("/logout", validateUser, (req, res) => {
+    console.log("Destory session");
+    req.session.user = undefined;
+    req.session.email = undefined;
+    req.session.password = undefined;
     req.session.destroy();
+
     res.redirect("/login");
 });
 
 // URL not found error.
 app.get("/*", (req, res) => {
     res.status(404);
-    res.send("404: Page Not Found");
+    res.render("404");
 });
