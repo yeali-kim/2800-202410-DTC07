@@ -22,20 +22,20 @@ Crime rates have tripled over the past three decades since 2024. ProtectUs enabl
 List technologies (with version numbers), API's, icons, fonts, images, media or data sources, and other resources that were used.
 
 - JavaScript, CSS
-- [EJS](https://www.npmjs.com/package/ejs)
+- [EJS v3.1.10](https://www.npmjs.com/package/ejs)
 - [Tailwind v3.4.3](https://tailwindcss.com/)
-- [MongoDB](https://www.mongodb.com/products/platform/atlas-database) connected by [Mongoose](https://mongoosejs.com/)
+- [MongoDB](https://www.mongodb.com/products/platform/atlas-database) connected by [Mongoose v8.3.4](https://mongoosejs.com/)
 - [Node](https://nodejs.org/en)
-- [Express](https://expressjs.com/)
-- [express-session](https://www.npmjs.com/package/express-session)
-- [dotenv](https://www.dotenv.org/)
-- [Joi](https://joi.dev/)
-- [bcrypt](https://github.com/kelektiv/node.bcrypt.js)
-- [CORS](https://www.npmjs.com/package/cors)
-- [Google Map API](https://developers.google.com/maps)
-- [noUiSlider](https://www.npmjs.com/package/nouislider)
+- [Express v4.19.2](https://expressjs.com/)
+- [express-session v1.18.0](https://www.npmjs.com/package/express-session)
+- [dotenv v16.4.5](https://www.dotenv.org/)
+- [Joi v17.13.1](https://joi.dev/)
+- [bcrypt v5.1.1](https://github.com/kelektiv/node.bcrypt.js)
+- [CORS v2.8.5](https://www.npmjs.com/package/cors)
+- [Google Map API v1.16.6](https://developers.google.com/maps)
+- [noUiSlider v15.7.2](https://www.npmjs.com/package/nouislider)
 - [Splide](https://splidejs.com/)
-- [method-override](https://www.npmjs.com/package/method-override)
+- [method-override v3.0.0](https://www.npmjs.com/package/method-override)
 
 **Server Variables:**
 
@@ -50,13 +50,51 @@ List technologies (with version numbers), API's, icons, fonts, images, media or 
 | GOOGLE_MAPS_API_KEY    | The API key used to authenticate with the Google Maps API.|
 
 
+### Use of AI
+
+#### 1. Did you use AI to help create your app? If so, how? Be specific.
+Yes, we used GitHub Copilot and ChatGPT to help create our app. Specifically, we utilized these AI tools to debug errors and resolve logic issues in our code. They provided suggestions and code snippets that improved our development efficiency and helped us overcome technical challenges.
+
+#### 2. Did you use AI to create data sets or clean data sets? If so, how? Be specific.
+No, our AI tools were not used to create or clean data sets. The dataset management was handled manually and through our own scripts.
+
+#### 3. Does your app use AI? If so, how? Be specific.
+Currently, our app does not have any built-in AI functionality. However, in the future, we plan to integrate AI to recommend protection services to users based on their needs and usage patterns.
+
+#### 4. Did you encounter any limitations? What were they, and how did you overcome them? Be specific.
+Yes, we encountered several limitations while using AI tools. One major issue was that the AI did not always provide working code. To overcome this, we had to manually write and debug the code suggested by the AI. This process involved testing different approaches and refining the AI-generated code until it met our requirements.
+
+
+### Image Resources Used
+
+- [League of Legends Wiki](https://leagueoflegends.fandom.com/wiki/League_of_Legends_Wiki)
+
 ## ⚙️ Complete setup/installion/usage
 
 Here's how to get started once you've cloned the project:
 
 - Download [Node](https://nodejs.org/en)
+- Download [VS Code](https://code.visualstudio.com/)
+- Set up MongoDB Atlas with corresponding database structure as per schema
+- Set up Google Map API key
 - npm i: Install all dependencies
 - node server.js: Initiate server and connect to local host
+
+### Completed Testing
+
+- [Testing Log](https://docs.google.com/spreadsheets/d/17Mjc_EDb-M2MrIbCtokkriNpgNQFkDFWWNPqf6zoVag/edit?usp=sharing)
+
+### Usage
+
+- Sign up or log in
+- If user refuses location sharing, default user location will be BCIT Downtown Campus
+- User can click on markers to obtain more information on the criminal
+- Criminals can be viewed on list view as well
+- Clicking on ProtectUs buttons on criminal details will lead the user to Protection Services that they can order
+- Order history is available on profiles page
+
+
+- [Demonstration/Presentation Video](https://youtu.be/t0nDQmW4I10)
 
 
 ## 🪲 Known Bugs and Limitations
