@@ -143,12 +143,20 @@ function calculateTotalPrisonYears(convictions) {
 
 // Render index.ejs. Home page.
 app.get("/", (req, res) => {
-    res.render("index");
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("index");
+    }
 });
 
 // Render login.ejs.
 app.get("/login", (req, res) => {
-    res.render("login");
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("login");
+    }
 });
 
 // Read from database.
@@ -198,7 +206,11 @@ app.post("/login", async (req, res) => {
 
 // Render signup.ejs.
 app.get("/signup", (req, res) => {
-    res.render("signup");
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("signup");
+    }
 });
 
 // Write to database.
@@ -248,7 +260,11 @@ app.post("/signup", async (req, res) => {
 
 // Render resetPassword.ejs.
 app.get("/resetPassword", (req, res) => {
-    res.render("resetPassword");
+    if (req.session.user) {
+        res.redirect("/map");
+    } else {
+        res.render("resetPassword");
+    }
 });
 
 // Write to database.
