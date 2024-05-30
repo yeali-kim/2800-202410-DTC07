@@ -175,7 +175,7 @@ app.post("/login", async (req, res) => {
     const validationResult = schema.validate({ password, email });
     if (validationResult.error != null) {
         console.log(validationResult.error);
-        res.redirect("/login");
+        res.render("loginErrorPage");
         return;
     }
 
