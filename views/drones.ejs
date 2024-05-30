@@ -96,7 +96,9 @@
 <div class="container flex mb-8">
     <!-- Filter button -->
     <div class="ms-4">
-        <button class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] z-10" id="filter">
+        <button
+            class="shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] z-10"
+            id="filter">
             <span class="material-symbols-outlined"> filter_alt </span>
         </button>
     </div>
@@ -110,34 +112,43 @@
 </div>
 
 <!-- Container for drone cards -->
-<div id="drone-container" class="flex flex-wrap items-center" data-drones="<%- JSON.stringify(drones) %>">
+<div
+    id="drone-container"
+    class="flex flex-wrap items-center"
+    data-drones="<%- JSON.stringify(drones) %>">
     <% drones.forEach(function(drone) { %>
-    <div class="item m-4 w-full bg-white h-full shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-lg overflow-hidden text-center"
-        data-manufacturer="<%= drone.manufacturer %>" data-type="<%= drone.type %>" data-price="<%= drone.price %>">
+    <div
+        class="item m-4 w-full bg-white h-full shadow-[0_0px_10px_0px_rgba(0,0,0,0.5)] rounded-lg overflow-hidden text-center"
+        data-manufacturer="<%= drone.manufacturer %>"
+        data-type="<%= drone.type %>"
+        data-price="<%= drone.price %>">
         <div class="p-6 flex justify-between flex-col">
-            <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
+            <h2
+                class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
                 Model
             </h2>
             <h1 class="title-font text-lg font-medium text-gray-900 mb-3">
                 <%= drone.model %>
             </h1>
-            <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
+            <h2
+                class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
                 Manufacturer
             </h2>
-            <p class="leading-relaxed mb-3">
-                <%= drone.manufacturer %>
-            </p>
-            <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
+            <p class="leading-relaxed mb-3"><%= drone.manufacturer %></p>
+            <h2
+                class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
                 Price
             </h2>
             <p class="leading-relaxed mb-3">$<%= drone.price %> / month</p>
-            <h2 class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
+            <h2
+                class="tracking-widest text-xs title-font font-medium text-gray-500 mb-1">
                 Type
             </h2>
-            <p class="leading-relaxed mb-3">
-                <%= drone.type %>
-            </p>
-            <button type="button" data-modal-toggle="drone-modal" id="<%=drone.id %>"
+            <p class="leading-relaxed mb-3"><%= drone.type %></p>
+            <button
+                type="button"
+                data-modal-toggle="drone-modal"
+                id="<%=drone.id %>"
                 class="orderBtn flex bg-cyan-600 px-4 py-2 mt-2 mx-12 justify-center text-white font-bold rounded-full">
                 Place an Order
             </button>
@@ -171,59 +182,64 @@
                 filterBtn.removeEventListener("click", expandFilter);
                 setTimeout(() => {
                     filterBtn.innerHTML = `
-                        <div class='w-full flex justify-start pt-2'>
-                            <button id='closeButton'>
-                                <span class='material-symbols-outlined'>
-                                    close
-                                </span>
-                            </button>
-                        </div>
-                        <div class='text-start w-full h-full flex flex-col justify-between gap-5 p-3'>
-                            <div class="range-slider">
-                                <label for="priceRange">Price: </label>
-                                <div id="priceRange"></div>
-                                <div>
-                                    <span id="minPriceValue">0</span> -
-                                    <span id="maxPriceValue">5000</span>
-                                </div>
-                            </div>
-                            <div class="mt-[20px]">
-                                <label for='manufacturerFilter'>Manufacturer: </label>
-                                <select id='manufacturerFilter'>
-                                    <option value=''>All</option>
-                                    <% uniqueManufacturers.forEach(manufacturer => { %>
-                                        <option value='<%= manufacturer %>'><%= manufacturer %></option>
-                                    <% }); %>
-                                </select>
-                            </div>
-                            <div>
-                                <label for='typeFilter'>Type: </label>
-                                <select id='typeFilter'>
-                                    <option value=''>All</option>
-                                    <% uniqueTypes.forEach(type => { %>
-                                        <option value='<%= type %>'><%= type %></option>
-                                    <% }); %>
-                                </select>
-                            </div>
-                            <div class="flex justify-end">
-                                <button id="filterOkButton" class="flex justify-center items-center w-10 bg-blue-500 text-white rounded px-4 py-2 mt-2">OK</button>
-                            </div>
-                        </div>
-                    `;
+                                    <div class='w-full flex justify-start pt-2'>
+                                        <button id='closeButton'>
+                                            <span class='material-symbols-outlined'>
+                                                close
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class='text-start w-full h-full flex flex-col justify-between gap-5 p-3'>
+                                        <div class="range-slider">
+                                            <label for="priceRange">Price: </label>
+                                            <div id="priceRange"></div>
+                                            <div>
+                                                <span id="minPriceValue">0</span> -
+                                                <span id="maxPriceValue">10000</span>
+                                            </div>
+                                        </div>
+                                        <div class="mt-[20px]">
+                                            <label for='manufacturerFilter'>Manufacturer: </label>
+                                            <select id='manufacturerFilter'>
+                                                <option value=''>All</option>
+                                                <% uniqueManufacturers.forEach(manufacturer => { %>
+                                                    <option value='<%= manufacturer %>'><%= manufacturer %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label for='typeFilter'>Type: </label>
+                                            <select id='typeFilter'>
+                                                <option value=''>All</option>
+                                                <% uniqueTypes.forEach(type => { %>
+                                                    <option value='<%= type %>'><%= type %></option>
+                                                <% }); %>
+                                            </select>
+                                        </div>
+                                        <div class="flex justify-end">
+                                            <button id="filterOkButton" class="flex justify-center items-center w-10 bg-blue-500 text-white rounded px-4 py-2 mt-2">OK</button>
+                                        </div>
+                                    </div>
+                                `;
                     const closeBtn = filterBtn.querySelector("#closeButton");
                     closeBtn.addEventListener("click", expandFilter);
-                    const filterOkButton = filterBtn.querySelector("#filterOkButton");
-                    filterOkButton.addEventListener("click", filterdrones);
-                    document.addEventListener("click", closeFilterOnClickOutside);
+                    const filterOkButton =
+                        filterBtn.querySelector("#filterOkButton");
+                    filterOkButton.addEventListener("click", filterDrones);
+                    document.addEventListener(
+                        "click",
+                        closeFilterOnClickOutside
+                    );
 
-                    // Initialize noUiSlider
-                    var priceSlider = document.getElementById('priceRange');
+                    // Initialize noUiSlider for price range filter
+                    var priceSlider = document.getElementById("priceRange");
+                    console.log(priceSlider);
                     noUiSlider.create(priceSlider, {
                         start: [0, 5000],
                         connect: true,
                         range: {
-                            'min': 0,
-                            'max': 5000
+                            min: 0,
+                            max: 5000,
                         },
                         step: 100,
                         tooltips: [false, false],
@@ -233,22 +249,62 @@
                             },
                             from: function (value) {
                                 return parseInt(value);
-                            }
+                            },
+                        },
+                    });
+
+                    priceSlider.noUiSlider.on(
+                        "update",
+                        function (values, handle) {
+                            document.getElementById("minPriceValue").innerText =
+                                values[0];
+                            document.getElementById("maxPriceValue").innerText =
+                                values[1];
                         }
-                    });
-
-                    priceSlider.noUiSlider.on('update', function (values, handle) {
-                        document.getElementById('minPriceValue').innerText = values[0];
-                        document.getElementById('maxPriceValue').innerText = values[1];
-                    });
-
-                }, 300);
+                    );
+                }, 500);
             } else {
-                resetFilter();
+                setTimeout(() => {
+                    filterBtn.addEventListener("click", expandFilter);
+                }, 500);
                 filterBtn.innerHTML = initialFilterHTML;
-                filterBtn.addEventListener("click", expandFilter);
-                filterBtn.removeEventListener("click", expandFilter);
-                document.removeEventListener("click", closeFilterOnClickOutside);
+                filterBtn.style.width = initialFilterWidth;
+                filterBtn.style.height = initialFilterHeight;
+            }
+        }
+
+        function expandSort() {
+            sortBtn.classList.toggle("expand-sort");
+            if (sortBtn.classList.contains("expand-sort")) {
+                collapseFilter();
+                sortBtn.removeEventListener("click", expandSort);
+                setTimeout(() => {
+                    sortBtn.innerHTML = `
+                                    <div class='w-full flex justify-start pt-2'>
+                                        <button id='closeButton'>
+                                            <span class='material-symbols-outlined'>
+                                                close
+                                            </span>
+                                        </button>
+                                    </div>
+                                    <div class='text-start w-full h-full flex flex-col gap-3'>
+                                        <button value="manufacturer" onclick="sortDrones('manufacturer')">Manufacturer</button>
+                                        <button value="type" onclick="sortDrones('type')">Type</button>
+                                        <button value="price-asc" onclick="sortDrones('price-asc')">Price: Low to High</button>
+                                        <button value="price-desc" onclick="sortDrones('price-desc')">Price: High to Low</button>
+                                    </div>
+                                `;
+                    const closeBtn = sortBtn.querySelector("#closeButton");
+                    closeBtn.addEventListener("click", expandSort);
+                    document.addEventListener("click", closeSortOnClickOutside);
+                }, 500);
+            } else {
+                setTimeout(() => {
+                    sortBtn.addEventListener("click", expandSort);
+                }, 500);
+                sortBtn.innerHTML = initialSortHTML;
+                sortBtn.style.width = initialSortWidth;
+                sortBtn.style.height = initialSortHeight;
             }
         }
 
@@ -270,57 +326,233 @@
 
         // Function to close the filter when clicking outside of it
         function closeFilterOnClickOutside(event) {
-            if (!filterBtn.contains(event.target) && filterBtn.classList.contains("expand")) {
+            if (
+                !filterBtn.contains(event.target) &&
+                filterBtn.classList.contains("expand")
+            ) {
                 collapseFilter();
-                document.removeEventListener("click", closeFilterOnClickOutside);
+                document.removeEventListener(
+                    "click",
+                    closeFilterOnClickOutside
+                );
             }
         }
 
         // Function to close the sort when clicking outside of it
         function closeSortOnClickOutside(event) {
-            if (!sortBtn.contains(event.target) && sortBtn.classList.contains("expand-sort")) {
+            if (
+                !sortBtn.contains(event.target) &&
+                sortBtn.classList.contains("expand-sort")
+            ) {
                 collapseSort();
                 document.removeEventListener("click", closeSortOnClickOutside);
             }
         }
 
         // Function to filter drones based on selected criteria
-        function filterdrones() {
-            const selectedManufacturer = document.getElementById('manufacturerFilter').value;
-            const selectedType = document.getElementById('typeFilter').value;
-            const priceRange = document.getElementById('priceRange').noUiSlider.get();
-            const minPrice = parseInt(priceRange[0]);
-            const maxPrice = parseInt(priceRange[1]);
+        function filterDrones() {
+            const selectedType = document.getElementById("typeFilter").value;
+            const selectedManufacturer =
+                document.getElementById("manufacturerFilter").value;
+            const minPrice = document.getElementById("minPriceValue").innerText;
+            const maxPrice = document.getElementById("maxPriceValue").innerText;
 
-            const droneContainer = document.getElementById("drone-container");
-            const drones = droneContainer.querySelectorAll(".item");
+            const queryParams = new URLSearchParams({
+                type: selectedType,
+                manufacturer: selectedManufacturer,
+                minPrice: minPrice,
+                maxPrice: maxPrice,
+            }).toString();
 
-            drones.forEach(drone => {
-                const manufacturer = drone.getAttribute('data-manufacturer');
-                const type = drone.getAttribute('data-type');
-                const price = parseInt(drone.getAttribute('data-price'));
-
-                if ((selectedManufacturer === '' || manufacturer === selectedManufacturer) &&
-                    (selectedType === '' || type === selectedType) &&
-                    (price >= minPrice && price <= maxPrice)) {
-                    drone.style.display = 'block';
-                } else {
-                    drone.style.display = 'none';
-                }
-            });
-
-            collapseFilter();
+            window.location.href = `/drones?${queryParams}`;
         }
 
         // Function to reset filter criteria
         function resetFilter() {
-            document.getElementById('manufacturerFilter').value = '';
-            document.getElementById('typeFilter').value = '';
-            document.getElementById('priceRange').noUiSlider.set([0, 5000]);
+            document.getElementById("manufacturerFilter").value = "";
+            document.getElementById("typeFilter").value = "";
+            document.getElementById("priceRange").noUiSlider.set([0, 5000]);
         }
 
         // Event listeners for filter and sort buttons
         filterBtn.addEventListener("click", expandFilter);
         sortBtn.addEventListener("click", expandSort);
+    });
+
+    // Sorting drones based on selected criteria
+    let sortOrder = {
+        price: "asc",
+        manufacturer: "asc",
+        type: "asc",
+    };
+
+    function sortDrones(criteria) {
+        // Log the sorting criteria
+        console.log(`Sorting by: ${criteria}`);
+
+        // Get all elements with class "item"
+        const items = document.querySelectorAll(".item");
+
+        // Convert NodeList to Array
+        const itemsArray = Array.from(items);
+
+        // Sort the array based on the criteria
+        itemsArray.sort((a, b) => {
+            let aValue, bValue;
+
+            // Determine the values to compare based on the criteria
+            switch (criteria) {
+                case "manufacturer":
+                    // If sorting by manufacturer, use the manufacturer data attribute
+                    aValue = a.dataset.manufacturer.toLowerCase();
+                    bValue = b.dataset.manufacturer.toLowerCase();
+                    break;
+                case "type":
+                    // If sorting by type, use the type data attribute
+                    aValue = a.dataset.type.toLowerCase();
+                    bValue = b.dataset.type.toLowerCase();
+                    break;
+                case "price-asc":
+                    // If sorting by price ascending, use the price data attribute
+                    aValue = parseFloat(a.dataset.price);
+                    bValue = parseFloat(b.dataset.price);
+                    return aValue - bValue;
+                case "price-desc":
+                    // If sorting by price descending, use the price data attribute
+                    aValue = parseFloat(a.dataset.price);
+                    bValue = parseFloat(b.dataset.price);
+                    return bValue - aValue;
+            }
+
+            // Determine the sort order based on the sortOrder object
+            if (sortOrder[criteria] === "asc") {
+                if (aValue < bValue) return -1;
+                if (aValue > bValue) return 1;
+            } else {
+                if (aValue < bValue) return 1;
+                if (aValue > bValue) return -1;
+            }
+
+            // If values are equal, return 0
+            return 0;
+        });
+
+        // If sorting by manufacturer or type, toggle the sort order for the next sort
+        if (criteria === "manufacturer" || criteria === "type") {
+            sortOrder[criteria] =
+                sortOrder[criteria] === "asc" ? "desc" : "asc";
+        }
+
+        // Clear the container
+        const container = document.getElementById("drone-container");
+        container.innerHTML = "";
+
+        // Append the sorted items to the container
+        itemsArray.forEach((item) => container.appendChild(item));
+
+        // Re-append sorted elements to the container
+        drones.forEach((drone) => droneContainer.appendChild(drone));
+
+        // Collapse the sort options
+        collapseSort();
+    }
+
+    // Custom JavaScript to handle filter toggle
+    function filter() {
+        const filter = document.getElementById("filter");
+        filter.style.display =
+            filter.style.display === "none" ? "block" : "none";
+    }
+
+    //     // Custom JavaScript to handle modal toggle
+    document.addEventListener("DOMContentLoaded", function () {
+        const modalToggleButtons = document.querySelectorAll(
+            "[data-modal-toggle]"
+        );
+        const modalHideButtons = document.querySelectorAll("[data-modal-hide]");
+        const modals = document.querySelectorAll(".hidden");
+        const modalBody = document.getElementById("modal-body");
+        const modalFooter = document.getElementById("modal-footer");
+        const bookNowButton = document.getElementById("book-now-button");
+        const orderButton = document.getElementById("order-button");
+        const homeButton = document.getElementById("home-button");
+
+        const initialModalBodyContent = modalBody.innerHTML;
+        const initialModalFooterContent = modalFooter.innerHTML;
+
+        // Add click event listener to each "Details" button
+        modalToggleButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                // Show the modal
+                document
+                    .getElementById("drone-modal")
+                    .classList.remove("hidden");
+            });
+        });
+
+        // Add click event listener to each "Close" button
+        modalHideButtons.forEach(function (button) {
+            button.addEventListener("click", function () {
+                // Hide the modal
+                document.getElementById("drone-modal").classList.add("hidden");
+            });
+        });
+
+        function reassignEventListeners() {
+            bookNowButton.addEventListener("click", function () {
+                modalBody.innerHTML = `
+                <div class="bg-gray-200 text-center py-10 rounded-lg">
+                    <p class="text-lg">Order Template</p>
+                </div>
+                `;
+                bookNowButton.style.display = "none";
+                orderButton.style.display = "block";
+                homeButton.style.display = "none";
+            });
+
+            orderButton.addEventListener("click", function () {
+                modalBody.innerHTML = `
+                <div class="bg-gray-200 text-center py-10 rounded-lg">
+                    <p class="text-lg">Order Confirmation</p>
+                </div>
+                `;
+                orderButton.style.display = "none";
+                homeButton.style.display = "block";
+            });
+
+            homeButton.addEventListener("click", function () {
+                window.location.href = "/map";
+            });
+        }
+
+        modalToggleButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                const targetModalId = button.getAttribute("data-modal-target");
+                const targetModal = document.getElementById(targetModalId);
+                if (targetModal) {
+                    targetModal.classList.remove("hidden");
+                    targetModal.classList.add("flex");
+                }
+            });
+        });
+
+        modalHideButtons.forEach((button) => {
+            button.addEventListener("click", function () {
+                const targetModalId = button.getAttribute("data-modal-hide");
+                const targetModal = document.getElementById(targetModalId);
+                if (targetModal) {
+                    targetModal.classList.add("hidden");
+                    targetModal.classList.remove("flex");
+                    // Reset modal content to initial state
+                    modalBody.innerHTML = initialModalBodyContent;
+                    modalFooter.innerHTML = initialModalFooterContent;
+                    // Reassign event listeners after resetting content
+                    reassignEventListeners();
+                }
+            });
+        });
+
+        // Initial assignment of event listeners
+        reassignEventListeners();
     });
 </script>
