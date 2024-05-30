@@ -399,6 +399,10 @@
     // update user database with given information and show order confirmation
     // may show error dialog instead depending on the result from the backend
     orderForm.addEventListener("submit", async function () {
+        /*
+         * Do not refresh after posting the form.
+         * Source: https://www.geeksforgeeks.org/how-to-submit-a-form-or-a-part-of-a-form-without-a-page-refresh-using-jquery/
+         */
         event.preventDefault();
 
         const address = document.getElementById("address").value;
@@ -409,6 +413,10 @@
         const setAddress = document.getElementById("setAddress");
 
         // send to backend
+        /*
+         * Send POST request in javascript
+         * Source: https://www.freecodecamp.org/news/javascript-post-request-how-to-send-an-http-post-request-in-js/
+         */
         const resultString = await fetch("/order", {
             method: "POST",
             body: JSON.stringify({
