@@ -652,5 +652,5 @@ app.get("/logout", validateUser, (req, res) => {
 // URL not found error.
 app.get("/*", (req, res) => {
     res.status(404);
-    res.send("404: Page Not Found");
+    res.render("404");
 });
