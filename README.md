@@ -161,7 +161,7 @@ Here's how to get started once you've cloned the project:
 │   ├── Vi.webp
 │   ├── Viktor.webp
 │   ├── Yasuo.webp
-│   ├── Yeaji.jpg
+│   ├── Yeali.jpg
 │   └── Zeri.webp
 │
 ├── scripts                  # Folder for scripts
