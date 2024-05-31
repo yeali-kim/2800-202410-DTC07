@@ -651,8 +651,8 @@
 
     // Event listener to initialize map and search functionality after DOM content is loaded
     document.addEventListener("DOMContentLoaded", function () {
-      const criminals = <% - JSON.stringify(criminals) %>; // Parse the criminals data from the server
-      const user = <% - JSON.stringify(user) %>; // Parse the user data from the server
+      const criminals = <%- JSON.stringify(criminals) %>; // Parse the criminals data from the server
+      const user = <%- JSON.stringify(user) %>; // Parse the user data from the server
       initMap(criminals, user); // Initialize the map
       search(criminals); // Initialize the search functionality
     });
